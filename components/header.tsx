@@ -64,7 +64,7 @@ export default function Header() {
       </div>
 
       {/* Header */}
-      <header className="bg-white text-black sticky top-0 z-50 shadow-sm">
+      <header className="bg-white/90 backdrop-blur-lg text-black sticky top-0 z-50 shadow-sm">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <div className="flex items-center space-x-2">
             <a href="/">
