@@ -10,6 +10,8 @@ export {
   ArrowRight,
   ArrowLeft,
   CaretRight,
+  List,
+  X,
   MapPin,
   Calendar,
   Calculator,

@@ -22,7 +22,7 @@ export default function TestimonialCard({
             <Star key={i} weight="fill" className="w-5 h-5 text-primary" />
           ))}
         </div>
-        <p className="text-muted-foreground mb-4 italic flex-grow">
+        <p className="text-sm sm:text-base text-muted-foreground mb-4 italic flex-grow">
           {testimonial}
         </p>
         <div className="border-border/20 border-t pt-4 mt-auto">

@@ -21,7 +21,6 @@ export const metadata: Metadata = {
   title: "KeyRate Mortgage Dubai - Lowest Rates, No Lender Fees",
   description:
     "Fast, transparent mortgage solutions for homebuyers and investors across the UAE. $2B+ processed, 10K+ clients, 100% success rate.",
-  generator: "v0.app",
   icons: {
     icon: [
       { url: "/icon.png", type: "image/png", sizes: "32x32" },

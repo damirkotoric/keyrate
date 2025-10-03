@@ -45,7 +45,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
         <div className="container mx-auto px-4">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
-            <div>
+            <div className="text-center lg:text-left">
               <div className="mb-4">
                 <Badge variant="default" size="lg">{home?.kicker ?? "Award-Winning Brokerage"}</Badge>
               </div>
@@ -64,17 +64,17 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
                     )
                   })}
               </h1>
-              <p className="text-xl text-muted-foreground mb-6 leading-relaxed max-w-lg font-medium text-pretty">
+              <p className="text-xl text-muted-foreground mb-6 leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium text-pretty">
                 {home?.subtitle ?? "We work for you, not the bank. Get pre-approved in minutes with a globally trusted mortgage broker. Over $2 billion processed for 10,000+ happy clients."}
               </p>
               <div className="mb-6">
                 <img
                   src="/awards.jpg"
                   alt="KeyRate Awards - Top Brokerage 2019, 2021, CMP Hot List 2020, 2021, Global 100 Initiative"
-                  className="max-w-md h-auto mix-blend-multiply"
+                  className="w-full max-w-md h-auto mix-blend-multiply mx-auto lg:mx-0"
                 />
               </div>
-              <div className="flex items-center gap-6 text-sm text-muted-foreground">
+              <div className="flex items-center gap-6 text-sm text-muted-foreground justify-center lg:justify-start">
                 <div className="flex items-center gap-2">
                   <Shield className="w-4 h-4" />
                   <span>Licensed & Insured</span>
@@ -101,56 +101,64 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
               Proven results, trusted by clients in Canada and the UAE.
             </p>
           </div>
-          <div className="grid md:grid-cols-4 gap-8 text-center">
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 sm:text-center">
+            <div className="flex flex-row sm:flex-col items-center">
+              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
                 <DollarSign className="w-10 h-10 text-background" />
               </div>
-              <h3 className="text-3xl font-bold mb-2 text-foreground flex items-center">
-                $
-                <NumberTicker value={2} decimalPlaces={1} />
-                B+
-              </h3>
-              <p className="text-muted-foreground font-medium">Mortgages Processed</p>
-              <p className="text-sm text-muted-foreground/80">Helping clients invest in high-value property</p>
+              <div className="">
+                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center sm:items-center">
+                  $
+                  <NumberTicker value={2} decimalPlaces={1} />
+                  B+
+                </h3>
+                <p className="text-muted-foreground font-medium">Mortgages Processed</p>
+                <p className="text-sm text-muted-foreground/80">Helping clients invest in high-value property</p>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
+            <div className="flex flex-row sm:flex-col items-center">
+              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
                 <Users className="w-10 h-10 text-background" />
               </div>
-              <h3 className="text-3xl font-bold mb-2 text-foreground flex items-center">
-                <NumberTicker value={10} decimalPlaces={1} />K+
-              </h3>
-              <p className="text-muted-foreground font-medium">Happy Clients</p>
-              <p className="text-sm text-muted-foreground/80">Families we've helped achieve homeownership</p>
+              <div className="">
+                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
+                  <NumberTicker value={10} decimalPlaces={1} />K+
+                </h3>
+                <p className="text-muted-foreground font-medium">Happy Clients</p>
+                <p className="text-sm text-muted-foreground/80">Families we've helped achieve homeownership</p>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
+            <div className="flex flex-row sm:flex-col items-center">
+              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
                 <Star className="w-10 h-10 text-background" />
               </div>
-              <h3 className="text-3xl font-bold mb-2 text-foreground flex items-center">
-                <NumberTicker value={1.2} decimalPlaces={1} />K
-              </h3>
-              <p className="text-muted-foreground font-medium">Likes</p>
-              <p className="text-sm text-muted-foreground/80">From our followers on our Facebook page</p>
+              <div>
+                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
+                  <NumberTicker value={1.2} decimalPlaces={1} />K
+                </h3>
+                <p className="text-muted-foreground font-medium">Likes</p>
+                <p className="text-sm text-muted-foreground/80">From our followers on our Facebook page</p>
+              </div>
             </div>
-            <div className="flex flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex items-center justify-center mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
+            <div className="flex flex-row sm:flex-col items-center">
+              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
                 <Clock className="w-10 h-10 text-background" />
               </div>
-              <h3 className="text-3xl font-bold mb-2 text-foreground flex items-center">
-                <NumberTicker value={2} decimalPlaces={1} />
-                &nbsp;Min
-              </h3>
-              <p className="text-muted-foreground font-medium">Pre-Approval Time</p>
-              <p className="text-sm text-muted-foreground/80">Get approved faster than anywhere else</p>
+              <div>
+                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
+                  <NumberTicker value={2} decimalPlaces={1} />
+                  &nbsp;Min
+                </h3>
+                <p className="text-muted-foreground font-medium">Pre-Approval Time</p>
+                <p className="text-sm text-muted-foreground/80">Get approved faster than anywhere else</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-background">
+      <section className="py-16 bg-background overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-2">Don't just take our word for it.</h2>
@@ -216,13 +224,13 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
       {/* Awards & Recognition + Licensed Section */}
       <section className="py-24">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-12">
             {/* Awards & Recognition */}
             <div>
               <h2 className="text-2xl font-bold mb-8">Awards & Recognition</h2>
               <div className="space-y-6">
                 <div className="flex items-center gap-4">
-                  <div className="border border-border rounded-full relative w-16 h-16 flex items-center justify-center overflow-hidden">
+                  <div className="border border-border rounded-full relative w-16 h-16 flex items-center justify-center overflow-hidden flex-none">
                     <img
                       src="/2021-top-brokerage.jpg"
                       alt="CMP Top Brokerage 2021 medal"
@@ -235,7 +243,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="border border-border rounded-full relative w-16 h-16 flex items-center justify-center overflow-hidden">
+                  <div className="border border-border rounded-full relative w-16 h-16 flex items-center justify-center overflow-hidden flex-none">
                     <img
                       src="/2020-hot-list.jpg"
                       alt="CMP Top Brokerage 2021 medal"
@@ -248,7 +256,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
                   </div>
                 </div>
                 <div className="flex items-center gap-4">
-                  <div className="border border-border rounded-full relative w-16 h-16 flex items-center justify-center overflow-hidden">
+                  <div className="border border-border rounded-full relative w-16 h-16 flex items-center justify-center overflow-hidden flex-none">
                     <img
                       src="/2019-top-brokerage.jpg"
                       alt="CMP Top Brokerage 2021 medal"
@@ -310,7 +318,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
 
       {/* Our Promise Section */}
       <section className="dark container">
-        <div className="mx-auto my-8 py-24 text-primary-foreground bg-background relative overflow-hidden rounded-xl shadow-xl">
+        <div className="mx-auto my-8 py-12 sm:py-24 text-primary-foreground bg-background relative overflow-hidden rounded-xl shadow-xl">
           {/* Background: Flickering Grid */}
           <FlickeringGrid
             className="absolute inset-0 z-0 opacity-60"
@@ -322,7 +330,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
             speed={0.001}
           />
           <div className="px-4 relative z-10">
-            <h2 className="text-3xl font-bold text-center mb-12">Our Promise to You</h2>
+            <h2 className="text-3xl font-bold text-center mb-6 sm:mb-12">Our Promise to You</h2>
             <div className="grid md:grid-cols-3 gap-8">
               <div className="text-center">
                 <div className="w-16 h-16 bg-primary-foreground/10 rounded-full flex items-center justify-center mx-auto mb-4 backdrop-blur-sm">
@@ -354,11 +362,9 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
       <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            
-              <h2 className="text-3xl font-bold mb-2">Complete Mortgage Solutions</h2>
-            
+            <h2 className="text-3xl font-bold mb-2">Complete Mortgage Solutions</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From first-time buyers to seasoned investors, we have <Highlighter isView={true} delayMs={500}>specialized mortgage products for every situation in Canada and the UAE</Highlighter>.
+              From first-time buyers to seasoned investors, we have <Highlighter isView={true} delayMs={500}>specialized mortgage products for every situation in Canada and the UAE.</Highlighter>
             </p>
             <Button size="sm" variant="outline" className="mt-6">
               View All Solutions
@@ -403,7 +409,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
               buttonText="Apply Now"
             />
             <SolutionCard
-              className="bg-card"
+              className="bg-card hidden sm:block"
               icon={PiggyBank}
               title="Investment Properties"
               description="Build wealth through real estate. Buy to let and investment financing."
@@ -412,7 +418,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
               buttonText="Explore Options"
             />
             <SolutionCard
-              className="bg-card"
+              className="bg-card hidden sm:block"
               icon={MapPin}
               title="New to Canada"
               description="Special programs for newcomers with limited Canadian credit history."
@@ -437,7 +443,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
             </p>
           </div>
 
-          <div className="grid lg:grid-cols-2 gap-12">
+          <div className="grid md:grid-cols-2 gap-12">
             {/* Contact Information */}
             <div className="space-y-8">
               <div>

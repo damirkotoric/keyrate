@@ -13,7 +13,7 @@ export default function Footer() {
         className="dark w-full h-full pointer-events-none absolute inset-0 text-primary-foreground/30 [mask-image:linear-gradient(to_bottom,white,transparent)]"
       />
       <div className="relative container mx-auto px-4">
-        <div className="mx-4 xl:mx-0 mb-12">
+        <div className="sm:mx-4 xl:mx-0 mb-12">
           <div className="mb-12">
             <a href="/">
               <img
@@ -31,7 +31,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <div className="grid md:grid-cols-4 gap-8">
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
             <div>
               <h3 className="text-xl font-bold mb-6">Solutions</h3>
               <ul className="space-y-3 text-primary-foreground/80">
