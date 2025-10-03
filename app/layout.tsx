@@ -21,6 +21,29 @@ export const metadata: Metadata = {
   title: "KeyRate Mortgage Dubai - Lowest Rates, No Lender Fees",
   description:
     "Fast, transparent mortgage solutions for homebuyers and investors across the UAE. $2B+ processed, 10K+ clients, 100% success rate.",
+  openGraph: {
+    title: "KeyRate Mortgage Dubai - Lowest Rates, No Lender Fees",
+    description:
+      "Fast, transparent mortgage solutions for homebuyers and investors across the UAE. $2B+ processed, 10K+ clients, 100% success rate.",
+    url: "https://keyrate.ae",
+    siteName: "KeyRate",
+    images: [
+      {
+        url: "/social.jpg",
+        width: 1200,
+        height: 630,
+        alt: "KeyRate Mortgage Dubai",
+      },
+    ],
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "KeyRate Mortgage Dubai - Lowest Rates, No Lender Fees",
+    description:
+      "Fast, transparent mortgage solutions for homebuyers and investors across the UAE. $2B+ processed, 10K+ clients, 100% success rate.",
+    images: ["/social.jpg"],
+  },
   icons: {
     icon: [
       { url: "/icon.png", type: "image/png", sizes: "32x32" },
