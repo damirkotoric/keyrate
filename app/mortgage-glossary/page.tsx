@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { Search } from "lucide-react"
+import { Search } from "@/components/icons"
 
 const glossaryTerms = [
   {

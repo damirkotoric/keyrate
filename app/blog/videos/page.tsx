@@ -2,7 +2,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, Play, Clock, Eye } from "lucide-react"
+import { ArrowLeft, Play, Clock, Eye } from "@/components/icons"
 
 const videoContent = [
   {

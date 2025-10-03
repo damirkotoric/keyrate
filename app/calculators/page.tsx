@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Calculator, DollarSign, Calendar, TrendingUp, Home, ArrowRight } from "lucide-react"
+import { Calculator, DollarSign, Calendar, TrendingUp, Home, ArrowRight } from "@/components/icons"
 
 export default function CalculatorsPage() {
   const [activeCalculator, setActiveCalculator] = useState<string | null>(null)

@@ -1,6 +1,6 @@
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
-import { ArrowLeft, CheckCircle, ArrowRight } from "lucide-react"
+import { ArrowLeft, CheckCircle, ArrowRight } from "@/components/icons"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 

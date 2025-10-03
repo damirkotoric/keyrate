@@ -1,0 +1,49 @@
+export {
+  Heart,
+  Play,
+  Star,
+  Phone,
+  Globe,
+  CheckCircle,
+  Users,
+  Shield,
+  ArrowRight,
+  ArrowLeft,
+  CaretRight,
+  MapPin,
+  Calendar,
+  Calculator,
+  Clock,
+  Check,
+  Eye,
+} from "phosphor-react"
+
+export {
+  Envelope as Mail,
+  TrendUp as TrendingUp,
+  MagnifyingGlass as Search,
+  DownloadSimple as Download,
+  InstagramLogo as Instagram,
+  CaretDown as ChevronDown,
+  CaretDown as ChevronDownIcon,
+  CaretUp as ChevronUpIcon,
+  Check as CheckIcon,
+  House as Home,
+  CurrencyDollar as DollarSign,
+  Buildings as Building,
+  FileText,
+  Medal as Award,
+  CreditCard,
+  ArrowCounterClockwise as RotateCcw,
+  ArrowsClockwise as RefreshCw,
+  FacebookLogo as Facebook,
+  TwitterLogo as Twitter,
+  LinkedinLogo as Linkedin,
+  ChatCircle as MessageCircle,
+  ArrowSquareOut as ExternalLink,
+  Bank as PiggyBank,
+} from "phosphor-react"
+
+export type { IconProps } from "phosphor-react"
+
+

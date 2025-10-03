@@ -22,6 +22,14 @@ export const metadata: Metadata = {
   description:
     "Fast, transparent mortgage solutions for homebuyers and investors across the UAE. $2B+ processed, 10K+ clients, 100% success rate.",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: "/icon.png", type: "image/png", sizes: "32x32" },
+      { url: "/icon.png", type: "image/png", sizes: "192x192" },
+      { url: "/icon.png", type: "image/png", sizes: "512x512" },
+    ],
+    apple: [{ url: "/apple-icon.png", sizes: "180x180", type: "image/png" }],
+  },
 }
 
 export default function RootLayout({

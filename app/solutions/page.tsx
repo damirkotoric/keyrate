@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Globe, RefreshCw, TrendingUp, DollarSign, FileText, ArrowRight } from "lucide-react"
+import { Globe, RefreshCw, TrendingUp, DollarSign, FileText, ArrowRight } from "@/components/icons"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 

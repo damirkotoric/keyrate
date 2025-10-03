@@ -5,7 +5,7 @@ import { Footer } from "@/components/footer"
 import { PreApprovalForm } from "@/components/pre-approval-form" // Added import for reusable form component
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Check, Clock, Shield, FileText, Users, TrendingUp, ChevronDown } from "lucide-react"
+import { Check, Clock, Shield, FileText, Users, TrendingUp, ChevronDown } from "@/components/icons"
 import { useState } from "react"
 
 export default function ServicePage() {

@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Download, ArrowRight, FileText, CreditCard, RefreshCw, RotateCcw, TrendingUp } from "lucide-react"
+import { Download, ArrowRight, FileText, CreditCard, RefreshCw, RotateCcw, TrendingUp } from "@/components/icons"
 
 export default function GuidesEBooksPage() {
   const guides = [

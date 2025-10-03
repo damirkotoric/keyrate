@@ -1,0 +1,168 @@
+"use client"
+
+import { useEffect, useRef } from "react"
+import type React from "react"
+import { useInView } from "motion/react"
+import { annotate } from "rough-notation"
+import { type RoughAnnotation } from "rough-notation/lib/model"
+
+type AnnotationAction =
+  | "highlight"
+  | "underline"
+  | "box"
+  | "circle"
+  | "strike-through"
+  | "crossed-off"
+  | "bracket"
+
+interface HighlighterProps {
+  children: React.ReactNode
+  action?: AnnotationAction
+  color?: string
+  strokeWidth?: number
+  animationDuration?: number
+  iterations?: number
+  padding?: number
+  multiline?: boolean
+  isView?: boolean
+  delayMs?: number
+  finalTextColor?: string
+}
+
+export function Highlighter({
+  children,
+  action = "highlight",
+  color = "var(--primary)",
+  strokeWidth = 1.5,
+  animationDuration = 600,
+  iterations = 2,
+  padding = 2,
+  multiline = true,
+  isView = false,
+  delayMs = 0,
+  finalTextColor = "var(--primary-foreground)",
+}: HighlighterProps) {
+  const elementRef = useRef<HTMLSpanElement>(null)
+  const annotationRef = useRef<RoughAnnotation | null>(null)
+  const hasShownRef = useRef(false)
+
+  // We still compute inView once, but we ALSO gate on first paint using session flag
+  const isInView = useInView(elementRef, { once: true, margin: "-10%" })
+
+  // If isView is false, always show. If isView is true, wait for inView
+  // Only allow showing once per page load
+  const shouldShow = (!isView || isInView) && !hasShownRef.current
+
+  useEffect(() => {
+    if (!shouldShow) return
+
+    const element = elementRef.current
+    if (!element) return
+
+    // Resolve CSS variable colors like var(--primary) into actual color values
+    let resolvedColor = color
+    try {
+      const varMatch = color.match(/var\((--[^)]+)\)/)
+      if (varMatch && typeof window !== "undefined") {
+        const cssValue = getComputedStyle(document.documentElement).getPropertyValue(varMatch[1]).trim()
+        if (cssValue) {
+          resolvedColor = cssValue
+        }
+      }
+    } catch {
+      // noop: fall back to provided color
+    }
+
+    const annotationConfig = {
+      type: action,
+      color: resolvedColor,
+      strokeWidth,
+      animationDuration,
+      iterations,
+      padding,
+      multiline,
+    }
+
+    const annotation = annotate(element, annotationConfig)
+
+    annotationRef.current = annotation
+
+    let timer: number | null = null
+    const show = () => {
+      if (annotationRef.current) {
+        annotationRef.current.show()
+        hasShownRef.current = true
+        // Fade text color after highlight animation completes
+        try {
+          if (element) {
+            // Resolve CSS variable in finalTextColor if present
+            let resolvedFinal = finalTextColor
+            const finalVarMatch = finalTextColor.match(/var\((--[^)]+)\)/)
+            if (finalVarMatch && typeof window !== "undefined") {
+              const cssValue = getComputedStyle(document.documentElement).getPropertyValue(finalVarMatch[1]).trim()
+              if (cssValue) {
+                resolvedFinal = cssValue
+              }
+            }
+
+            element.style.transition = element.style.transition
+              ? `${element.style.transition}, color 400ms ease-in-out`
+              : "color 400ms ease-in-out"
+            // Start the text color transition immediately with the highlight
+            requestAnimationFrame(() => {
+              element.style.color = resolvedFinal
+            })
+          }
+        } catch {
+          // noop
+        }
+      }
+    }
+    if (delayMs > 0) {
+      timer = window.setTimeout(show, delayMs)
+    } else {
+      show()
+    }
+    // Keep annotation positioned correctly on scroll/resize without re-animating
+    const updatePosition = () => {
+      try {
+        const a: any = annotationRef.current
+        if (a && typeof a.position === "function") {
+          a.position()
+        }
+      } catch {
+        // noop
+      }
+    }
+    window.addEventListener("scroll", updatePosition, { passive: true })
+    window.addEventListener("resize", updatePosition)
+
+    return () => {
+      if (element) {
+        annotate(element, { type: action }).remove()
+      }
+      if (timer) {
+        window.clearTimeout(timer)
+      }
+      window.removeEventListener("scroll", updatePosition)
+      window.removeEventListener("resize", updatePosition)
+    }
+  }, [
+    shouldShow,
+    action,
+    color,
+    strokeWidth,
+    animationDuration,
+    iterations,
+    padding,
+    multiline,
+    delayMs,
+    finalTextColor,
+  ])
+
+  return (
+    <span ref={elementRef} className="relative inline-block bg-transparent">
+      {children}
+    </span>
+  )
+}

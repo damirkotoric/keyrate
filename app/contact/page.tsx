@@ -4,7 +4,15 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Phone, Mail, MapPin, ArrowRight } from "lucide-react"
+import { Textarea } from "@/components/ui/textarea"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+import { Phone, Mail, MapPin, ArrowRight } from "@/components/icons"
 
 export default function ContactPage() {
   return (
@@ -127,16 +135,17 @@ export default function ContactPage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">Location</label>
-                  <select
-                    className="w-full h-12 px-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
-                    required
-                  >
-                    <option value="">Select your location</option>
-                    <option value="canada">Canada</option>
-                    <option value="usa">USA</option>
-                    <option value="uae">UAE</option>
-                    <option value="other">Other</option>
-                  </select>
+                  <Select>
+                    <SelectTrigger className="w-full h-12">
+                      <SelectValue placeholder="Select your location" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="canada">Canada</SelectItem>
+                      <SelectItem value="usa">USA</SelectItem>
+                      <SelectItem value="uae">UAE</SelectItem>
+                      <SelectItem value="other">Other</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>

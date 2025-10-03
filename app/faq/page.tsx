@@ -2,7 +2,7 @@
 
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { ChevronDown, ChevronUp, ArrowRight } from "lucide-react"
+import { ChevronDown, ChevronUp, ArrowRight } from "@/components/icons"
 import { useState } from "react"
 
 export default function FAQPage() {

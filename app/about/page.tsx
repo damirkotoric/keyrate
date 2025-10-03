@@ -4,7 +4,7 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Users, Globe, TrendingUp, Shield } from "lucide-react"
+import { CheckCircle, Users, Globe, TrendingUp, Shield } from "@/components/icons"
 
 export default function AboutPage() {
   return (

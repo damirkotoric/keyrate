@@ -1,6 +1,6 @@
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
-import { ExternalLink, Shield, Building, FileText, TrendingUp, Award } from "lucide-react"
+import { ExternalLink, Shield, Building, FileText, TrendingUp, Award } from "@/components/icons"
 
 export default function UsefulLinksPage() {
   const resources = [
