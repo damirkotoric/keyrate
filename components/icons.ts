@@ -27,6 +27,7 @@ export {
   DownloadSimple as Download,
   InstagramLogo as Instagram,
   CaretDown as ChevronDown,
+  CaretUp as ChevronUp,
   CaretDown as ChevronDownIcon,
   CaretUp as ChevronUpIcon,
   Check as CheckIcon,
