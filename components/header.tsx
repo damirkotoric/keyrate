@@ -54,8 +54,8 @@ export default function Header() {
       <div className="container container-extend-32 mx-auto pt-4">
         <div className="bg-card/90 backdrop-blur-lg shadow-sm rounded-xl px-4 box-content">
           {/* Contact Banner (collapses on scroll) */}
-          <div className={`hidden lg:flex border-b border-border/20 transition-[max-height,opacity] duration-300 ${hideTopBar ? "max-h-0 opacity-0 border-b-0 overflow-hidden" : "max-h-14 opacity-100 overflow-visible"}`}>
-            <div className="flex items-center justify-between text-sm pt-3 pb-4 gap-6 text-muted-foreground w-full">
+          <div className={`hidden lg:flex border-b border-border/50 transition-[max-height,opacity] duration-300 ${hideTopBar ? "max-h-0 opacity-0 border-b-0 overflow-hidden" : "max-h-14 opacity-100 overflow-visible"}`}>
+            <div className="flex items-center justify-between text-sm pt-4 pb-4 gap-6 text-muted-foreground w-full">
               <div className="flex items-center gap-6">
                 <span className="text-muted-foreground">Award-winning broker servicing Canada, UAE and USA</span>
               </div>

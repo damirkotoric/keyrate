@@ -5,7 +5,6 @@ import { cn } from "@/lib/utils"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
 import TestimonialCard from "@/components/testimonial-card"
 import { Marquee } from "@/components/ui/marquee"
-// Fetch via local API route to keep tokens server-side and avoid CORS
 
 type Testimonial = {
   testimonial: string
@@ -32,7 +31,6 @@ export default function TestimonialsSection({
     let mounted = true
     ;(async () => {
       try {
-        console.debug("[Testimonials] fetching /api/testimonials ...")
         const res = await fetch("/api/testimonials", { cache: "no-store" })
         if (!mounted) return
         if (!res.ok) {
@@ -45,14 +43,12 @@ export default function TestimonialsSection({
         }
         const json: { items: Testimonial[] } = await res.json()
         const items = json.items
-        console.debug(`[Testimonials] received ${items.length} items`)
         const midpoint = Math.ceil(items.length / 2)
         setRows([items.slice(0, midpoint), items.slice(midpoint)])
         setError(null)
       } catch (e: any) {
         setRows([])
         setError(e?.message || "Unknown error")
-        console.error("[Testimonials] error:", e)
       } finally {
         setLoaded(true)
       }

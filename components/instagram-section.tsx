@@ -59,8 +59,8 @@ export default function InstagramSection() {
               Stay updated with the latest mortgage tips, success stories, and market insights from KeyRate Dubai.
             </p>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3].map((i) => (
               <Card key={i} className="bg-white border border-gray-200 animate-pulse">
                 <CardContent className="p-0">
                   <div className="aspect-square bg-gray-200"></div>
