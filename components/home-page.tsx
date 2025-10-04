@@ -16,7 +16,7 @@ import {
 import { CheckCircle, Phone, Mail, MapPin, Shield, TrendingUp, Home, RefreshCw, PiggyBank, Users, DollarSign, Clock, Star } from "@/components/icons"
 import InstagramSection from "@/components/instagram-section"
 import PreApprovalForm from "@/components/pre-approval-form"
-import TestimonialCard from "@/components/testimonial-card"
+import TestimonialsSection from "@/components/testimonials-section"
 import { Marquee } from "@/components/ui/marquee"
 import SolutionCard from "@/components/solution-card"
 import Header from "@/components/header"
@@ -134,10 +134,10 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
               </div>
               <div>
                 <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
-                  <NumberTicker value={1.2} decimalPlaces={1} />K
+                  <NumberTicker value={1.1} decimalPlaces={1} />K
                 </h3>
                 <p className="text-muted-foreground font-medium">Likes</p>
-                <p className="text-sm text-muted-foreground/80">From our followers on our Facebook page</p>
+                <p className="text-sm text-muted-foreground/80">From our followers on our <a href="https://www.facebook.com/keyrate" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">Facebook page</a></p>
               </div>
             </div>
             <div className="flex flex-row sm:flex-col items-center">
@@ -158,68 +158,7 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-16 bg-background overflow-hidden">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2">Don't just take our word for it.</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Here's what our satisfied clients have to say about their KeyRate experience.
-            </p>
-          </div>
-
-          {/* Magic UI-style Marquee rows */}
-          <div className="space-y-6">
-            <Marquee className="[--duration:250s]">
-              <div className="flex gap-4">
-                <TestimonialCard
-                  testimonial="We couldn't have asked for a more favourable experience and we were very impressed with his frankness and proactivity. All in all, a positive venture and one we will be eager to revisit."
-                  author="Cara & Ted"
-                  role="First Time Home Buyers"
-                />
-                <TestimonialCard
-                  testimonial="Great service, Danny and Stephanie got me the best rate on the market and helped me through every step of the way. They answered all of my questions professionally and efficiently. They worked at all hours of the day and night for me! If I could give more than 5 stars, I would!"
-                  author="Daniel Lucente"
-                  role="Satisfied Client"
-                />
-                <TestimonialCard
-                  testimonial="Highly responsive and sensitive to our needs with a keen understanding of the market. Recommended beyond a doubt."
-                  author="Trisha & Alex"
-                  role="First-time Home Buyers"
-                />
-                <TestimonialCard
-                  testimonial="I must say I have used brokers in the past but at Keyrate I was beyond Happy and Satisfied with the services provided. They were extremely Prompt and organized. Also very informative and knowledgeable. I Highly recommend Keyrate my standards were met and exceeded."
-                  author="Sarah Viau"
-                  role="Returning Client"
-                />
-              </div>
-            </Marquee>
-            <Marquee reverse className="[--duration:250s]">
-              <div className="flex gap-4">
-                <TestimonialCard
-                  testimonial="Remarkably well-informed, truly the best in the business. We looked around and no one can compare!"
-                  author="Anaïs & Jay"
-                  role="Returning Clients"
-                />
-                <TestimonialCard
-                  testimonial="I can't say enough about Danny and Stephanie!! They were efficient, friendly, and made us feel like family! Would recommend them over all else!"
-                  author="Renee Cooper"
-                  role="Happy Client"
-                />
-                <TestimonialCard
-                  testimonial="Great service, Danny and Stephanie got me the best rate on the market and helped me through every step of the way. They answered all of my questions professionally and efficiently. They worked at all hours of the day and night for me! If I could give more than 5 stars, I would!"
-                  author="Daniel Lucente"
-                  role="Satisfied Client"
-                />
-                <TestimonialCard
-                  testimonial="Highly responsive and sensitive to our needs with a keen understanding of the market. Recommended beyond a doubt."
-                  author="Trisha & Alex"
-                  role="First-time Home Buyers"
-                />
-              </div>
-            </Marquee>
-          </div>
-        </div>
-      </section>
+      <TestimonialsSection />
 
       {/* Awards & Recognition + Licensed Section */}
       <section className="py-24">
