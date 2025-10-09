@@ -24,17 +24,20 @@ import Footer from "@/components/footer"
 import { Highlighter } from "@/components/ui/highlighter"
 import { FlickeringGrid } from "@/components/ui/flickering-grid"
 
-type HomeData = {
-  data: {
-    attributes: {
-      title?: string;
-      subtitle?: string;
-      kicker: string;
-    };
-  };
-};
+type HomeHero = {
+  title?: string
+  subtitle?: string
+  kicker?: string
+}
 
-export default function HomePage({ home }: { home: HomeData['data']['attributes'] }) {
+export default function HomePage({ home }: { home: HomeHero }) {
+  const fallbackTitle = "Lowest Rates. No Lender Fees. No, Really."
+  const rawTitle = home?.title ?? fallbackTitle
+  const lineParts = rawTitle
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean)
+  const titleSegments = lineParts.length > 0 ? lineParts : (rawTitle.match(/[^.!?]+[.!?]?/g) ?? [rawTitle])
 
   return (
     <div className="min-h-screen">
@@ -50,19 +53,15 @@ export default function HomePage({ home }: { home: HomeData['data']['attributes'
                 <Badge variant="default" size="lg">{home?.kicker ?? "Award-Winning Brokerage"}</Badge>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-pretty">
-                {(home?.title ?? "Lowest Rates. No Lender Fees. No, Really.")
-                  .match(/[^.!?]+[.!?]?/g)
-                  ?.map((sentence, index) => {
-                    const delays = [400, 800, 1600] // ms
-                    const delayMs = delays[index] ?? 0
-                    return (
-                      <span key={index} className="block">
-                        <Highlighter delayMs={delayMs}>
-                          {sentence.trim()}
-                        </Highlighter>
-                      </span>
-                    )
-                  })}
+                {titleSegments.map((sentence, index) => {
+                  const delays = [400, 800, 1600] // ms
+                  const delayMs = delays[index] ?? 0
+                  return (
+                    <span key={index} className="block">
+                      <Highlighter delayMs={delayMs}>{sentence.trim()}</Highlighter>
+                    </span>
+                  )
+                })}
               </h1>
               <p className="text-xl text-muted-foreground mb-6 leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium text-pretty">
                 {home?.subtitle ?? "We work for you, not the bank. Get pre-approved in minutes with a globally trusted mortgage broker. Over $2 billion processed for 10,000+ happy clients."}
