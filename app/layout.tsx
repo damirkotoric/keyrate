@@ -55,12 +55,12 @@ export const metadata: Metadata = {
   },
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const h = headers()
+  const h = await headers()
   const host = (h.get("x-forwarded-host") || h.get("host") || "").toLowerCase()
   const isLocalhost = host.startsWith("localhost") || host.startsWith("127.0.0.1")
   const htmlClasses = `${inter.variable} ${poppins.variable} antialiased ${isLocalhost ? "dev-auto-dark" : ""}`.trim()
