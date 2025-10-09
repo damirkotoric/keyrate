@@ -24,7 +24,7 @@ export default async function Page({ params }: { params: { loc: string } }) {
     title: chooseLocalizedString((data as any)?.hero?.headline, appLocale),
     subtitle: chooseLocalizedString((data as any)?.hero?.subheadline, appLocale),
   }
-  return <HomePage home={home} />
+  return <HomePage home={home} locale={appLocale} />
 }
 
 

@@ -30,12 +30,16 @@ type HomeHero = {
   kicker?: string
 }
 
-export default function HomePage({ home }: { home: HomeHero }) {
+type AppLocale = "global" | "ca" | "uae" | "usa"
+
+export default function HomePage({ home, locale = 'global' }: { home: HomeHero, locale?: AppLocale }) {
   const fallbackTitle = "Lowest Rates. No Lender Fees. No, Really."
   const rawTitleCandidate: unknown = (home as any)?.title
   const rawTitle: string = typeof rawTitleCandidate === 'string' && rawTitleCandidate.trim().length > 0
     ? rawTitleCandidate
     : fallbackTitle
+  const flagCodeByLocale: Record<AppLocale, string | null> = { global: null, ca: 'ca', uae: 'ae', usa: 'us' }
+  const flagCode = flagCodeByLocale[locale] || null
   const lineParts = rawTitle
     .split(/\r?\n/)
     .map((s) => s.trim())
@@ -53,7 +57,16 @@ export default function HomePage({ home }: { home: HomeHero }) {
             {/* Left Content */}
             <div className="text-center lg:text-left">
               <div className="mb-4">
-                <Badge variant="default" size="lg">{typeof home?.kicker === 'string' && home.kicker.trim().length > 0 ? home.kicker : "Award-Winning Brokerage"}</Badge>
+                <Badge variant="default" size="lg">
+                  {flagCode && (
+                    <img
+                      src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/flags/1x1/${flagCode}.svg`}
+                      alt={`${locale.toUpperCase()} flag`}
+                      className="inline-block w-5 h-5 -ml-1 mr-1 align-[-2px] rounded-full border border-border/50"
+                    />
+                  )}
+                  {typeof home?.kicker === 'string' && home.kicker.trim().length > 0 ? home.kicker : "Award-Winning Brokerage"}
+                </Badge>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-pretty">
                 {titleSegments.map((sentence, index) => {

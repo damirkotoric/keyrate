@@ -59,6 +59,25 @@ export default function Header() {
     } catch {}
   }, [])
 
+  const flagCodeFor = (country: string): string | null => {
+    if (country === "Canada") return "ca"
+    if (country === "UAE") return "ae"
+    if (country === "USA") return "us"
+    return null
+  }
+
+  const FlagOrGlobe = ({ country, size = "w-4 h-4" }: { country: string; size?: string }) => {
+    const code = flagCodeFor(country)
+    if (!code) return <Globe className={size} />
+    return (
+      <img
+        src={`https://cdn.jsdelivr.net/gh/lipis/flag-icons@7.3.2/flags/1x1/${code}.svg`}
+        alt={`${country} flag`}
+        className={`${size} rounded-[3px] rounded-full border border-border`}
+      />
+    )
+  }
+
   const onSelectCountry = (country: string) => {
     setSelectedCountry(country)
     const map: Record<string, string> = { Global: "global", Canada: "ca", UAE: "uae", USA: "usa" }
@@ -90,7 +109,7 @@ export default function Header() {
                     size="sm"
                     className="flex items-center gap-2"
                   >
-                    <Globe className="w-4 h-4" />
+                    <FlagOrGlobe country={selectedCountry} />
                     <span>{selectedCountry}</span>
                     <ChevronDown className="w-4 h-4" />
                   </Button>
@@ -105,9 +124,10 @@ export default function Header() {
                           }}
                           variant="ghost"
                           size="sm"
-                          className="w-full justify-start my-1"
+                          className="w-full justify-start my-1 flex items-center gap-2"
                         >
-                          {country}
+                          <FlagOrGlobe country={country} />
+                          <span>{country}</span>
                         </Button>
                       ))}
                     </div>
@@ -140,7 +160,7 @@ export default function Header() {
                 size="sm"
                 className="flex items-center gap-2 lg:hidden mr-4"
               >
-                <Globe className="w-4 h-4" />
+                <FlagOrGlobe country={selectedCountry} />
                 <span>{selectedCountry}</span>
                 <ChevronDown className="w-4 h-4" />
               </Button>

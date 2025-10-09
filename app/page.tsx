@@ -81,7 +81,7 @@ export default async function Page() {
 
   return (
     <>
-      <HomePage home={home} />
+      <HomePage home={home} locale={appLocale} />
       {process.env.NODE_ENV !== 'production' && (
         <div className="container mx-auto px-4 my-6">
           <pre className="text-xs text-muted-foreground">{JSON.stringify({ langFull, langShort, debug }, null, 2)}</pre>
