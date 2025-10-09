@@ -5,7 +5,14 @@ export default async function Page() {
   // Fetch data from Sanity
   let home: any = {}
   try {
-    const data = await sanityFetch(
+    type HomeQuery = {
+      hero?: {
+        kicker?: string
+        headline?: string
+        subheadline?: string
+      }
+    }
+    const data = await sanityFetch<HomeQuery>(
       `*[_type == "homePage"][0]{
         hero{
           kicker,

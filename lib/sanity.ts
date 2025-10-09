@@ -1,22 +1,28 @@
-import { createClient } from "@sanity/client"
+// lib/sanity.server.ts (no "use client")
+import { createClient } from '@sanity/client'
 
-const projectId = (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.SANITY_PROJECT_ID || "").trim()
-const dataset = (process.env.NEXT_PUBLIC_SANITY_DATASET || process.env.SANITY_DATASET || "production").trim()
-const apiVersion = (process.env.SANITY_API_VERSION || "2023-10-01").trim()
-const token = (process.env.SANITY_API_READ_TOKEN || "").trim()
+const projectId =
+  process.env.SANITY_API_PROJECT_ID ||
+  process.env.SANITY_PROJECT_ID ||
+  process.env.NEXT_PUBLIC_SANITY_PROJECT_ID!
 
-if (!projectId) {
-  throw new Error(
-    "SANITY projectId is not configured. Set NEXT_PUBLIC_SANITY_PROJECT_ID or SANITY_PROJECT_ID."
-  )
-}
+const dataset =
+  process.env.SANITY_API_DATASET ||
+  process.env.SANITY_DATASET ||
+  process.env.NEXT_PUBLIC_SANITY_DATASET ||
+  'production'
+
+const apiVersion = process.env.SANITY_API_VERSION || '2025-01-01'
+const token = process.env.SANITY_API_READ_TOKEN // server-side only
 
 export const sanity = createClient({
   projectId,
   dataset,
   apiVersion,
-  useCdn: process.env.NODE_ENV === "production",
+  // never use CDN when a token is present (private/authorized fetches)
+  useCdn: !token && process.env.NODE_ENV === 'production',
   token: token || undefined,
+  perspective: 'published',
 })
 
 export async function sanityFetch<T>(query: string): Promise<T>
@@ -34,5 +40,3 @@ export async function sanityFetch<T>(query: string, params?: Record<string, any>
     )
   }
 }
-
-
