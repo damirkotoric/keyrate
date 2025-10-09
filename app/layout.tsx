@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Inter } from "next/font/google"
 import { Poppins } from "next/font/google"
 import "./globals.css"
+import { headers } from "next/headers"
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -59,8 +60,12 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const h = headers()
+  const host = (h.get("x-forwarded-host") || h.get("host") || "").toLowerCase()
+  const isLocalhost = host.startsWith("localhost") || host.startsWith("127.0.0.1")
+  const htmlClasses = `${inter.variable} ${poppins.variable} antialiased ${isLocalhost ? "dev-auto-dark" : ""}`.trim()
   return (
-    <html lang="en" className={`${inter.variable} ${poppins.variable} antialiased`}>
+    <html lang="en" className={htmlClasses}>
       <body className="font-sans">{children}</body>
     </html>
   )

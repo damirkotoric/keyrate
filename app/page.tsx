@@ -9,7 +9,6 @@ export const dynamic = "force-dynamic"
 export default async function Page() {
   // Fetch data from Sanity
   let home: any = {}
-  let debug: any = null
   let langFull = "en"
   let langShort = "en"
   let appLocale: AppLocale = 'global'
@@ -27,6 +26,14 @@ export default async function Page() {
         headline?: string
         subheadline?: string
       }
+      solutions?: {
+        title?: any
+        heading?: any
+        subtitle?: any
+        description?: any
+      }
+      solutionsTitle?: any
+      solutionsSubtitle?: any
     }
     const data = await sanityFetch<HomeQuery>(
       `*[_type == "homePage" && (!defined(__i18n_lang) || __i18n_lang in [$lang, $langShort])] | order(_updatedAt desc)[0]{
@@ -34,12 +41,13 @@ export default async function Page() {
           kicker,
           headline,
           subheadline
-        }
+        },
+        solutions{ title, heading, subtitle, description },
+        solutionsTitle,
+        solutionsSubtitle
       }`,
       { lang: langFull, langShort }
     )
-    console.log("[Home] Sanity home data", { langFull, langShort, data })
-
     const getLocalized = (value: unknown): string | undefined => {
       if (typeof value === 'string') return value
       if (value && typeof value === 'object') {
@@ -62,18 +70,20 @@ export default async function Page() {
       subheadline: chooseLocalizedString((data as any)?.hero?.subheadline, appLocale) || getLocalized((data as any)?.hero?.subheadline),
     }
 
-    const keys = {
-      kicker: (data as any)?.hero?.kicker && typeof (data as any).hero.kicker === 'object' ? Object.keys((data as any).hero.kicker) : null,
-      headline: (data as any)?.hero?.headline && typeof (data as any).hero.headline === 'object' ? Object.keys((data as any).hero.headline) : null,
-      subheadline: (data as any)?.hero?.subheadline && typeof (data as any).hero.subheadline === 'object' ? Object.keys((data as any).hero.subheadline) : null,
+    // Solutions content (robust to different schema field names and localized objects)
+    const solTitleObj: any = (data as any)?.solutions?.title ?? (data as any)?.solutions?.heading ?? (data as any)?.solutionsTitle
+    const solSubtitleObj: any = (data as any)?.solutions?.subtitle ?? (data as any)?.solutions?.description ?? (data as any)?.solutionsSubtitle
+    const solutions = {
+      title: chooseLocalizedString(solTitleObj, appLocale) || 'Complete Mortgage Solutions',
+      subtitle: chooseLocalizedString(solSubtitleObj, appLocale) || 'From first-time buyers to seasoned investors, we have specialized mortgage products for every situation in Canada and the UAE.',
     }
-
-    debug = { keys, selected, appLocale }
 
     home = {
       kicker: selected.kicker,
       title: selected.headline,
       subtitle: selected.subheadline,
+      solutionsTitle: solutions.title,
+      solutionsSubtitle: solutions.subtitle,
     }
   } catch (e) {
     console.error("Home page: Sanity fetch failed", e)
@@ -82,11 +92,6 @@ export default async function Page() {
   return (
     <>
       <HomePage home={home} locale={appLocale} />
-      {process.env.NODE_ENV !== 'production' && (
-        <div className="container mx-auto px-4 my-6">
-          <pre className="text-xs text-muted-foreground">{JSON.stringify({ langFull, langShort, debug }, null, 2)}</pre>
-        </div>
-      )}
     </>
   )
 }

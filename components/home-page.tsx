@@ -28,6 +28,8 @@ type HomeHero = {
   title?: string
   subtitle?: string
   kicker?: string
+  solutionsTitle?: string
+  solutionsSubtitle?: string
 }
 
 type AppLocale = "global" | "ca" | "uae" | "usa"
@@ -273,13 +275,13 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
       </section>
 
       {/* Our Promise Section */}
-      <section className="dark container">
-        <div className="mx-auto my-8 py-12 sm:py-24 text-primary-foreground bg-background relative overflow-hidden rounded-xl shadow-xl">
+      <section className="container">
+        <div className="mx-auto my-8 py-12 sm:py-24 text-primary-foreground bg-black relative overflow-hidden rounded-xl shadow-xl">
           {/* Background: Flickering Grid */}
           <FlickeringGrid
             className="absolute inset-0 z-0 opacity-60"
             squareSize={20}
-            gridGap={6}
+            gridGap={16}
             color="rgba(255,255,255,0.95)"
             maxOpacity={0.25}
             flickerChance={0.2}
@@ -318,9 +320,11 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
       <section className="py-24">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-2">Complete Mortgage Solutions</h2>
+            <Highlighter isView={true} delayMs={500}>
+              <h2 className="text-3xl font-bold mb-2">{home?.solutionsTitle || "Complete Mortgage Solutions"}</h2>
+            </Highlighter>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              From first-time buyers to seasoned investors, we have <Highlighter isView={true} delayMs={500}>specialized mortgage products for every situation in Canada and the UAE.</Highlighter>
+              {home?.solutionsSubtitle || "From first-time buyers to seasoned investors, we have specialized mortgage products for every situation in Canada and the UAE."}
             </p>
             <Button size="sm" variant="outline" className="mt-6">
               View All Solutions
