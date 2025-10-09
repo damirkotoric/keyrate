@@ -45,7 +45,7 @@ export default function HomePage({ home }: { home: HomeHero }) {
 
       {/* Hero Section with Pre-Approval Form */}
       <section className="text-foreground py-16 hero">
-        <div className="container mx-auto px-4">
+        <div className="container mx-auto px-6">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             {/* Left Content */}
             <div className="text-center lg:text-left">
