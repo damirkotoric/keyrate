@@ -54,7 +54,7 @@ export default function InstagramSection() {
       <section className="py-16 bg-gray-50 overflow-hidden">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-black mb-2">Follow Our Journey</h2>
+            <h2 className="text-3xl font-bold text-foreground mb-2">Follow Our Journey</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
               Stay updated with the latest mortgage tips, success stories, and market insights from KeyRate Dubai.
             </p>
@@ -81,7 +81,7 @@ export default function InstagramSection() {
     <section className="py-16">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold text-black mb-2">Follow Our Journey</h2>
+          <h2 className="text-3xl font-bold text-foreground mb-2">Follow Our Journey</h2>
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
             Stay updated with the latest mortgage tips, success stories, and market insights from KeyRate Dubai.
           </p>
