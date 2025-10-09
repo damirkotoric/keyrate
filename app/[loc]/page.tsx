@@ -12,8 +12,9 @@ type HomeQuery = {
   }
 }
 
-export default async function Page({ params }: { params: { loc: string } }) {
-  const appLocale: AppLocale = normalizeLocaleParam(params.loc)
+export default async function Page({ params }: { params: Promise<{ loc: string }> }) {
+  const { loc } = await params
+  const appLocale: AppLocale = normalizeLocaleParam(loc)
   const data = await sanityFetch<HomeQuery>(
     `*[_type == "homePage"] | order(_updatedAt desc)[0]{
       hero{ kicker, headline, subheadline }
