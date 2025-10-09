@@ -3,7 +3,7 @@ import { createClient } from "@sanity/client"
 const projectId = (process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.SANITY_PROJECT_ID || "").trim()
 const dataset = (process.env.NEXT_PUBLIC_SANITY_DATASET || process.env.SANITY_DATASET || "production").trim()
 const apiVersion = (process.env.SANITY_API_VERSION || "2023-10-01").trim()
-const token = (process.env.SANITY_READ_TOKEN || "").trim()
+const token = (process.env.SANITY_API_READ_TOKEN || "").trim()
 
 if (!projectId) {
   throw new Error(

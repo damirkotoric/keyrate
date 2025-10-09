@@ -27,7 +27,7 @@ export async function GET() {
       hint: "Check SANITY env vars (projectId, dataset, token) and that testimonial documents exist.",
       projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.SANITY_PROJECT_ID || '',
       dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || process.env.SANITY_DATASET || 'production',
-      hasToken: Boolean(process.env.SANITY_READ_TOKEN && process.env.SANITY_READ_TOKEN.length > 0),
+      hasToken: Boolean(process.env.SANITY_API_READ_TOKEN && process.env.SANITY_API_READ_TOKEN.length > 0),
     }
     return new Response(JSON.stringify(payload), {
       status: 500,
