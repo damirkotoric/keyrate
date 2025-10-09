@@ -19,9 +19,14 @@ export const sanity = createClient({
   token: token || undefined,
 })
 
-export async function sanityFetch<T = any>(query: string, params?: Record<string, unknown>) {
+export async function sanityFetch<T>(query: string): Promise<T>
+export async function sanityFetch<T>(query: string, params: Record<string, any>): Promise<T>
+export async function sanityFetch<T>(query: string, params?: Record<string, any>): Promise<T> {
   try {
-    return await sanity.fetch<T>(query, params)
+    if (params) {
+      return await sanity.fetch<T>(query, params)
+    }
+    return await sanity.fetch<T>(query)
   } catch (err: any) {
     const reason = err?.message || String(err)
     throw new Error(
