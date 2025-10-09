@@ -49,6 +49,25 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 
+  // Sync initial selection from cookie on mount
+  useEffect(() => {
+    try {
+      const match = document.cookie.match(/(?:^|; )kr_locale=([^;]+)/)
+      const val = match ? decodeURIComponent(match[1]) : "global"
+      const map: Record<string, string> = { global: "Global", ca: "Canada", uae: "UAE", usa: "USA" }
+      setSelectedCountry(map[val] || "Global")
+    } catch {}
+  }, [])
+
+  const onSelectCountry = (country: string) => {
+    setSelectedCountry(country)
+    const map: Record<string, string> = { Global: "global", Canada: "ca", UAE: "uae", USA: "usa" }
+    const locale = map[country] || "global"
+    const newPath = locale === "global" ? "/" : `/${locale}`
+    document.cookie = `kr_locale=${locale}; path=/; max-age=${60 * 60 * 24 * 365}`
+    window.location.assign(newPath)
+  }
+
   return (
     <div className="sticky top-0 z-50">
       <div className="container container-extend-32 mx-auto pt-4">
@@ -76,17 +95,17 @@ export default function Header() {
                     <ChevronDown className="w-4 h-4" />
                   </Button>
                   {isGlobalDropdownOpen && (
-                    <div className="absolute top-full right-0 mt-2 bg-card text-card-foreground rounded-lg shadow-lg py-2 min-w-[160px] z-[80]">
+                    <div className="absolute top-full right-0 mt-2 bg-card text-card-foreground rounded-lg shadow-lg p-2 min-w-[160px] z-[80]">
                       {["Global", "Canada", "UAE", "USA"].map((country) => (
                         <Button
                           key={country}
                           onClick={() => {
-                            setSelectedCountry(country)
                             setIsGlobalDropdownOpen(false)
+                            onSelectCountry(country)
                           }}
                           variant="ghost"
-                          size="lg"
-                          className="w-full justify-start"
+                          size="sm"
+                          className="w-full justify-start my-1"
                         >
                           {country}
                         </Button>

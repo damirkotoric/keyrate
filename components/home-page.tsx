@@ -32,7 +32,10 @@ type HomeHero = {
 
 export default function HomePage({ home }: { home: HomeHero }) {
   const fallbackTitle = "Lowest Rates. No Lender Fees. No, Really."
-  const rawTitle = home?.title ?? fallbackTitle
+  const rawTitleCandidate: unknown = (home as any)?.title
+  const rawTitle: string = typeof rawTitleCandidate === 'string' && rawTitleCandidate.trim().length > 0
+    ? rawTitleCandidate
+    : fallbackTitle
   const lineParts = rawTitle
     .split(/\r?\n/)
     .map((s) => s.trim())
@@ -50,7 +53,7 @@ export default function HomePage({ home }: { home: HomeHero }) {
             {/* Left Content */}
             <div className="text-center lg:text-left">
               <div className="mb-4">
-                <Badge variant="default" size="lg">{home?.kicker ?? "Award-Winning Brokerage"}</Badge>
+                <Badge variant="default" size="lg">{typeof home?.kicker === 'string' && home.kicker.trim().length > 0 ? home.kicker : "Award-Winning Brokerage"}</Badge>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-pretty">
                 {titleSegments.map((sentence, index) => {
@@ -64,7 +67,9 @@ export default function HomePage({ home }: { home: HomeHero }) {
                 })}
               </h1>
               <p className="text-xl text-muted-foreground mb-6 leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium text-pretty">
-                {home?.subtitle ?? "We work for you, not the bank. Get pre-approved in minutes with a globally trusted mortgage broker. Over $2 billion processed for 10,000+ happy clients."}
+                {typeof home?.subtitle === 'string' && home.subtitle.trim().length > 0
+                  ? home.subtitle
+                  : "We work for you, not the bank. Get pre-approved in minutes with a globally trusted mortgage broker. Over $2 billion processed for 10,000+ happy clients."}
               </p>
               <div className="mb-6">
                 <img
