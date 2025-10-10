@@ -40,7 +40,7 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
   const [downPayment, setDownPayment] = useState("")
   const [annualIncome, setAnnualIncome] = useState("")
   const [country, setCountry] = useState<"canada" | "uae" | "usa" | "">(
-    initialRegion === "CANADA" ? "canada" : initialRegion === "UAE" ? "uae" : initialRegion === "USA" ? "usa" : ""
+    initialRegion === "CANADA" ? "canada" : initialRegion === "UAE" ? "uae" : initialRegion === "USA" ? "usa" : "usa"
   )
   const [purpose, setPurpose] = useState<"purchase" | "refinance" | "renewal" | "">("purchase")
   const [mortgageType, setMortgageType] = useState<"fixed" | "variable" | "">("fixed")
@@ -60,6 +60,11 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
   const [showMore, setShowMore] = useState(false)
   const onFirstFocus = () => { if (!started) { setStarted(true); track("lead_started", { region, source: "pre_approval" }) } }
   const onlyDigitsAndComma = (s: string) => s.replace(/[^\d,]/g, "")
+  const formatWithCommas = (s: string) => {
+    const num = s.replace(/,/g, "")
+    if (!num) return ""
+    return Number(num).toLocaleString("en-US")
+  }
   const termOptions = useMemo(() => {
     if (region === "CANADA") return ["1-year","2-year","3-year","5-year"]
     if (region === "USA") return ["30-year","15-year"]
@@ -99,6 +104,24 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
     return Object.keys(next).length === 0
   }
 
+  const resetForm = () => {
+    setStatus("idle")
+    setErrorMsg("")
+    setPropertyValue("")
+    setDownPayment("")
+    setAnnualIncome("")
+    const resetCountry = initialRegion === "CANADA" ? "canada" : initialRegion === "UAE" ? "uae" : initialRegion === "USA" ? "usa" : "usa"
+    const resetRegion = initialRegion === "GLOBAL" ? "USA" : initialRegion
+    setCountry(resetCountry)
+    setRegion(resetRegion)
+    setPurpose("purchase")
+    setMortgageType("fixed")
+    setTerm(defaultTermForRegion(resetRegion))
+    setErrors({})
+    setShowMore(false)
+    setStarted(false)
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setStatus("idle"); setErrorMsg("")
@@ -134,15 +157,29 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
   }
 
   return (
-    <div className={`relative rounded-lg ${className}`}>
+    <div className={`relative rounded-lg ${className} min-h-full flex align-center`}>
       <ShineBorder
         shineColor={["var(--primary)", "#FFFFFF", "var(--primary)"]}
         duration={12}
         borderWidth={2}
       />
+      {status === "success" ? (
+        <div className="relative rounded-md p-8 pb-10 text-foreground bg-linear-130 from-card to-muted shadow-xl m-1 border border-border/20">
+          <div className="text-center">
+            <h3 className="text-2xl font-bold mb-4">You're all set!</h3>
+            <p className="text-muted-foreground mb-6">
+              A mortgage specialist will review your details and reach out shortly.
+            </p>
+            <Button onClick={resetForm} variant="outline">
+              Complete another pre-approval
+            </Button>
+          </div>
+        </div>
+      ) : (
       <form 
         onSubmit={handleSubmit}
-        className="relative rounded-md p-8 pb-10 text-foreground bg-linear-130 from-card to-muted shadow-xl m-1 border border-border/20"
+        autoComplete="off"
+        className="relative rounded-md p-8 pb-10 text-foreground bg-linear-130 from-card to-muted shadow-xl m-1 border border-border/20 w-full"
       >
       <h3 className="text-2xl font-bold mb-2 text-center">Quick Pre-Approval</h3>
       <p className="mb-6 text-muted-foreground text-center">No credit check required. Results in 2 minutes.</p>
@@ -159,8 +196,10 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
               type="text"
               inputMode="numeric"
               pattern="[0-9,]*"
+              autoComplete="off"
               value={propertyValue}
               onChange={(e) => setPropertyValue(onlyDigitsAndComma(e.target.value))}
+              onBlur={(e) => setPropertyValue(formatWithCommas(e.target.value))}
               onFocus={onFirstFocus}
               aria-invalid={!!errors.propertyValue}
               aria-describedby={errors.propertyValue ? "error-propertyValue" : undefined}
@@ -186,8 +225,10 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
               type="text"
               inputMode="numeric"
               pattern="[0-9,]*"
+              autoComplete="off"
               value={downPayment}
               onChange={(e) => setDownPayment(onlyDigitsAndComma(e.target.value))}
+              onBlur={(e) => setDownPayment(formatWithCommas(e.target.value))}
               onFocus={onFirstFocus}
               aria-invalid={!!errors.downPayment}
               aria-describedby={errors.downPayment ? "error-downPayment" : undefined}
@@ -213,8 +254,10 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
               type="text"
               inputMode="numeric"
               pattern="[0-9,]*"
+              autoComplete="off"
               value={annualIncome}
               onChange={(e) => setAnnualIncome(onlyDigitsAndComma(e.target.value))}
+              onBlur={(e) => setAnnualIncome(formatWithCommas(e.target.value))}
               onFocus={onFirstFocus}
               aria-invalid={!!errors.annualIncome}
               aria-describedby={errors.annualIncome ? "error-annualIncome" : undefined}
@@ -339,28 +382,15 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
         </p>
 
         {/* Post-submit UX */}
-        <div aria-live="polite">
-          {status === "success" && (
-            <Alert className="mt-4">
-              <AlertTitle>You’re all set!</AlertTitle>
-              <AlertDescription>
-                A mortgage specialist will review your details. Want a tailored rate quote now?
-              </AlertDescription>
-              <div className="mt-3 grid grid-cols-2 gap-2">
-                <Button asChild className="h-10"><a href="/get-quote">Get a tailored quote</a></Button>
-                <Button variant="secondary" asChild className="h-10"><a href="/upload">Upload docs</a></Button>
-              </div>
-            </Alert>
-          )}
-          {status === "error" && (
-            <Alert variant="destructive" className="mt-4">
-              <AlertTitle>Something went wrong</AlertTitle>
-              <AlertDescription>{errorMsg || "Please try again."}</AlertDescription>
-            </Alert>
-          )}
-        </div>
+        {status === "error" && (
+          <Alert variant="destructive" className="mt-4">
+            <AlertTitle>Something went wrong</AlertTitle>
+            <AlertDescription>{errorMsg || "Please try again."}</AlertDescription>
+          </Alert>
+        )}
       </div>
       </form>
+      )}
     </div>
   )
 }

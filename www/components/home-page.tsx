@@ -55,9 +55,9 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
       {/* Hero Section with Pre-Approval Form */}
       <section className="text-foreground py-16 hero">
         <div className="container mx-auto px-4">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
+          <div className="grid lg:grid-cols-2 gap-12 items-start">
             {/* Left Content */}
-            <div className="text-center lg:text-left">
+            <div className="text-center lg:text-left lg:pt-20">
               <div className="mb-4">
                 <Badge variant="default" size="lg">
                   {flagCode && (
