@@ -1,6 +1,7 @@
 "use client"
 
 import React, { useMemo, useRef, useState, useEffect } from "react"
+import { ChevronDown } from "@/components/icons"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -41,14 +42,21 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
   const [country, setCountry] = useState<"canada" | "uae" | "usa" | "">(
     initialRegion === "CANADA" ? "canada" : initialRegion === "UAE" ? "uae" : initialRegion === "USA" ? "usa" : ""
   )
-  const [purpose, setPurpose] = useState<"purchase" | "refinance" | "renewal" | "">("")
-  const [mortgageType, setMortgageType] = useState<"fixed" | "variable" | "">("")
-  const [term, setTerm] = useState("")
+  const [purpose, setPurpose] = useState<"purchase" | "refinance" | "renewal" | "">("purchase")
+  const [mortgageType, setMortgageType] = useState<"fixed" | "variable" | "">("fixed")
+  const defaultTermForRegion = (r: Region): string => {
+    if (r === "CANADA") return "5-year"
+    if (r === "USA") return "30-year"
+    if (r === "UAE") return "5-year"
+    return ""
+  }
+  const [term, setTerm] = useState<string>(defaultTermForRegion(initialRegion))
 
   const [region, setRegion] = useState<Region>(initialRegion)
   const { pv, dp, ai, symbol, code } = REGION_PLACEHOLDERS[region]
 
   const [errors, setErrors] = useState<Record<string, string>>({})
+  const [showMore, setShowMore] = useState(false)
   const onFirstFocus = () => { if (!started) { setStarted(true); track("lead_started", { region, source: "pre_approval" }) } }
   const onlyDigitsAndComma = (s: string) => s.replace(/[^\d,]/g, "")
   const termOptions = useMemo(() => {
@@ -57,6 +65,7 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
     if (region === "UAE") return ["3-year","5-year"]
     return ["3-year","5-year"]
   }, [region])
+  const termDisabled = !country && region === "GLOBAL"
 
   // Keep region in sync when user selects a country
   useEffect(() => {
@@ -65,6 +74,15 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
     else if (country === "usa") setRegion("USA")
   }, [country])
 
+  // Ensure term has a sensible default when region changes
+  useEffect(() => {
+    const options = region === "CANADA" ? ["1-year","2-year","3-year","5-year"] : region === "USA" ? ["30-year","15-year"] : region === "UAE" ? ["3-year","5-year"] : []
+    if (!options.includes(term)) {
+      setTerm(defaultTermForRegion(region))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [region])
+
   const validate = () => {
     const next: Record<string, string> = {}
     if (!propertyValue) next.propertyValue = "Enter property value."
@@ -72,7 +90,7 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
     if (!annualIncome) next.annualIncome = "Enter annual income."
     if (!purpose) next.purpose = "Select purpose."
     if (!mortgageType) next.mortgageType = "Choose preference."
-    if (!term) next.term = "Select term."
+    if (!term && !termDisabled) next.term = "Select term."
     // no email collection
     // If no detected region and no country chosen, require country
     if (region === "GLOBAL" && !country) next.country = "Choose country."
@@ -216,59 +234,85 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
           {errors.country && <p className="mt-1 text-xs text-destructive">{errors.country}</p>}
         </div>
 
-        {/* Purpose */}
+        {/* More Options Toggle */}
         <div>
-          <span className="block text-sm font-medium pb-2">Purpose</span>
-          <div role="radiogroup" className="grid grid-cols-3 gap-2">
-            {["purchase","refinance","renewal"].map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setPurpose(p as any)}
-                className={cx("h-10 rounded-md border text-sm", purpose === p ? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-border")}
-                aria-pressed={purpose === p}
-              >
-                {p[0].toUpperCase() + p.slice(1)}
-              </button>
-            ))}
-          </div>
-          {errors.purpose && <p className="mt-1 text-xs text-destructive">{errors.purpose}</p>}
+          <button
+            type="button"
+            onClick={() => {
+              setShowMore(!showMore)
+              try {
+                const evt = new Event("keyrate:layout-change")
+                window.dispatchEvent(evt)
+                // fire once more after transition to ensure final position
+                setTimeout(() => window.dispatchEvent(evt), 200)
+              } catch {}
+            }}
+            className="w-full h-10 rounded-md border border-border text-sm flex items-center justify-center gap-2"
+            aria-expanded={showMore}
+            aria-controls="more-options"
+          >
+            <ChevronDown className={`w-4 h-4 transition-transform ${showMore ? "rotate-180" : ""}`} />
+            {showMore ? "Hide options" : "More options"}
+          </button>
         </div>
 
-        {/* Mortgage Type */}
-        <div>
-          <span className="block text-sm font-medium pb-2">Preference</span>
-          <div role="radiogroup" className="grid grid-cols-2 gap-2">
-            {["fixed","variable"].map((p) => (
-              <button
-                key={p}
-                type="button"
-                onClick={() => setMortgageType(p as any)}
-                className={cx("h-10 rounded-md border text-sm", mortgageType === p ? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-border")}
-                aria-pressed={mortgageType === p}
-              >
-                {p[0].toUpperCase() + p.slice(1)}
-              </button>
-            ))}
-          </div>
-          {errors.mortgageType && <p className="mt-1 text-xs text-destructive">{errors.mortgageType}</p>}
-        </div>
+        {showMore && (
+          <div id="more-options" className="space-y-4">
+            {/* Purpose */}
+            <div>
+              <span className="block text-sm font-medium pb-2">Purpose</span>
+              <div role="radiogroup" className="grid grid-cols-3 gap-2">
+                {["purchase","refinance","renewal"].map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setPurpose(p as any)}
+                    className={cx("h-10 rounded-md border text-sm", purpose === p ? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-border")}
+                    aria-pressed={purpose === p}
+                  >
+                    {p[0].toUpperCase() + p.slice(1)}
+                  </button>
+                ))}
+              </div>
+              {errors.purpose && <p className="mt-1 text-xs text-destructive">{errors.purpose}</p>}
+            </div>
 
-        {/* Term */}
-        <div>
-          <label className="block text-sm font-medium pb-2">Term Length</label>
-          <Select value={term} onValueChange={(v: any) => setTerm(v)}>
-            <SelectTrigger className="w-full h-12" aria-invalid={!!errors.term}>
-              <SelectValue placeholder="Select term" />
-            </SelectTrigger>
-            <SelectContent>
-              {termOptions.map((t) => (
-                <SelectItem key={t} value={t}>{t}</SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-          {errors.term && <p className="mt-1 text-xs text-destructive">{errors.term}</p>}
-        </div>
+            {/* Mortgage Type */}
+            <div>
+              <span className="block text-sm font-medium pb-2">Preference</span>
+              <div role="radiogroup" className="grid grid-cols-2 gap-2">
+                {["fixed","variable"].map((p) => (
+                  <button
+                    key={p}
+                    type="button"
+                    onClick={() => setMortgageType(p as any)}
+                    className={cx("h-10 rounded-md border text-sm", mortgageType === p ? "bg-primary text-primary-foreground border-transparent" : "bg-transparent border-border")}
+                    aria-pressed={mortgageType === p}
+                  >
+                    {p[0].toUpperCase() + p.slice(1)}
+                  </button>
+                ))}
+              </div>
+              {errors.mortgageType && <p className="mt-1 text-xs text-destructive">{errors.mortgageType}</p>}
+            </div>
+
+            {/* Term */}
+            <div>
+              <label className="block text-sm font-medium pb-2">Term Length</label>
+              <Select value={term} onValueChange={(v: any) => setTerm(v)} disabled={termDisabled}>
+                <SelectTrigger className="w-full h-12" aria-invalid={!!errors.term}>
+                  <SelectValue placeholder={termDisabled ? "Select location first" : "Select term"} />
+                </SelectTrigger>
+                <SelectContent>
+                  {termOptions.map((t) => (
+                    <SelectItem key={t} value={t}>{t}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {!termDisabled && errors.term && <p className="mt-1 text-xs text-destructive">{errors.term}</p>}
+            </div>
+          </div>
+        )}
 
         {/* Email */}
         {/* Email removed intentionally */}

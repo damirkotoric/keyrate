@@ -84,7 +84,6 @@ export function Highlighter({
     }
 
     const annotation = annotate(element, annotationConfig)
-
     annotationRef.current = annotation
 
     let timer: number | null = null
@@ -118,24 +117,41 @@ export function Highlighter({
         }
       }
     }
-    if (delayMs > 0) {
-      timer = window.setTimeout(show, delayMs)
-    } else {
-      show()
-    }
+    if (delayMs > 0) timer = window.setTimeout(show, delayMs)
+    else show()
     // Keep annotation positioned correctly on scroll/resize without re-animating
+    let raf = 0
     const updatePosition = () => {
-      try {
-        const a: any = annotationRef.current
-        if (a && typeof a.position === "function") {
-          a.position()
-        }
-      } catch {
-        // noop
-      }
+      if (raf) return
+      raf = window.requestAnimationFrame(() => {
+        try {
+          const a: any = annotationRef.current
+          if (a && typeof a.position === "function") {
+            a.position()
+          }
+        } catch {}
+        raf = 0
+      })
     }
     window.addEventListener("scroll", updatePosition, { passive: true })
     window.addEventListener("resize", updatePosition)
+    window.addEventListener("keyrate:layout-change", updatePosition as any)
+
+    // Reposition on container size/DOM changes as the form expands/collapses
+    let ro: ResizeObserver | null = null
+    let mo: MutationObserver | null = null
+    try {
+      ro = new ResizeObserver(() => updatePosition())
+      if (element) {
+        ro.observe(element)
+        if (element.parentElement) ro.observe(element.parentElement)
+      }
+    } catch {}
+    try {
+      mo = new MutationObserver(() => updatePosition())
+      const target = element?.parentElement || element
+      if (target) mo.observe(target, { attributes: true, childList: true, subtree: true })
+    } catch {}
 
     return () => {
       if (element) {
@@ -146,6 +162,9 @@ export function Highlighter({
       }
       window.removeEventListener("scroll", updatePosition)
       window.removeEventListener("resize", updatePosition)
+      window.removeEventListener("keyrate:layout-change", updatePosition as any)
+      try { ro?.disconnect() } catch {}
+      try { mo?.disconnect() } catch {}
     }
   }, [
     shouldShow,
