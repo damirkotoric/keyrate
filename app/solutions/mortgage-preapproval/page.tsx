@@ -61,7 +61,7 @@ export default function ServicePage() {
                 </div>
               </div>
 
-              <PreApprovalForm />
+              <PreApprovalForm initialRegion="GLOBAL" />
             </div>
           </div>
         </div>

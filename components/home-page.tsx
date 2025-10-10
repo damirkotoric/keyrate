@@ -32,7 +32,7 @@ type HomeHero = {
   solutionsSubtitle?: string
 }
 
-type AppLocale = "global" | "ca" | "uae" | "usa"
+type AppLocale = "global" | "ca" | "ae" | "us"
 
 export default function HomePage({ home, locale = 'global' }: { home: HomeHero, locale?: AppLocale }) {
   const fallbackTitle = "Lowest Rates. No Lender Fees. No, Really."
@@ -40,7 +40,7 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
   const rawTitle: string = typeof rawTitleCandidate === 'string' && rawTitleCandidate.trim().length > 0
     ? rawTitleCandidate
     : fallbackTitle
-  const flagCodeByLocale: Record<AppLocale, string | null> = { global: null, ca: 'ca', uae: 'ae', usa: 'us' }
+  const flagCodeByLocale: Record<AppLocale, string | null> = { global: null, ca: 'ca', ae: 'ae', us: 'us' }
   const flagCode = flagCodeByLocale[locale] || null
   const lineParts = rawTitle
     .split(/\r?\n/)
@@ -106,7 +106,7 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
             </div>
 
             {/* Right - Pre-Approval Form */}
-            <PreApprovalForm />
+            <PreApprovalForm initialRegion={locale === 'ca' ? 'CANADA' : locale === 'ae' ? 'UAE' : locale === 'us' ? 'USA' : 'GLOBAL'} />
           </div>
         </div>
       </section>

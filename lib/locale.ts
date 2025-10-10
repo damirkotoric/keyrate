@@ -1,27 +1,27 @@
-export type AppLocale = "global" | "ca" | "uae" | "usa"
+export type AppLocale = "global" | "ca" | "ae" | "us"
 
 export const LOCALE_COOKIE = "kr_locale"
 
 export const localeToSanityKeys: Record<AppLocale, string[]> = {
   global: ["en", "global"],
   ca: ["en_CA", "ca", "en"],
-  uae: ["en_AE", "uae", "en"],
-  usa: ["en_US", "usa", "en"],
+  ae: ["en_AE", "ae", "uae", "en"],
+  us: ["en_US", "us", "usa", "en"],
 }
 
 export function normalizeLocaleParam(value: string | null | undefined): AppLocale {
   const v = (value || "").toLowerCase()
   if (v === "ca" || v === "canada") return "ca"
-  if (v === "uae" || v === "ae" || v === "dubai") return "uae"
-  if (v === "usa" || v === "us" || v === "united-states") return "usa"
+  if (v === "uae" || v === "ae" || v === "dubai") return "ae"
+  if (v === "usa" || v === "us" || v === "united-states") return "us"
   return "global"
 }
 
 export function getPreferredLocaleFromHeaders(acceptLanguage: string | null | undefined): AppLocale {
   const s = (acceptLanguage || "").toLowerCase()
   if (s.includes("en-ca")) return "ca"
-  if (s.includes("en-ae") || s.includes("ar-ae") || s.includes("en-gb")) return "uae"
-  if (s.includes("en-us")) return "usa"
+  if (s.includes("en-ae") || s.includes("ar-ae") || s.includes("en-gb")) return "ae"
+  if (s.includes("en-us")) return "us"
   return "global"
 }
 

@@ -1,8 +1,25 @@
+"use client"
+import { useEffect, useState } from "react"
 import { Phone, Mail, Facebook, Twitter, Linkedin, Instagram } from "@/components/icons"
 import { GridPattern } from "@/components/ui/grid-pattern"
 
 export { Footer }
 export default function Footer() {
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
+  const localize = (href: string) => {
+    try {
+      if (!mounted) return href
+      const match = document.cookie.match(/(?:^|; )kr_locale=([^;]+)/)
+      const loc = match ? decodeURIComponent(match[1]) : "global"
+      if (!href.startsWith("/")) return href
+      const known = new Set(["ca", "uae", "usa"]) 
+      const parts = href.split("/").filter(Boolean)
+      const first = parts[0] || ""
+      const tail = known.has(first) ? parts.slice(1).join("/") : parts.join("/")
+      return loc === "global" ? `/${tail}` : `/${loc}/${tail}`
+    } catch { return href }
+  }
   return (
     <footer className="relative overflow-hidden bg-primary text-primary-foreground py-12">
       <GridPattern
@@ -15,7 +32,7 @@ export default function Footer() {
       <div className="relative container mx-auto px-4">
         <div className="sm:mx-4 xl:mx-0 mb-12">
           <div className="mb-12">
-            <a href="/">
+            <a href={localize("/")}>
               <img
                 src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/image-zgHhkpWHr9ussH7CQwIP5MQodorHWQ.png"
                 alt="KeyRate Dubai Logo"
@@ -36,37 +53,37 @@ export default function Footer() {
               <h3 className="text-xl font-bold mb-6">Solutions</h3>
               <ul className="space-y-3 text-primary-foreground/80">
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/mortgage-preapproval")} className="hover:text-primary-foreground transition-colors">
                     Mortgage Pre-Approval
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/first-time-buyers")} className="hover:text-primary-foreground transition-colors">
                     First-Time Buyers
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/mortgage-renewals")} className="hover:text-primary-foreground transition-colors">
                     Mortgage Renewals
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/refinancing")} className="hover:text-primary-foreground transition-colors">
                     Refinancing
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/investment-properties")} className="hover:text-primary-foreground transition-colors">
                     Investment Properties
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/islamic-mortgages")} className="hover:text-primary-foreground transition-colors">
                     Islamic Mortgages
                   </a>
                 </li>
                 <li>
-                  <a href="#" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/self-employed")} className="hover:text-primary-foreground transition-colors">
                     Self-Employed
                   </a>
                 </li>
@@ -77,37 +94,37 @@ export default function Footer() {
               <h3 className="text-xl font-bold mb-6">Blog</h3>
               <ul className="space-y-3 text-primary-foreground/80">
                 <li>
-                  <a href="/blog" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog")} className="hover:text-primary-foreground transition-colors">
                     All Posts
                   </a>
                 </li>
                 <li>
-                  <a href="/blog/news" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog/news")} className="hover:text-primary-foreground transition-colors">
                     News
                   </a>
                 </li>
                 <li>
-                  <a href="/blog/videos" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog/videos")} className="hover:text-primary-foreground transition-colors">
                     Videos
                   </a>
                 </li>
                 <li>
-                  <a href="/blog/buying-tips" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog/buying-tips")} className="hover:text-primary-foreground transition-colors">
                     Buying Tips
                   </a>
                 </li>
                 <li>
-                  <a href="/blog/investing" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog/investing")} className="hover:text-primary-foreground transition-colors">
                     Investing
                   </a>
                 </li>
                 <li>
-                  <a href="/blog/rates" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog/rates")} className="hover:text-primary-foreground transition-colors">
                     Rates
                   </a>
                 </li>
                 <li>
-                  <a href="/blog/case-studies" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/blog/case-studies")} className="hover:text-primary-foreground transition-colors">
                     Case Studies
                   </a>
                 </li>
@@ -118,27 +135,27 @@ export default function Footer() {
               <h3 className="text-xl font-bold mb-6">Resources</h3>
               <ul className="space-y-3 text-primary-foreground/80">
                 <li>
-                  <a href="/calculators" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/calculators")} className="hover:text-primary-foreground transition-colors">
                     Calculators
                   </a>
                 </li>
                 <li>
-                  <a href="/mortgage-glossary" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/mortgage-glossary")} className="hover:text-primary-foreground transition-colors">
                     Mortgage Glossary
                   </a>
                 </li>
                 <li>
-                  <a href="/faq" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/faq")} className="hover:text-primary-foreground transition-colors">
                     FAQs
                   </a>
                 </li>
                 <li>
-                  <a href="/guides-ebooks" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/guides-ebooks")} className="hover:text-primary-foreground transition-colors">
                     Guides & eBooks
                   </a>
                 </li>
                 <li>
-                  <a href="/useful-links" className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/useful-links")} className="hover:text-primary-foreground transition-colors">
                     Useful Links
                   </a>
                 </li>

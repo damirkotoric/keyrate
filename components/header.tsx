@@ -49,13 +49,18 @@ export default function Header() {
     return () => window.removeEventListener("keydown", onKeyDown)
   }, [])
 
-  // Sync initial selection from cookie on mount
+  // Sync initial selection from URL prefix first. If on root, force Global (ignore cookie)
   useEffect(() => {
     try {
-      const match = document.cookie.match(/(?:^|; )kr_locale=([^;]+)/)
-      const val = match ? decodeURIComponent(match[1]) : "global"
-      const map: Record<string, string> = { global: "Global", ca: "Canada", uae: "UAE", usa: "USA" }
-      setSelectedCountry(map[val] || "Global")
+      const seg = (window.location.pathname.split("/").filter(Boolean)[0] || "").toLowerCase()
+      const fromPath = seg === "ca" ? "Canada" : (seg === "ae" || seg === "uae") ? "UAE" : (seg === "us" || seg === "usa") ? "USA" : ""
+      if (fromPath) {
+        setSelectedCountry(fromPath)
+        return
+      }
+      // On global root we explicitly set Global regardless of any cookie
+      setSelectedCountry("Global")
+      return
     } catch {}
   }, [])
 
@@ -80,11 +85,46 @@ export default function Header() {
 
   const onSelectCountry = (country: string) => {
     setSelectedCountry(country)
-    const map: Record<string, string> = { Global: "global", Canada: "ca", UAE: "uae", USA: "usa" }
+    const map: Record<string, string> = { Global: "global", Canada: "ca", UAE: "ae", USA: "us" }
     const locale = map[country] || "global"
-    const newPath = locale === "global" ? "/" : `/${locale}`
+    const known = new Set(["ca", "ae", "us"]) 
+    const pathname = window.location.pathname || "/"
+    const parts = pathname.split("/").filter(Boolean)
+    const first = parts[0] || ""
+    const rest = new Set(["ca","ae","us"]).has(first) ? "/" + parts.slice(1).join("/") : pathname
+    const newPath = locale === "global" ? (rest || "/") : `/${locale}${rest === "/" ? "" : rest}`
+    const search = window.location.search || ""
+    const hash = window.location.hash || ""
     document.cookie = `kr_locale=${locale}; path=/; max-age=${60 * 60 * 24 * 365}`
-    window.location.assign(newPath)
+    window.location.assign(`${newPath}${search}${hash}`)
+  }
+
+  const localizeHref = (href: string) => {
+    const map: Record<string, string> = { Global: "global", Canada: "ca", UAE: "ae", USA: "us" }
+    const locale = map[selectedCountry] || "global"
+    const known = new Set(["ca", "ae", "us"]) 
+    if (!href.startsWith("/")) return href
+    const parts = href.split("/").filter(Boolean)
+    const first = parts[0] || ""
+    const tail = known.has(first) ? parts.slice(1).join("/") : parts.join("/")
+    return locale === "global" ? `/${tail}` : `/${locale}/${tail}`.replace(/\/+$/, "")
+  }
+
+  const go = (e: React.MouseEvent, href: string) => {
+    e.preventDefault()
+    const pathname = window.location.pathname || "/"
+    const seg = (pathname.split("/").filter(Boolean)[0] || "").toLowerCase()
+    const known = new Set(["ca", "ae", "us"]) 
+    const locFromPath = known.has(seg) ? seg : "global"
+    const map: Record<string, string> = { Global: "global", Canada: "ca", UAE: "ae", USA: "us" }
+    const locFromSelected = map[selectedCountry] || "global"
+    const loc = locFromPath !== "global" ? locFromPath : locFromSelected
+    const target = href.startsWith("/") ? href : `/${href}`
+    const tail = target.split("/").filter(Boolean)
+    const first = tail[0] || ""
+    const finalTail = known.has(first) ? tail.slice(1).join("/") : tail.join("/")
+    const dest = loc === "global" ? `/${finalTail}` : `/${loc}/${finalTail}`.replace(/\/+$/, "")
+    window.location.assign(dest)
   }
 
   return (
@@ -95,7 +135,7 @@ export default function Header() {
           <div className={`hidden lg:flex border-b border-border/50 transition-[max-height,opacity] duration-300 ${hideTopBar ? "max-h-0 opacity-0 border-b-0 overflow-hidden" : "max-h-14 opacity-100 overflow-visible"}`}>
             <div className="flex items-center justify-between text-sm pt-4 pb-4 gap-6 text-muted-foreground w-full">
               <div className="flex items-center gap-6">
-                <span className="text-muted-foreground">Award-winning broker servicing Canada, UAE and USA</span>
+                <span className="text-muted-foreground">Award-winning broker servicing Canada, UAE and the United States</span>
               </div>
               <div className="flex items-center gap-6">
                 <a className="flex items-center gap-2" href="mailto:info@keyrate.com">
@@ -165,17 +205,17 @@ export default function Header() {
                 <ChevronDown className="w-4 h-4" />
               </Button>
               <nav className="hidden lg:flex flex-1 items-center justify-between space-x-2 xl:space-x-8 mx-8 h-full">
-                <a href="/" className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Home</a>
-                <a href="/solutions" className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Solutions</a>
-                <a href="/about" className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">About</a>
-                <a href="/blog" className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Blog</a>
-                <a href="/contact" className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Contact</a>
+                <a href={localizeHref("/")} onClick={(e) => go(e, "/")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Home</a>
+                <a href={localizeHref("/solutions")} onClick={(e) => go(e, "/solutions")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Solutions</a>
+                <a href={localizeHref("/about")} onClick={(e) => go(e, "/about")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">About</a>
+                <a href={localizeHref("/blog")} onClick={(e) => go(e, "/blog")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Blog</a>
+                <a href={localizeHref("/contact")} onClick={(e) => go(e, "/contact")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Contact</a>
               </nav>
             </div>
             <div className="flex items-center gap-4">
               <div className="hidden lg:flex items-center gap-4">
                 <Button variant="outline">Broker Portal</Button>
-                <Button onClick={() => (window.location.href = "/solutions/mortgage-preapproval")}>Get Pre-Approved</Button>
+                <Button onClick={() => (window.location.href = localizeHref("/solutions/mortgage-preapproval"))}>Get Pre-Approved</Button>
               </div>
               <Button
                 variant="outline"
@@ -205,15 +245,15 @@ export default function Header() {
                 </Button>
               </div>
               <nav className="flex flex-col divide-y divide-border text-base">
-                <a href="/" className="py-4" onClick={() => setMobileOpen(false)}>Home</a>
-                <a href="/solutions" className="py-4" onClick={() => setMobileOpen(false)}>Solutions</a>
-                <a href="/about" className="py-4" onClick={() => setMobileOpen(false)}>About</a>
-                <a href="/blog" className="py-4" onClick={() => setMobileOpen(false)}>Blog</a>
-                <a href="/contact" className="py-4" onClick={() => setMobileOpen(false)}>Contact</a>
+                <a href={localizeHref("/")} onClick={(e) => { e.preventDefault(); setMobileOpen(false); go(e, "/") }} className="py-4">Home</a>
+                <a href={localizeHref("/solutions")} onClick={(e) => { e.preventDefault(); setMobileOpen(false); go(e, "/solutions") }} className="py-4">Solutions</a>
+                <a href={localizeHref("/about")} onClick={(e) => { e.preventDefault(); setMobileOpen(false); go(e, "/about") }} className="py-4">About</a>
+                <a href={localizeHref("/blog")} onClick={(e) => { e.preventDefault(); setMobileOpen(false); go(e, "/blog") }} className="py-4">Blog</a>
+                <a href={localizeHref("/contact")} onClick={(e) => { e.preventDefault(); setMobileOpen(false); go(e, "/contact") }} className="py-4">Contact</a>
               </nav>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button variant="outline" onClick={() => { setMobileOpen(false); window.location.href = "/broker" }}>Broker Portal</Button>
-                <Button onClick={() => { setMobileOpen(false); window.location.href = "/solutions/mortgage-preapproval" }}>Get Pre-Approved</Button>
+                <Button variant="outline" onClick={() => { setMobileOpen(false); window.location.href = localizeHref("/broker") }}>Broker Portal</Button>
+                <Button onClick={() => { setMobileOpen(false); window.location.href = localizeHref("/solutions/mortgage-preapproval") }}>Get Pre-Approved</Button>
               </div>
             </div>
           </div>
