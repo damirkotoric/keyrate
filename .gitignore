@@ -1,34 +1,34 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 
 # dependencies
-/node_modules
-/.pnp
-.pnp.*
-.yarn/*
-!.yarn/patches
-!.yarn/plugins
-!.yarn/releases
-!.yarn/versions
+/www/node_modules
+/www/.pnp
+/www.pnp.*
+/www.yarn/*
+/www!.yarn/patches
+/www!.yarn/plugins
+/www!.yarn/releases
+/www!.yarn/versions
 
 # testing
-/coverage
+/www/coverage
 
 # next.js
-/.next/
-/out/
+/www/.next/
+/www/out/
 
 # production
-/build
+/www/build
 
 # misc
 .DS_Store
 *.pem
 
 # debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
+/www/npm-debug.log*
+/www/yarn-debug.log*
+/www/yarn-error.log*
+/www/.pnpm-debug.log*
 
 # env files (can opt-in for committing if needed)
 .env*

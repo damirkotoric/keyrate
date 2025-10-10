@@ -261,8 +261,8 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
             aria-expanded={showMore}
             aria-controls="more-options"
           >
-            <ChevronDown className={`w-4 h-4 transition-transform ${showMore ? "rotate-180" : ""}`} />
             {showMore ? "Hide options" : "More options"}
+            <ChevronDown className={`w-4 h-4 transition-transform ${showMore ? "rotate-180" : ""}`} />
           </button>
         </div>
 
