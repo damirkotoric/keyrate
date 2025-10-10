@@ -3,7 +3,7 @@
 import React, { useMemo, useRef, useState, useEffect } from "react"
 import { ChevronDown } from "@/components/icons"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import { InputGroup, InputGroupAddon, InputGroupInput, InputGroupText } from "@/components/ui/input-group"
 import {
   Select,
   SelectContent,
@@ -54,6 +54,7 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
 
   const [region, setRegion] = useState<Region>(initialRegion)
   const { pv, dp, ai, symbol, code } = REGION_PLACEHOLDERS[region]
+  const prefixText = symbol === "$" ? `${code} $` : "AED"
 
   const [errors, setErrors] = useState<Record<string, string>>({})
   const [showMore, setShowMore] = useState(false)
@@ -149,11 +150,10 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
         {/* Property Value */}
         <div>
           <label className="block text-sm font-medium pb-2" htmlFor="property-value">Property Value</label>
-          <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground select-none text-sm">{code} {symbol === "$" ? "$" : "AED"}</span>
-            <Input
+          <InputGroup>
+            <InputGroupInput
               placeholder={pv}
-              className="h-12 pl-14 pr-12"
+              className="pl-16 pr-3"
               id="property-value"
               name="propertyValue"
               type="text"
@@ -166,18 +166,21 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
               aria-describedby={errors.propertyValue ? "error-propertyValue" : undefined}
               required
             />
-          </div>
+            <InputGroupAddon>
+              <InputGroupText>{prefixText}</InputGroupText>
+            </InputGroupAddon>
+            
+          </InputGroup>
           {errors.propertyValue && (<p id="error-propertyValue" className="mt-1 text-xs text-destructive">{errors.propertyValue}</p>)}
         </div>
 
         {/* Down Payment */}
         <div>
           <label className="block text-sm font-medium pb-2" htmlFor="downpayment">Down Payment</label>
-          <div className="relative">
-            <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground select-none text-sm">{code} {symbol === "$" ? "$" : "AED"}</span>
-            <Input
+          <InputGroup>
+            <InputGroupInput
               placeholder={dp}
-              className="h-12 pl-14 pr-12"
+              className="pl-16 pr-3"
               id="downpayment"
               name="downPayment"
               type="text"
@@ -190,18 +193,21 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
               aria-describedby={errors.downPayment ? "error-downPayment" : undefined}
               required
             />
-          </div>
+            <InputGroupAddon>
+              <InputGroupText>{prefixText}</InputGroupText>
+            </InputGroupAddon>
+            
+          </InputGroup>
           {errors.downPayment && (<p id="error-downPayment" className="mt-1 text-xs text-destructive">{errors.downPayment}</p>)}
         </div>
 
         {/* Annual Income */}
         <div>
           <label className="block text-sm font-medium pb-2" htmlFor="annual-income">Annual Income</label>
-          <div className="relative">
-          <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground select-none text-sm">{code} {symbol === "$" ? "$" : "AED"}</span>
-            <Input
+          <InputGroup>
+            <InputGroupInput
               placeholder={ai}
-              className="h-12 pl-14 pr-12"
+              className="pl-16 pr-3"
               id="annual-income"
               name="annualIncome"
               type="text"
@@ -214,7 +220,11 @@ export default function PreApprovalForm({ className = "", initialRegion = "GLOBA
               aria-describedby={errors.annualIncome ? "error-annualIncome" : undefined}
               required
             />
-          </div>
+            <InputGroupAddon>
+              <InputGroupText>{prefixText}</InputGroupText>
+            </InputGroupAddon>
+            
+          </InputGroup>
           {errors.annualIncome && (<p id="error-annualIncome" className="mt-1 text-xs text-destructive">{errors.annualIncome}</p>)}
         </div>
 

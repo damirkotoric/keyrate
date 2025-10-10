@@ -27,6 +27,7 @@ interface HighlighterProps {
   isView?: boolean
   delayMs?: number
   finalTextColor?: string
+  mode?: "rough" | "css"
 }
 
 export function Highlighter({
@@ -41,6 +42,7 @@ export function Highlighter({
   isView = false,
   delayMs = 0,
   finalTextColor = "var(--primary-foreground)",
+  mode = "rough",
 }: HighlighterProps) {
   const elementRef = useRef<HTMLSpanElement>(null)
   const annotationRef = useRef<RoughAnnotation | null>(null)
@@ -52,6 +54,55 @@ export function Highlighter({
   // If isView is false, always show. If isView is true, wait for inView
   // Only allow showing once per page load
   const shouldShow = (!isView || isInView) && !hasShownRef.current
+
+  // CSS mode: paint a gradient highlight that auto-reflows with layout (no JS positioning)
+  if (mode === "css") {
+    // Resolve CSS var to actual color once at render; browsers keep it updated anyway
+    let resolved = color
+    try {
+      const varMatch = color.match(/var\((--[^)]+)\)/)
+      if (varMatch && typeof window !== "undefined") {
+        const cssValue = getComputedStyle(document.documentElement).getPropertyValue(varMatch[1]).trim()
+        if (cssValue) resolved = cssValue
+      }
+    } catch {}
+    // Optional text color fade after delay
+    useEffect(() => {
+      if (!shouldShow) return
+      const node = elementRef.current
+      if (!node) return
+      const apply = () => {
+        try {
+          node.style.transition = node.style.transition ? `${node.style.transition}, color ${animationDuration}ms ease-in-out` : `color ${animationDuration}ms ease-in-out`
+          node.style.color = finalTextColor
+        } catch {}
+      }
+      if (delayMs > 0) {
+        const t = window.setTimeout(apply, delayMs)
+        return () => window.clearTimeout(t)
+      }
+      apply()
+    }, [shouldShow, animationDuration, delayMs, finalTextColor])
+
+    return (
+      <span
+        ref={elementRef}
+        className="relative inline"
+        style={{
+          backgroundImage: `linear-gradient(${resolved}, ${resolved})`,
+          backgroundRepeat: "no-repeat",
+          // cover bottom ~40% of the text box
+          backgroundSize: "100% 0.45em",
+          backgroundPosition: "0 85%",
+          WebkitBoxDecorationBreak: "clone" as any,
+          boxDecorationBreak: "clone" as any,
+          padding: `0 ${Math.max(0, padding)}px`,
+        }}
+      >
+        {children}
+      </span>
+    )
+  }
 
   useEffect(() => {
     if (!shouldShow) return
@@ -121,6 +172,7 @@ export function Highlighter({
     else show()
     // Keep annotation positioned correctly on scroll/resize without re-animating
     let raf = 0
+    let afterTimer: number | null = null
     const updatePosition = () => {
       if (raf) return
       raf = window.requestAnimationFrame(() => {
@@ -132,6 +184,14 @@ export function Highlighter({
         } catch {}
         raf = 0
       })
+      // also re-run after transitions/relayouts settle
+      if (afterTimer) window.clearTimeout(afterTimer)
+      afterTimer = window.setTimeout(() => {
+        try {
+          const a: any = annotationRef.current
+          if (a && typeof a.position === "function") a.position()
+        } catch {}
+      }, 250)
     }
     window.addEventListener("scroll", updatePosition, { passive: true })
     window.addEventListener("resize", updatePosition)
@@ -165,6 +225,7 @@ export function Highlighter({
       window.removeEventListener("keyrate:layout-change", updatePosition as any)
       try { ro?.disconnect() } catch {}
       try { mo?.disconnect() } catch {}
+      if (afterTimer) window.clearTimeout(afterTimer)
     }
   }, [
     shouldShow,
