@@ -6,12 +6,17 @@ import { chooseLocalizedString, getPreferredLocaleFromHeaders, LOCALE_COOKIE, no
 
 export const dynamic = "force-dynamic"
 
-export default async function Page() {
+export default async function Page({ params }: { params?: Promise<{ loc?: string }> }) {
   // Fetch data from Sanity
   let home: any = {}
   let langFull = "en"
   let langShort = "en"
   let appLocale: AppLocale = 'global'
+  
+  // Get locale - either from URL param (for /ca) or from cookies (for /)
+  const resolvedParams = params ? await params : undefined
+  const urlLocale = resolvedParams?.loc
+  
   try {
     const hdrs = await headers()
     const acceptLanguage = hdrs.get("accept-language") || ""
@@ -19,7 +24,9 @@ export default async function Page() {
     langShort = langFull.split("-")[0] || "en"
     const cookieStore = await cookies()
     const cookieLocale = normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value)
-    appLocale = cookieLocale || getPreferredLocaleFromHeaders(acceptLanguage)
+    appLocale = urlLocale 
+      ? normalizeLocaleParam(urlLocale)
+      : (cookieLocale || getPreferredLocaleFromHeaders(acceptLanguage))
     type HomeQuery = {
       hero?: {
         kicker?: string

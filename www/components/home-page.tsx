@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
@@ -34,7 +35,37 @@ type HomeHero = {
 
 type AppLocale = "global" | "ca" | "ae" | "us"
 
+interface Solution {
+  slug: string
+  icon: string
+  title: string
+  description: string
+  features: string[]
+  regions: string[]
+  buttonText: string
+}
+
 export default function HomePage({ home, locale = 'global' }: { home: HomeHero, locale?: AppLocale }) {
+  const [solutions, setSolutions] = useState<Solution[]>([])
+  const [loadingSolutions, setLoadingSolutions] = useState(true)
+
+  useEffect(() => {
+    async function fetchSolutions() {
+      try {
+        const response = await fetch(`/api/solutions${locale !== 'global' ? `?locale=${locale}` : ''}`)
+        if (response.ok) {
+          const data = await response.json()
+          setSolutions(data.solutions || [])
+        }
+      } catch (error) {
+        console.error("Failed to fetch solutions:", error)
+      } finally {
+        setLoadingSolutions(false)
+      }
+    }
+
+    fetchSolutions()
+  }, [locale])
   const fallbackTitle = "Lowest Rates. No Lender Fees. No, Really."
   const rawTitleCandidate: unknown = (home as any)?.title
   const rawTitle: string = typeof rawTitleCandidate === 'string' && rawTitleCandidate.trim().length > 0
@@ -326,66 +357,111 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               {home?.solutionsSubtitle || "From first-time buyers to seasoned investors, we have specialized mortgage products for every situation in Canada and the UAE."}
             </p>
-            <Button size="sm" variant="outline" className="mt-6">
-              View All Solutions
+            <Button size="sm" variant="outline" className="mt-6" asChild>
+              <a href={locale === 'global' ? '/solutions' : `/${locale}/solutions`}>
+                View All Solutions
+              </a>
             </Button>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            <SolutionCard
-              className="bg-card"
-              icon={Home}
-              title="First-Time Buyers"
-              description="Stop paying rent. We'll help you buy your first home with as little as 5% down."
-              features={["Pre-approval in minutes", "Down payment programs", "First-time buyer incentives"]}
-              regions={["Canada", "UAE"]}
-              buttonText="Get Pre-Approved"
-            />
-            <SolutionCard
-              className="bg-card"
-              icon={RefreshCw}
-              title="Mortgage Renewals"
-              description="Don't auto-renew. Shop around and save thousands with better rates."
-              features={["Rate comparison", "No penalties to switch", "Renewal optimization"]}
-              regions={["Canada"]}
-              buttonText="Check Renewal Options"
-              href="/solutions/mortgage-renewals"
-            />
-            <SolutionCard
-              className="bg-card"
-              icon={TrendingUp}
-              title="Refinancing"
-              description="Lower your rate, consolidate debt, or access your home's equity."
-              features={["Debt consolidation", "Cash-out options", "Rate reductions"]}
-              regions={["Canada", "UAE"]}
-              buttonText="Calculate Savings"
-            />
-            <SolutionCard
-              className="bg-card"
-              icon={Users}
-              title="Self-Employed"
-              description="Alternative income verification for entrepreneurs and freelancers."
-              features={["Stated income programs", "Bank statement approval", "Flexible documentation"]}
-              regions={["Canada"]}
-              buttonText="Apply Now"
-            />
-            <SolutionCard
-              className="bg-card hidden sm:block"
-              icon={PiggyBank}
-              title="Investment Properties"
-              description="Build wealth through real estate. Buy to let and investment financing."
-              features={["Rental income consideration", "Portfolio lending", "Investment strategies"]}
-              regions={["Canada", "UAE"]}
-              buttonText="Explore Options"
-            />
-            <SolutionCard
-              className="bg-card hidden sm:block"
-              icon={MapPin}
-              title="New to Canada"
-              description="Special programs for newcomers with limited Canadian credit history."
-              features={["Newcomer programs", "Foreign income accepted", "Minimal credit required"]}
-              regions={["Canada"]}
-              buttonText="Learn More"
-            />
+            {loadingSolutions ? (
+              // Loading skeleton
+              Array.from({ length: 6 }).map((_, i) => (
+                <div key={i} className={`bg-card p-6 rounded-xl border border-border/50 animate-pulse ${i >= 4 ? 'hidden sm:block' : ''}`}>
+                  <div className="h-6 w-6 bg-muted rounded mb-4"></div>
+                  <div className="h-6 bg-muted rounded mb-2"></div>
+                  <div className="h-4 bg-muted rounded mb-4"></div>
+                  <div className="h-10 bg-muted rounded"></div>
+                </div>
+              ))
+            ) : solutions.length > 0 ? (
+              // CMS solutions (show first 6, hide last 2 on mobile)
+              solutions.slice(0, 6).map((solution: any, index) => {
+                const href = solution.slug 
+                  ? (locale === 'global' ? `/solutions/${solution.slug}` : `/${locale}/solutions/${solution.slug}`)
+                  : undefined
+                
+                return (
+                  <SolutionCard
+                    key={solution.slug || index}
+                    className={`bg-card ${index >= 4 ? 'hidden sm:block' : ''}`}
+                    icon={solution.icon}
+                    title={solution.title}
+                    description={solution.description}
+                    features={solution.features}
+                    regions={solution.regions}
+                    buttonText={solution.buttonText}
+                    href={href}
+                    locale={locale}
+                  />
+                )
+              })
+            ) : (
+              // Fallback hardcoded solutions if API fails
+              <>
+                <SolutionCard
+                  className="bg-card"
+                  icon={Home}
+                  title="First-Time Buyers"
+                  description="Stop paying rent. We'll help you buy your first home with as little as 5% down."
+                  features={["Pre-approval in minutes", "Down payment programs", "First-time buyer incentives"]}
+                  regions={["Canada", "UAE"]}
+                  buttonText="Get Pre-Approved"
+                  locale={locale}
+                />
+                <SolutionCard
+                  className="bg-card"
+                  icon={RefreshCw}
+                  title="Mortgage Renewals"
+                  description="Don't auto-renew. Shop around and save thousands with better rates."
+                  features={["Rate comparison", "No penalties to switch", "Renewal optimization"]}
+                  regions={["Canada"]}
+                  buttonText="Check Renewal Options"
+                  href="/solutions/mortgage-renewals"
+                  locale={locale}
+                />
+                <SolutionCard
+                  className="bg-card"
+                  icon={TrendingUp}
+                  title="Refinancing"
+                  description="Lower your rate, consolidate debt, or access your home's equity."
+                  features={["Debt consolidation", "Cash-out options", "Rate reductions"]}
+                  regions={["Canada", "UAE"]}
+                  buttonText="Calculate Savings"
+                  locale={locale}
+                />
+                <SolutionCard
+                  className="bg-card"
+                  icon={Users}
+                  title="Self-Employed"
+                  description="Alternative income verification for entrepreneurs and freelancers."
+                  features={["Stated income programs", "Bank statement approval", "Flexible documentation"]}
+                  regions={["Canada"]}
+                  buttonText="Apply Now"
+                  locale={locale}
+                />
+                <SolutionCard
+                  className="bg-card hidden sm:block"
+                  icon={PiggyBank}
+                  title="Investment Properties"
+                  description="Build wealth through real estate. Buy to let and investment financing."
+                  features={["Rental income consideration", "Portfolio lending", "Investment strategies"]}
+                  regions={["Canada", "UAE"]}
+                  buttonText="Explore Options"
+                  locale={locale}
+                />
+                <SolutionCard
+                  className="bg-card hidden sm:block"
+                  icon={MapPin}
+                  title="New to Canada"
+                  description="Special programs for newcomers with limited Canadian credit history."
+                  features={["Newcomer programs", "Foreign income accepted", "Minimal credit required"]}
+                  regions={["Canada"]}
+                  buttonText="Learn More"
+                  locale={locale}
+                />
+              </>
+            )}
           </div>
         </div>
       </section>

@@ -19,12 +19,7 @@ export function middleware(req: NextRequest) {
 
   // 2) If path already contains locale, set cookie for server usage
   const path = url.pathname.toLowerCase()
-  // Ensure root is always global and cookie reflects that
-  if (path === '/' || path === '') {
-    const res = NextResponse.next()
-    res.cookies.set(LOCALE_COOKIE, 'global', { path: '/', maxAge: 60 * 60 * 24 * 365 })
-    return res
-  }
+  
   if (path.startsWith('/ca')) {
     const res = NextResponse.next()
     res.cookies.set(LOCALE_COOKIE, 'ca', { path: '/', maxAge: 60 * 60 * 24 * 365 })
@@ -41,12 +36,14 @@ export function middleware(req: NextRequest) {
     return res
   }
 
-  // default
-  return NextResponse.next()
+  // All other paths (including /, /solutions, /about, etc.) are global
+  const res = NextResponse.next()
+  res.cookies.set(LOCALE_COOKIE, 'global', { path: '/', maxAge: 60 * 60 * 24 * 365 })
+  return res
 }
 
 export const config = {
-  matcher: ['/((?!_next/|.*\.(?:ico|png|jpg|jpeg|svg|gif|webp|css|js)).*)'],
+  matcher: ['/((?!api/|_next/|.*\.(?:ico|png|jpg|jpeg|svg|gif|webp|css|js)).*)'],
 }
 
 
