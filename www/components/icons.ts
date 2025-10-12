@@ -19,6 +19,7 @@ export {
   Clock,
   Check,
   Eye,
+  BookOpen,
 } from "phosphor-react"
 
 export {

@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input"
 import { Badge } from "@/components/ui/badge"
 import { Textarea } from "@/components/ui/textarea"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
-import { NumberTicker } from "@/components/ui/number-ticker"
 import {
   Select,
   SelectContent,
@@ -14,7 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { CheckCircle, Phone, Mail, MapPin, Shield, TrendingUp, Home, RefreshCw, PiggyBank, Users, DollarSign, Clock, Star } from "@/components/icons"
+import { CheckCircle, Phone, Mail, MapPin, Shield, TrendingUp, Home, RefreshCw, PiggyBank, DollarSign, Users } from "@/components/icons"
 import InstagramSection from "@/components/instagram-section"
 import PreApprovalForm from "@/components/pre-approval-form"
 import TestimonialsSection from "@/components/testimonials-section"
@@ -24,6 +23,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { Highlighter } from "@/components/ui/highlighter"
 import { FlickeringGrid } from "@/components/ui/flickering-grid"
+import { StatsSection, defaultStats } from "@/components/stats-section"
 
 type HomeHero = {
   title?: string
@@ -66,11 +66,10 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
 
     fetchSolutions()
   }, [locale])
-  const fallbackTitle = "Lowest Rates. No Lender Fees. No, Really."
   const rawTitleCandidate: unknown = (home as any)?.title
   const rawTitle: string = typeof rawTitleCandidate === 'string' && rawTitleCandidate.trim().length > 0
     ? rawTitleCandidate
-    : fallbackTitle
+    : ""
   const flagCodeByLocale: Record<AppLocale, string | null> = { global: null, ca: 'ca', ae: 'ae', us: 'us' }
   const flagCode = flagCodeByLocale[locale] || null
   const lineParts = rawTitle
@@ -81,6 +80,35 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
 
   return (
     <div className="min-h-screen">
+      <style jsx global>{`
+        @keyframes gradient-rotate {
+          0% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+          100% {
+            background-position: 0% 50%;
+          }
+        }
+        .animate-gradient-icon {
+          background-size: 200% 200%;
+          animation: gradient-rotate 8s ease-in-out infinite;
+        }
+        .animate-gradient-icon-delay-1 {
+          animation-delay: 0s;
+        }
+        .animate-gradient-icon-delay-2 {
+          animation-delay: 2s;
+        }
+        .animate-gradient-icon-delay-3 {
+          animation-delay: 4s;
+        }
+        .animate-gradient-icon-delay-4 {
+          animation-delay: 6s;
+        }
+      `}</style>
       <Header />
 
       {/* Hero Section with Pre-Approval Form */}
@@ -98,7 +126,7 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
                       className="inline-block w-5 h-5 -ml-1 mr-1 align-[-2px] rounded-full border border-border/50"
                     />
                   )}
-                  {typeof home?.kicker === 'string' && home.kicker.trim().length > 0 ? home.kicker : "Award-Winning Brokerage"}
+                  {home?.kicker}
                 </Badge>
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-pretty">
@@ -113,9 +141,7 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
                 })}
               </h1>
               <p className="text-xl text-muted-foreground mb-6 leading-relaxed max-w-lg mx-auto lg:mx-0 font-medium text-pretty">
-                {typeof home?.subtitle === 'string' && home.subtitle.trim().length > 0
-                  ? home.subtitle
-                  : "We work for you, not the bank. Get pre-approved in minutes with a globally trusted mortgage broker. Over $2 billion processed for 10,000+ happy clients."}
+                {home?.subtitle}
               </p>
               <div className="mb-6">
                 <img
@@ -142,70 +168,13 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
         </div>
       </section>
 
-      {/* Statistics Section */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-foreground mb-2">Trusted by Thousands</h2>
-            <p className="text-xl text-muted-foreground max-w-2xl mx-auto text-pretty">
-              Proven results, trusted by clients in Canada and the UAE.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 sm:text-center">
-            <div className="flex flex-row sm:flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
-                <DollarSign className="w-10 h-10 text-background" />
-              </div>
-              <div className="">
-                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center sm:items-center">
-                  $
-                  <NumberTicker value={2} decimalPlaces={1} />
-                  B+
-                </h3>
-                <p className="text-muted-foreground font-medium">Mortgages Processed</p>
-                <p className="text-sm text-muted-foreground/80">Helping clients invest in high-value property</p>
-              </div>
-            </div>
-            <div className="flex flex-row sm:flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
-                <Users className="w-10 h-10 text-background" />
-              </div>
-              <div className="">
-                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
-                  <NumberTicker value={10} decimalPlaces={1} />K+
-                </h3>
-                <p className="text-muted-foreground font-medium">Happy Clients</p>
-                <p className="text-sm text-muted-foreground/80">Families we've helped achieve homeownership</p>
-              </div>
-            </div>
-            <div className="flex flex-row sm:flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
-                <Star className="w-10 h-10 text-background" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
-                  <NumberTicker value={1.1} decimalPlaces={1} />K
-                </h3>
-                <p className="text-muted-foreground font-medium">Likes</p>
-                <p className="text-sm text-muted-foreground/80">From our followers on our <a href="https://www.facebook.com/keyrate" target="_blank" rel="noopener noreferrer" className="text-foreground hover:underline">Facebook page</a></p>
-              </div>
-            </div>
-            <div className="flex flex-row sm:flex-col items-center">
-              <div className="w-20 h-20 rounded-full flex aspect-square items-center justify-center mr-4 sm:mr-0 sm:mb-4 bg-gradient-to-br from-foreground/50 to-foreground">
-                <Clock className="w-10 h-10 text-background" />
-              </div>
-              <div>
-                <h3 className="text-3xl font-bold mb-0 sm:mb-2 text-foreground flex sm:justify-center items-center">
-                  <NumberTicker value={2} decimalPlaces={1} />
-                  &nbsp;Min
-                </h3>
-                <p className="text-muted-foreground font-medium">Pre-Approval Time</p>
-                <p className="text-sm text-muted-foreground/80">Get approved faster than anywhere else</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      {/* Metrics Section */}
+      <StatsSection 
+        title="Trusted by Thousands"
+        subtitle="Proven results, trusted by clients in Canada and the UAE."
+        stats={defaultStats}
+        columns={4}
+      />
 
       {/* Testimonials Section */}
       <TestimonialsSection />
@@ -352,10 +321,10 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <Highlighter isView={true} delayMs={500}>
-              <h2 className="text-3xl font-bold mb-2">{home?.solutionsTitle || "Complete Mortgage Solutions"}</h2>
+              <h2 className="text-3xl font-bold mb-2">{home?.solutionsTitle}</h2>
             </Highlighter>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              {home?.solutionsSubtitle || "From first-time buyers to seasoned investors, we have specialized mortgage products for every situation in Canada and the UAE."}
+              {home?.solutionsSubtitle}
             </p>
             <Button size="sm" variant="outline" className="mt-6" asChild>
               <a href={locale === 'global' ? '/solutions' : `/${locale}/solutions`}>
@@ -397,70 +366,10 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
                 )
               })
             ) : (
-              // Fallback hardcoded solutions if API fails
-              <>
-                <SolutionCard
-                  className="bg-card"
-                  icon={Home}
-                  title="First-Time Buyers"
-                  description="Stop paying rent. We'll help you buy your first home with as little as 5% down."
-                  features={["Pre-approval in minutes", "Down payment programs", "First-time buyer incentives"]}
-                  regions={["Canada", "UAE"]}
-                  buttonText="Get Pre-Approved"
-                  locale={locale}
-                />
-                <SolutionCard
-                  className="bg-card"
-                  icon={RefreshCw}
-                  title="Mortgage Renewals"
-                  description="Don't auto-renew. Shop around and save thousands with better rates."
-                  features={["Rate comparison", "No penalties to switch", "Renewal optimization"]}
-                  regions={["Canada"]}
-                  buttonText="Check Renewal Options"
-                  href="/solutions/mortgage-renewals"
-                  locale={locale}
-                />
-                <SolutionCard
-                  className="bg-card"
-                  icon={TrendingUp}
-                  title="Refinancing"
-                  description="Lower your rate, consolidate debt, or access your home's equity."
-                  features={["Debt consolidation", "Cash-out options", "Rate reductions"]}
-                  regions={["Canada", "UAE"]}
-                  buttonText="Calculate Savings"
-                  locale={locale}
-                />
-                <SolutionCard
-                  className="bg-card"
-                  icon={Users}
-                  title="Self-Employed"
-                  description="Alternative income verification for entrepreneurs and freelancers."
-                  features={["Stated income programs", "Bank statement approval", "Flexible documentation"]}
-                  regions={["Canada"]}
-                  buttonText="Apply Now"
-                  locale={locale}
-                />
-                <SolutionCard
-                  className="bg-card hidden sm:block"
-                  icon={PiggyBank}
-                  title="Investment Properties"
-                  description="Build wealth through real estate. Buy to let and investment financing."
-                  features={["Rental income consideration", "Portfolio lending", "Investment strategies"]}
-                  regions={["Canada", "UAE"]}
-                  buttonText="Explore Options"
-                  locale={locale}
-                />
-                <SolutionCard
-                  className="bg-card hidden sm:block"
-                  icon={MapPin}
-                  title="New to Canada"
-                  description="Special programs for newcomers with limited Canadian credit history."
-                  features={["Newcomer programs", "Foreign income accepted", "Minimal credit required"]}
-                  regions={["Canada"]}
-                  buttonText="Learn More"
-                  locale={locale}
-                />
-              </>
+              // No solutions from CMS
+              <div className="col-span-full text-center py-12">
+                <p className="text-muted-foreground text-lg">No solutions available. Please check your CMS connection.</p>
+              </div>
             )}
           </div>
         </div>

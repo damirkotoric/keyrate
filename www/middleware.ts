@@ -4,9 +4,17 @@ import { LOCALE_COOKIE, normalizeLocaleParam } from './lib/locale'
 
 export function middleware(req: NextRequest) {
   const url = req.nextUrl
+  
+  // Skip middleware for API routes entirely
+  if (url.pathname.startsWith('/api/')) {
+    console.log('[MIDDLEWARE] Skipping API route:', url.pathname)
+    return NextResponse.next()
+  }
+  
   // 1) Handle query param → redirect to path for canonical URLs
   const locParam = url.searchParams.get('loc') || url.searchParams.get('locale')
   if (locParam) {
+    console.log('[MIDDLEWARE] Redirecting due to locale param:', { pathname: url.pathname, locParam })
     const locale = normalizeLocaleParam(locParam)
     const newUrl = new URL(url.toString())
     newUrl.searchParams.delete('loc')

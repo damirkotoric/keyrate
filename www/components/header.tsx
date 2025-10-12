@@ -5,14 +5,34 @@ import { Button } from "@/components/ui/button"
 import { Phone, Mail, Globe, ChevronDown, List, X } from "@/components/icons"
 import { useClickOutside } from "@/hooks/use-click-outside"
 
-export { Header }
-export default function Header() {
+interface HeaderProps {
+  position?: "sticky" | "fixed"
+}
+
+export default function Header({ position = "sticky" }: HeaderProps = {}) {
   const [isGlobalDropdownOpen, setIsGlobalDropdownOpen] = useState(false)
   const [selectedCountry, setSelectedCountry] = useState("Global")
   const [hideTopBar, setHideTopBar] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [mounted, setMounted] = useState(false)
   const dropdownRef = useRef<HTMLDivElement | null>(null)
   const hiddenRef = useRef(false)
+
+  useEffect(() => setMounted(true), [])
+  
+  const localize = (href: string) => {
+    try {
+      if (!mounted) return href
+      const match = document.cookie.match(/(?:^|; )kr_locale=([^;]+)/)
+      const loc = match ? decodeURIComponent(match[1]) : "global"
+      if (!href.startsWith("/")) return href
+      const known = new Set(["ca", "ae", "us"]) 
+      const parts = href.split("/").filter(Boolean)
+      const first = parts[0] || ""
+      const tail = known.has(first) ? parts.slice(1).join("/") : parts.join("/")
+      return loc === "global" ? `/${tail}` : `/${loc}/${tail}`
+    } catch { return href }
+  }
 
   useClickOutside(dropdownRef, () => {
     if (isGlobalDropdownOpen) {
@@ -128,7 +148,7 @@ export default function Header() {
   }
 
   return (
-    <div className="sticky top-0 z-50">
+    <div className={`${position} w-full top-0 z-50`}>
       <div className="container container-extend-32 mx-auto pt-4">
         <div className="bg-card/90 backdrop-blur-lg shadow-sm rounded-xl px-4 box-content">
           {/* Contact Banner (collapses on scroll) */}
@@ -180,7 +200,7 @@ export default function Header() {
           {/* Main Row */}
           <div className="h-16 flex items-center justify-between px-0 text-foreground">
             <div className="flex flex-1 lg:flex-none items-center space-x-2">
-              <a className="flex-none" href="/">
+              <a className="flex-none" href={localize("/")}>
                 <img
                   src="/logo-favicon.svg"
                   alt="KeyRate Dubai Logo"
@@ -262,3 +282,5 @@ export default function Header() {
     </div>
   )
 }
+
+export { Header }

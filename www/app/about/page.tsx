@@ -1,25 +1,115 @@
-"use client"
-
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Button } from "@/components/ui/button"
+import { Badge } from "@/components/ui/badge"
+import { StatsSection, defaultStats } from "@/components/stats-section"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Users, Globe, TrendingUp, Shield } from "@/components/icons"
+import { CheckCircle, Users, Globe as GlobeIcon, TrendingUp, Shield, Eye, BookOpen } from "@/components/icons"
+import { TestimonialBlock } from "@/components/testimonial-block"
+import { GlobeSection } from "@/components/globe-section"
+import { sanityFetch } from "@/lib/sanity"
+import { chooseLocalizedString } from "@/lib/locale"
 
-export default function AboutPage() {
+interface SanityTestimonial {
+  quote: any
+  authorName: any
+  authorTitle: any
+}
+
+async function getRandomTestimonial() {
+  try {
+    const results = await sanityFetch<SanityTestimonial[]>(
+      `*[_type == "testimonial"] | order(_createdAt desc)[0...50]{
+        quote,
+        authorName,
+        authorTitle
+      }`
+    )
+    
+    if (!results || results.length === 0) {
+      return null
+    }
+    
+    // Pick a random testimonial
+    const random = results[Math.floor(Math.random() * results.length)]
+    
+    // Use global locale for now - could be enhanced to use user's locale
+    const locale = "global"
+    
+    return {
+      quote: chooseLocalizedString(random.quote, locale) || "",
+      author: chooseLocalizedString(random.authorName, locale) || "",
+      role: chooseLocalizedString(random.authorTitle, locale) || "",
+    }
+  } catch (error) {
+    console.error("Failed to fetch testimonial:", error)
+    return null
+  }
+}
+
+export default async function AboutPage() {
+  const testimonial = await getRandomTestimonial()
   return (
-    <div className="min-h-screen bg-white">
-      <Header />
+    <div className="min-h-screen">
+      <Header position="fixed" />
 
       {/* Hero Section */}
-      <section className="py-20 bg-gray-50">
-        <div className="container mx-auto px-4 text-center">
-          <h1 className="text-4xl md:text-5xl font-bold text-black mb-6">
-            Your Global Mortgage Partner —<br /> Built for Buyers, Not Banks
-          </h1>
-          <p className="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
-            Smarter mortgages. Tailored advice. Real results.
-          </p>
+      <section className="relative pt-32 lg:pt-64 pb-16 lg:pb-16">
+        {/* Background Image */}
+        <div>
+          <img
+            src="/keyrate-office.jpg"
+            alt="KeyRate Office"
+            className="absolute top-0 left-0 right-0 bottom-0 w-full h-full object-cover"
+          />
+          <div className="absolute top-0 left-0 right-0 bottom-0 bg-black/70 backdrop-blur-sm"></div>
+        </div>
+        {/* Content */}
+        <div className="container mx-auto px-4 relative z-10">
+          <div className="max-w-3xl">
+            <Badge size="lg">
+              About Us
+            </Badge>
+            <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mt-4 mb-6 leading-tight text-white">
+              Global Mortgages, Built for Buyers Not Banks
+            </h1>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder Section */}
+      <section className="py-16">
+        <div className="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
+          <img
+            src="/danny-burj-khalifa.jpg"
+            alt="KeyRate Office"
+            className="w-full h-full object-cover rounded-lg border border-border"
+          />
+          <div className="py-16">
+            <h2 className="text-xl font-bold text-primary mb-2">Principal Broker & CEO</h2>
+            <h3 className="text-4xl font-bold mb-6">Danny Ibrahim</h3>
+            <img
+              src="/awards.jpg"
+              alt="KeyRate Awards - Top Brokerage 2019, 2021, CMP Hot List 2020, 2021, Global 100 Initiative"
+              className="w-full max-w-md h-auto mix-blend-multiply mx-auto lg:mx-0 mb-8"
+            />
+            <div className="space-y-4 leading-relaxed text-muted-foreground mb-6">
+              <p>
+                Danny began his mortgage career in California during the financial crisis, later moving to Dubai to arrange luxury mortgages. He returned to Canada in 2011, became a top producer at National Bank, and joined Mortgage Alliance, where KeyRate earned a CMP Top Brokerage award in 2019.
+              </p>
+              <p>
+                Now independent, KeyRate has continued to excel—winning Top Brokerage awards in 2020 and 2021, recognition from Global 100, and Danny named a CMP Top Broker in 2022. He also serves as CEO of Mortgage Fund Capital.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-4">
+              <Button size="lg">
+                Book a Call
+              </Button>
+              <Button variant="outline" size="lg">
+                Connect on LinkedIn
+              </Button>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -27,187 +117,132 @@ export default function AboutPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-black mb-8 text-center">Who We Are</h2>
-            <p className="text-lg text-gray-600 leading-relaxed text-center mb-8">
+            <h2 className="text-3xl font-bold mb-8 text-center">Who We Are</h2>
+            <p className="text-lg text-muted-foreground leading-relaxed text-center mb-8">
               KeyRate is an independent, performance-driven mortgage brokerage helping homebuyers, homeowners and
               property investors secure the right financing — not just whatever their bank offers.
             </p>
-            <p className="text-lg text-gray-600 leading-relaxed text-center">
+            <p className="text-lg text-muted-foreground leading-relaxed text-center mb-0">
               We operate globally across <strong>Canada, the United States, and the UAE</strong>, giving our clients
               access to a world of lending options, preferential rates, and strategic guidance no bank can match.
             </p>
+            
+            <GlobeSection />
           </div>
         </div>
       </section>
 
       {/* What Makes Us Different */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-black mb-12 text-center">What Makes Us Different</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0 text-center">
-                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Users className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-black mb-3">Client-First Model</h3>
-                <p className="text-gray-600">
+      <section className="py-16">
+        <div className="container">
+          <h2 className="text-3xl font-bold mb-12 text-center">What Makes Us Different</h2>
+          
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            <Card className="relative overflow-hidden">
+              <Users className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Client-First Model</h3>
+                <p className="text-sm text-muted-foreground">
                   We work for you, not any one bank — so all recommendations are unbiased.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0 text-center">
-                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <TrendingUp className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-black mb-3">Smarter Rates</h3>
-                <p className="text-gray-600">
+            <Card className="relative overflow-hidden">
+              <TrendingUp className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Smarter Rates</h3>
+                <p className="text-sm text-muted-foreground">
                   We negotiate hard behind the scenes and make multiple lenders compete for you.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0 text-center">
-                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <CheckCircle className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-black mb-3">Faster Process</h3>
-                <p className="text-gray-600">Digital tools + expert brokers = faster approvals with less paperwork.</p>
+            <Card className="relative overflow-hidden">
+              <CheckCircle className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Faster Process</h3>
+                <p className="text-sm text-muted-foreground">
+                  Digital tools + expert brokers = faster approvals with less paperwork.
+                </p>
               </CardContent>
             </Card>
 
-            <Card className="p-6 bg-white border border-gray-200 hover:shadow-lg transition-shadow">
-              <CardContent className="p-0 text-center">
-                <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center mx-auto mb-4">
-                  <Shield className="w-8 h-8 text-white" />
-                </div>
-                <h3 className="text-xl font-bold text-black mb-3">Complete Transparency</h3>
-                <p className="text-gray-600">
+            <Card className="relative overflow-hidden">
+              <Eye className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Complete Transparency</h3>
+                <p className="text-sm text-muted-foreground">
                   No hidden surprises. Ever. Everything is explained upfront in plain language.
                 </p>
               </CardContent>
             </Card>
-          </div>
-        </div>
-      </section>
 
-      {/* Proven Results */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-black mb-12 text-center">Proven Results</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">$2B+</div>
-              <p className="text-gray-600">in mortgages funded globally</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">10K+</div>
-              <p className="text-gray-600">clients served across Canada, USA & UAE</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">100%</div>
-              <p className="text-gray-600">mortgage funding success rate through our process</p>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold text-primary mb-2">Multi-Award</div>
-              <p className="text-gray-600">winning brokerage (CMP Top Brokerage 2021, Global 100, Hot List)</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Core Values */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-black mb-12 text-center">Our Core Values</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 max-w-4xl mx-auto">
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-black mb-3">Advocacy</h3>
-              <p className="text-gray-600">we act in your best interests, always</p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-black mb-3">Integrity</h3>
-              <p className="text-gray-600">what we promise is what we deliver</p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-black mb-3">Access for All</h3>
-              <p className="text-gray-600">
-                first-timers, expats, non-residents, self-employed — we fight for the people the banks often ignore
-              </p>
-            </div>
-            <div className="text-center">
-              <h3 className="text-xl font-bold text-black mb-3">Education &gt; Sales</h3>
-              <p className="text-gray-600">our job is to advise, not pressure</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Where We Operate */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold text-black mb-12 text-center">Where We Operate</h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-4xl mx-auto">
-            <Card className="p-6 bg-white border border-gray-200">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                    <Globe className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-black">Canada</h3>
-                </div>
-                <p className="text-gray-600">Ottawa & Toronto — nationally licensed, coast-to-coast lending programs</p>
-              </CardContent>
-            </Card>
-
-            <Card className="p-6 bg-white border border-gray-200">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                    <Globe className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-black">USA</h3>
-                </div>
-                <p className="text-gray-600">
-                  Based in Florida — serving citizens, residents and foreign investors nationwide
+            <Card className="relative overflow-hidden">
+              <Users className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Advocacy</h3>
+                <p className="text-sm text-muted-foreground">
+                  We act in your best interests, always.
                 </p>
               </CardContent>
             </Card>
-
-            <Card className="p-6 bg-white border border-gray-200">
-              <CardContent className="p-0">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 bg-primary rounded-lg flex items-center justify-center">
-                    <Globe className="w-6 h-6 text-white" />
-                  </div>
-                  <h3 className="text-xl font-bold text-black">UAE</h3>
-                </div>
-                <p className="text-gray-600">
-                  Dubai (Capital Golden Tower, Business Bay) — servicing residents, expats & NRIs
+            
+            <Card className="relative overflow-hidden">
+              <Shield className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Integrity</h3>
+                <p className="text-sm text-muted-foreground">
+                  What we promise is what we deliver.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="relative overflow-hidden">
+              <GlobeIcon className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Access for All</h3>
+                <p className="text-sm text-muted-foreground">
+                  First-timers, expats, non-residents, self-employed — we fight for the people the banks often ignore.
+                </p>
+              </CardContent>
+            </Card>
+            
+            <Card className="relative overflow-hidden">
+              <BookOpen className="absolute -right-2 -bottom-8 size-32 opacity-15" />
+              <CardContent className="relative space-y-2 pb-4">
+                <h3 className="text-lg font-bold">Education &gt; Sales</h3>
+                <p className="text-sm text-muted-foreground">
+                  Our job is to advise, not pressure.
                 </p>
               </CardContent>
             </Card>
           </div>
         </div>
       </section>
+
+      {/* Metrics Section */}
+      <StatsSection 
+        title="Proven Results"
+        subtitle=""
+        stats={defaultStats}
+        columns={4}
+      />
 
       {/* Why Use Us as Your Mortgage Broker */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-black mb-8 text-center">Why Use Us as Your Mortgage Broker</h2>
+            <h2 className="text-3xl font-bold mb-8 text-center">Why Use Us as Your Mortgage Broker</h2>
 
             <div className="mb-12">
-              <p className="text-lg text-gray-600 leading-relaxed mb-6">
+              <p className="text-lg text-muted-foreground leading-relaxed mb-6">
                 In the past, prospective home buyers turned exclusively to their banks for their mortgage needs. Today,
                 you have more options at your disposal with the growing presence of mortgage brokers.
               </p>
 
-              <h3 className="text-2xl font-bold text-black mb-4">Mortgage brokers vs. Banks: What's the difference?</h3>
-              <p className="text-lg text-gray-600 leading-relaxed mb-8">
+              <h3 className="text-2xl font-bold mb-4">Mortgage brokers vs. Banks: What's the difference?</h3>
+              <p className="text-lg text-muted-foreground leading-relaxed mb-8">
                 The difference between banks and mortgage brokers is that banks can only offer you their own products,
                 while mortgage brokers can present multiple mortgage options. Independent mortgage brokers are licensed
                 mortgage specialists who have access to many lenders and mortgage rates. They essentially negotiate the
@@ -278,45 +313,45 @@ export default function AboutPage() {
             {/* Market Trends */}
             <div className="grid lg:grid-cols-2 gap-12 mb-12">
               <div>
-                <h3 className="text-2xl font-bold text-black mb-4">Growing Popularity</h3>
-                <p className="text-gray-600 leading-relaxed mb-4">
+                <h3 className="text-2xl font-bold mb-4">Growing Popularity</h3>
+                <p className="text-muted-foreground leading-relaxed mb-4">
                   Getting the best mortgage has a strong influence on the decision to use a broker. According to a 2019
                   CMHC survey, mortgage brokers represented <strong>47% of total mortgage originations</strong> in 2019,
                   up from 40% in 2009 and 26% in 2003.
                 </p>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-muted-foreground leading-relaxed">
                   This growth reflects prospective home buyers' inclination to compare rates, a role essentially taken
                   on by a mortgage broker.
                 </p>
               </div>
 
               <div>
-                <h3 className="text-2xl font-bold text-black mb-4">Key Advantages</h3>
+                <h3 className="text-2xl font-bold mb-4">Key Advantages</h3>
                 <ul className="space-y-3">
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <span className="text-gray-600">Access to exclusive deals not available on the open market</span>
+                    <span className="text-muted-foreground">Access to exclusive deals not available on the open market</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <span className="text-gray-600">Knowledge of which lenders will consider your specific case</span>
+                    <span className="text-muted-foreground">Knowledge of which lenders will consider your specific case</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <span className="text-gray-600">Specialized access for people with poor credit ratings</span>
+                    <span className="text-muted-foreground">Specialized access for people with poor credit ratings</span>
                   </li>
                   <li className="flex items-start gap-3">
                     <CheckCircle className="w-5 h-5 text-primary mt-1 flex-shrink-0" />
-                    <span className="text-gray-600">Ability to negotiate better rates and lower application fees</span>
+                    <span className="text-muted-foreground">Ability to negotiate better rates and lower application fees</span>
                   </li>
                 </ul>
               </div>
             </div>
 
             {/* Popular Lenders */}
-            <div className="bg-white rounded-lg p-8 shadow-lg">
-              <h3 className="text-2xl font-bold text-black mb-6 text-center">Our Most Popular Lender Partners</h3>
-              <p className="text-gray-600 mb-6 text-center">
+            <div className="bg-muted rounded-lg p-8">
+              <h3 className="text-2xl font-bold mb-6 text-center">Our Most Popular Lender Partners</h3>
+              <p className="text-muted-foreground mb-6 text-center">
                 Many of the major Canadian banks sell through mortgage brokers. Here are the lenders we work with most
                 frequently:
               </p>
@@ -343,59 +378,12 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Meet Our Founder */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-6xl mx-auto">
-            <h2 className="text-3xl font-bold text-black mb-12 text-center">Meet Our Founder</h2>
-            <div className="grid lg:grid-cols-2 gap-12 items-center">
-              <div className="order-2 lg:order-1">
-                <img
-                  src="https://hebbkx1anhila5yf.public.blob.vercel-storage.com/CleanShot%202025-08-19%20at%2018.15.45%402x-dxxVqq5Dorp2EdK0MvLA5gi2QdYmKt.png"
-                  alt="Danny Ibrahim - Principal Broker & CEO"
-                  className="w-full max-w-md mx-auto rounded-lg shadow-lg"
-                />
-              </div>
-              <div className="order-1 lg:order-2">
-                <div className="bg-white rounded-lg p-8 shadow-lg">
-                  <h3 className="text-3xl font-bold text-primary mb-2">PRINCIPAL BROKER & CEO</h3>
-                  <h4 className="text-2xl font-bold text-black mb-6">DANNY IBRAHIM, PRINCIPAL BROKER & CEO</h4>
-
-                  <div className="space-y-4 text-gray-700 leading-relaxed">
-                    <p>
-                      Danny started his mortgage career 15 years ago in California. There he learned the ropes while
-                      navigating the financial crisis and a recession, before gaining international mortgage experience
-                      in Dubai, placing high-end luxury mortgages. He moved back to Canada in 2011, where he quickly
-                      rose to become a top producer at National Bank of Canada. He then moved into the broker channel
-                      with Mortgage Alliance. Under that umbrella, KeyRate was recognized by CMP as a Top Brokerage in
-                      2019.
-                    </p>
-
-                    <p>
-                      Now independent, KeyRate has achieved the Top Brokerage award for 2020, has been recognized by the
-                      Global 100 and is once again recognized as a CMP Top Brokerage for 2021. Danny has been recognized
-                      as a CMP Top Broker for 2022. He is also the CEO of Mortgage Fund Capital.
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Our Promise */}
+      {/* Get Started */}
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <h2 className="text-3xl font-bold text-black mb-8 text-center">Our Promise to You</h2>
-            <p className="text-xl text-gray-600 leading-relaxed text-center mb-12">
-              Whether you're moving across town or across borders, we'll help you make confident decisions, get a better
-              rate than the banks will offer, and structure your mortgage to build real wealth — not just pay interest.
-            </p>
-
-            <div className="bg-gray-50 rounded-lg p-8">
-              <h3 className="text-2xl font-bold text-black mb-6 text-center">Get Started Today</h3>
+            <div className="bg-white rounded-lg p-8">
+              <h3 className="text-3xl font-bold mb-6 text-center">Get Started Today</h3>
               <form className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
@@ -492,32 +480,20 @@ export default function AboutPage() {
       </section>
 
       {/* Testimonial Section */}
-      <section className="py-16 bg-gray-50">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <Card className="p-8 bg-white border border-gray-200 shadow-lg">
-              <CardContent className="p-0 text-center">
-                <div className="flex items-center justify-center gap-1 mb-6">
-                  {[...Array(5)].map((_, i) => (
-                    <svg key={i} className="w-6 h-6 fill-primary" viewBox="0 0 24 24">
-                      <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                    </svg>
-                  ))}
-                </div>
-                <blockquote className="text-xl text-gray-700 italic mb-6 leading-relaxed">
-                  "KeyRate made our international property investment seamless. Danny and his team navigated complex
-                  cross-border financing with expertise and transparency we'd never experienced before. They truly work
-                  for you, not the banks."
-                </blockquote>
-                <div className="border-t pt-6">
-                  <p className="font-semibold text-black">Sarah & Michael Chen</p>
-                  <p className="text-sm text-gray-500">International Property Investors</p>
-                </div>
-              </CardContent>
-            </Card>
+      {testimonial && (
+        <section className="py-16 pb-32">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <TestimonialBlock
+                quote={testimonial.quote}
+                author={testimonial.author}
+                role={testimonial.role}
+                rating={5}
+              />
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       <Footer />
     </div>

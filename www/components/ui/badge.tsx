@@ -15,7 +15,7 @@ const badgeVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-card border border-border/50 text-foreground [a&]:hover:bg-background/90 transition-[color,box-shadow]",
+          "bg-card border border-border text-foreground [a&]:hover:bg-background/90 transition-[color,box-shadow]",
         secondary:
           "border-transparent bg-secondary text-secondary-foreground [a&]:hover:bg-secondary/90 transition-[color,box-shadow]",
         destructive:

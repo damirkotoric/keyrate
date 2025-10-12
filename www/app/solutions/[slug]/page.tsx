@@ -126,13 +126,59 @@ export default function SolutionPage() {
   useEffect(() => {
     async function fetchSolution() {
       try {
-        const response = await fetch(`/api/solutions/${slug}${locale !== 'global' ? `?locale=${locale}` : ''}`)
+        const apiUrl = `/api/solutions/${slug}${locale !== 'global' ? `?locale=${locale}` : ''}`
+        
+        // Use absolute URL to bypass Next.js router
+        const absoluteUrl = `${window.location.origin}${apiUrl}`
+        
+        // Debug logging only for mortgage-renewals
+        if (slug === 'mortgage-renewals') {
+          console.log('[mortgage-renewals DEBUG]', {
+            slug,
+            locale,
+            pathname,
+            pathParts,
+            hasLocalePrefix,
+            loc,
+            apiUrl,
+            absoluteUrl
+          })
+        }
+        
+        const response = await fetch(absoluteUrl, {
+          cache: 'no-store',
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        
+        if (slug === 'mortgage-renewals') {
+          console.log('[mortgage-renewals DEBUG] Response:', {
+            ok: response.ok,
+            status: response.status,
+            contentType: response.headers.get('content-type'),
+            url: response.url
+          })
+        }
+        
         if (response.ok) {
           const data = await response.json()
+          
+          if (slug === 'mortgage-renewals') {
+            console.log('[mortgage-renewals DEBUG] Data received:', data)
+          }
+          
           setSolutionData(data)
+        } else {
+          if (slug === 'mortgage-renewals') {
+            console.error('[mortgage-renewals DEBUG] Response not OK')
+          }
         }
       } catch (error) {
         console.error("Failed to fetch solution:", error)
+        if (slug === 'mortgage-renewals') {
+          console.error('[mortgage-renewals DEBUG] Fetch error:', error)
+        }
       } finally {
         setLoading(false)
       }

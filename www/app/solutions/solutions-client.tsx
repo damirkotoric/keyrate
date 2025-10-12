@@ -50,138 +50,41 @@ export default function SolutionsPageClient({ locale, pageData }: SolutionsPageC
 
     fetchSolutions()
   }, [locale])
-  
-  // Fallback hardcoded solutions if API fails
-  const fallbackSolutions = [
-    // Global solutions (available everywhere)
-    {
-      icon: FileText,
-      title: "Mortgage Pre-Approval",
-      description: "Get pre-qualified before you shop — fast approvals so you know exactly how much you can afford.",
-      features: ["No credit check required", "Results in 2 minutes", "Know your budget before shopping"],
-      buttonText: "Start My Pre-Approval",
-      href: "/solutions/mortgage-preapproval",
-      regions: ["Canada", "UAE", "USA"],
-    },
-    {
-      icon: RefreshCw,
-      title: "Mortgage Renewals",
-      description:
-        "Your bank's renewal offer is rarely its best offer. Let us negotiate a better rate and term before you sign.",
-      features: ["Better rates than your bank", "No fees to switch", "Save thousands over your term"],
-      buttonText: "Check Renewal Options",
-      href: "/solutions/mortgage-renewals",
-      regions: ["Canada", "UAE", "USA"],
-    },
-    {
-      icon: TrendingUp,
-      title: "Mortgage Refinancing",
-      description: "Lower your payments, consolidate debt, or pull out equity — restructuring your mortgage made easy.",
-      features: ["Lower monthly payments", "Consolidate high-interest debt", "Access home equity"],
-      buttonText: "Refinance & Save",
-      regions: ["Canada", "UAE", "USA"],
-    },
-    {
-      icon: DollarSign,
-      title: "Equity Release / Second Mortgages",
-      description:
-        "Access the value tied up in your property without selling — perfect for renovations, investments or growth.",
-      features: ["Unlock property value", "Keep your existing mortgage", "Flexible repayment terms"],
-      buttonText: "Unlock My Equity",
-      regions: ["Canada", "UAE", "USA"],
-    },
-    // Canada-specific solutions
-    {
-      icon: Home,
-      title: "First-Time Home Buyer Mortgages",
-      description: "Government-approved products designed for Canadian renters ready to become homeowners.",
-      features: ["Low down payment options", "CMHC insured", "First-time buyer incentives"],
-      buttonText: "View Buyer Programs",
-      regions: ["Canada"],
-    },
-    {
-      icon: Users,
-      title: "Self-Employed Borrower Mortgages",
-      description:
-        "Use stated-income programs and alternative documentation to qualify even without traditional payslips.",
-      features: ["Stated income programs", "Alternative documentation", "Flexible qualification"],
-      buttonText: "I'm Self-Employed",
-      regions: ["Canada"],
-    },
-    {
-      icon: MapPin,
-      title: "New-to-Canada Mortgages",
-      description: "Recently relocated? Get insured mortgage financing even without a long Canadian credit footprint.",
-      features: ["No Canadian credit needed", "Insured financing", "Newcomer programs"],
-      buttonText: "Learn More",
-      regions: ["Canada"],
-    },
-    {
-      icon: PiggyBank,
-      title: "Investment & Rental Mortgages",
-      description: "Financing for second homes, rental properties, and multi-unit income real estate across Canada.",
-      features: ["Multi-unit properties", "Rental income qualification", "Investment property rates"],
-      buttonText: "Start Investing",
-      regions: ["Canada"],
-    },
-    // UAE-specific solutions
-    {
-      icon: Home,
-      title: "Expat & Resident Mortgages",
-      description:
-        "Home finance solutions designed specifically for salaried expats and UAE nationals — backed by local lenders and EIBOR-linked products.",
-      features: ["EIBOR-linked rates", "Up to 80% LTV", "Flexible terms for expats"],
-      buttonText: "Learn More",
-      regions: ["UAE"],
-    },
-    {
-      icon: Shield,
-      title: "Islamic Finance (Murabaha & Ijara)",
-      description: "Sharia-compliant, interest-free mortgage alternatives for clients seeking ethical home financing.",
-      features: ["100% Sharia-compliant", "No interest charges", "Ethical financing options"],
-      buttonText: "Explore Islamic Options",
-      regions: ["UAE"],
-    },
-    {
-      icon: MapPin,
-      title: "Non-Resident / Overseas Buyer Mortgages",
-      description:
-        "Buy UAE property from abroad — we secure mortgages for non-resident investors without a UAE bank account.",
-      features: ["No UAE bank account needed", "Remote application", "International buyers welcome"],
-      buttonText: "Check Eligibility",
-      regions: ["UAE"],
-    },
-    {
-      icon: Users,
-      title: "Golden Visa Mortgage Financing",
-      description:
-        "Property-linked solutions for investors seeking long-term UAE residency under the Golden Visa program.",
-      features: ["Long-term residency", "Property investment", "Family visa options"],
-      buttonText: "Apply Now",
-      regions: ["UAE"],
-    },
-    // USA-specific solutions
-    {
-      icon: Home,
-      title: "U.S. Home Purchase Mortgages",
-      description:
-        "Residential mortgages for primary, vacation or second homes across the USA — available to citizens, residents, and foreign nationals.",
-      features: ["30-year fixed rates", "Foreign national programs", "Primary & vacation homes"],
-      buttonText: "See U.S. Programs",
-      regions: ["USA"],
-    },
-    {
-      icon: TrendingUp,
-      title: "U.S. Investment & DSCR Loans",
-      description: "Investor-focused solutions for income-producing properties using cash-flow based underwriting.",
-      features: ["DSCR-based qualification", "No income verification", "Cash flow underwriting"],
-      buttonText: "Grow My Portfolio",
-      regions: ["USA"],
-    },
-  ]
 
-  // Use CMS solutions or fallback to hardcoded
-  const allSolutions = solutions.length > 0 ? solutions : fallbackSolutions
+  // Sort solutions
+  const sortedSolutions = [...solutions].sort((a, b) => {
+    if (locale === 'global') {
+      // Global locale: global solutions first, then by region, then alphabetically
+      const isGlobal = (sol: any) => 
+        sol.regions.length === 3 && 
+        sol.regions.includes('Canada') && 
+        sol.regions.includes('UAE') && 
+        sol.regions.includes('USA')
+      
+      const aIsGlobal = isGlobal(a)
+      const bIsGlobal = isGlobal(b)
+      
+      // Global solutions come first
+      if (aIsGlobal && !bIsGlobal) return -1
+      if (!aIsGlobal && bIsGlobal) return 1
+      
+      // Both global or both regional - sort by primary region alphabetically
+      if (!aIsGlobal && !bIsGlobal) {
+        const aRegion = [...a.regions].sort()[0]
+        const bRegion = [...b.regions].sort()[0]
+        const regionCompare = aRegion.localeCompare(bRegion)
+        if (regionCompare !== 0) return regionCompare
+      }
+      
+      // Within same category, sort by title alphabetically
+      return a.title.localeCompare(b.title)
+    } else {
+      // Country-specific locale: sort alphabetically by title only
+      return a.title.localeCompare(b.title)
+    }
+  })
+  
+  const allSolutions = sortedSolutions
   
   // Filter solutions based on locale
   const localeMap: Record<AppLocale, string> = {

@@ -27,7 +27,7 @@ export default function Footer() {
         height={24}
         x={-1}
         y={-1}
-        className="dark w-full h-full pointer-events-none absolute inset-0 text-primary-foreground/40 [mask-image:linear-gradient(to_bottom,white,transparent)]"
+        className="dark w-full h-full pointer-events-none absolute inset-0 text-primary-foreground/35 [mask-image:linear-gradient(200deg,white,transparent)]"
       />
       <div className="relative container mx-auto px-4">
         <div className="sm:mx-4 xl:mx-0 mb-12">
