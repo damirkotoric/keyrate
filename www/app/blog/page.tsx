@@ -152,33 +152,33 @@ export default function BlogPage() {
   })
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-background">
       <Header />
 
       {/* Hero Section */}
-      <section className="bg-gray-50 py-16">
+      <section className="py-16">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{"Think Like a Mortgage Insider"}</h1>
-          <p className="text-xl text-gray-600 max-w-2xl mx-auto mb-0">
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto mb-0">
             Real-world advice, rate updates, videos, guides & more.
           </p>
         </div>
       </section>
 
       {/* Featured Content */}
-      <section className="py-16">
+      <section className="pb-16">
         <div className="container mx-auto px-4">
           <div className="grid md:grid-cols-3 gap-8">
             {featuredContent.map((item, index) => (
               <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
                 <div className="aspect-video relative">
                   <img src={item.image || "/placeholder.svg"} alt={item.title} className="w-full h-full object-cover" />
-                  <Badge className="absolute top-4 left-4 bg-primary text-white">{item.tag}</Badge>
+                  <Badge className="absolute top-4 left-4">{item.tag}</Badge>
                 </div>
                 <CardContent className="p-6">
                   <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-gray-600 mb-4">{item.hook}</p>
-                  <Button className="w-full bg-primary hover:bg-primary/90">
+                  <p className="text-muted-foreground mb-4">{item.hook}</p>
+                  <Button className="w-full">
                     {item.cta}
                     <ArrowRight className="w-4 h-4 ml-2" />
                   </Button>
@@ -190,7 +190,7 @@ export default function BlogPage() {
       </section>
 
       {/* Latest Posts */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16 bg-card">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row gap-12">
             {/* Main Content */}
@@ -233,25 +233,25 @@ export default function BlogPage() {
                 {filteredPosts.map((post, index) => (
                   <article
                     key={index}
-                    className="py-6 border-b border-gray-200 last:border-b-0 hover:bg-gray-50/50 transition-colors -mx-4 px-4 rounded-lg cursor-pointer"
+                    className="py-6 border-b last:border-b-0 hover:bg-muted/50 transition-colors -mx-4 px-4 rounded-lg cursor-pointer"
                   >
                     <div className="flex gap-6 items-start">
                       <div className="flex-1">
                         <div className="flex justify-between items-start mb-3">
                           <div className="flex gap-2">
-                            <Badge variant="secondary" className="bg-primary/10 text-primary">
+                            <Badge variant="secondary">
                               {post.category}
                             </Badge>
-                            <Badge variant="outline" className="border-gray-300 text-gray-600">
+                            <Badge variant="outline">
                               {post.region}
                             </Badge>
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="text-sm text-muted-foreground">
                             {post.date} • {post.readTime}
                           </div>
                         </div>
-                        <h3 className="text-xl font-bold mb-2 hover:text-primary transition-colors">{post.title}</h3>
-                        <p className="text-gray-600">{post.excerpt}</p>
+                        <h3 className="text-xl font-bold mb-2 hover:text-accent transition-colors">{post.title}</h3>
+                        <p className="text-muted-foreground">{post.excerpt}</p>
                       </div>
                       <div className="flex-shrink-0">
                         <img
@@ -267,7 +267,7 @@ export default function BlogPage() {
 
               {/* Show All Button */}
               <div className="text-center mt-8">
-                <Button variant="outline" size="lg" className="px-8 bg-transparent">
+                <Button variant="outline" size="lg" className="px-8">
                   Show All Posts
                   <ArrowRight className="w-4 h-4 ml-2" />
                 </Button>
@@ -277,22 +277,22 @@ export default function BlogPage() {
             {/* Sidebar */}
             <div className="lg:w-1/3 space-y-8">
               {/* Search */}
-              <Card className="p-6 bg-white px-0 py-0">
+              <Card className="p-0">
                 <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4" />
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                   <Input placeholder="Search blog..." className="p-6 pl-10" />
                 </div>
               </Card>
 
               {/* Newsletter Signup */}
-              <Card className="p-6 bg-primary text-white">
+              <Card className="p-6 bg-primary text-primary-foreground">
                 <h3 className="text-lg font-bold mb-0">Subscribe for Free Mortgage Strategies</h3>
-                <p className="text-white/90 text-sm -mt-1 mb-4">
+                <p className="text-primary-foreground/90 text-sm -mt-1 mb-4">
                   Get insider tips, rate updates, and exclusive guides delivered to your inbox.
                 </p>
                 <div className="space-y-3">
-                  <Input placeholder="Your email address" className="bg-white text-black border-white" />
-                  <Button className="w-full bg-white text-primary hover:bg-gray-100">Subscribe Now</Button>
+                  <Input placeholder="Your email address" />
+                  <Button variant="secondary" className="w-full">Subscribe Now</Button>
                 </div>
               </Card>
 
@@ -303,7 +303,7 @@ export default function BlogPage() {
                     <button
                       key={category}
                       onClick={() => setSelectedCategory(category)}
-                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 hover:text-primary"
+                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-muted transition-colors text-foreground hover:text-accent"
                     >
                       {category}
                     </button>
@@ -318,7 +318,7 @@ export default function BlogPage() {
                     <button
                       key={region}
                       onClick={() => setSelectedRegion(region)}
-                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-gray-100 transition-colors text-gray-700 hover:text-primary"
+                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-muted transition-colors text-foreground hover:text-accent"
                     >
                       {region}
                     </button>
@@ -335,7 +335,7 @@ export default function BlogPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Guides & Free Downloads</h2>
-            <p className="text-xl text-gray-600">
+            <p className="text-xl text-muted-foreground">
               Comprehensive resources to help you make informed mortgage decisions
             </p>
           </div>
@@ -352,9 +352,9 @@ export default function BlogPage() {
                 <CardContent className="p-4 flex flex-col h-full">
                   <div className="flex-1">
                     <h3 className="font-bold mb-2">{guide.title}</h3>
-                    <p className="text-sm text-gray-600 mb-4">{guide.description}</p>
+                    <p className="text-sm text-muted-foreground mb-4">{guide.description}</p>
                   </div>
-                  <Button size="sm" className="w-full bg-primary hover:bg-primary/90">
+                  <Button size="sm" className="w-full">
                     <Download className="w-4 h-4 mr-2" />
                     Download Guide
                   </Button>
@@ -366,11 +366,11 @@ export default function BlogPage() {
       </section>
 
       {/* Learning Videos */}
-      <section className="py-16 bg-gray-50">
+      <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Watch & Learn</h2>
-            <p className="text-xl text-gray-600">Educational videos to help you understand mortgages better</p>
+            <p className="text-xl text-muted-foreground">Educational videos to help you understand mortgages better</p>
           </div>
           <div className="grid md:grid-cols-3 gap-8">
             {videos.map((video, index) => (
@@ -381,12 +381,12 @@ export default function BlogPage() {
                     alt={video.title}
                     className="w-full h-full object-cover"
                   />
-                  <div className="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors flex items-center justify-center">
-                    <div className="w-16 h-16 bg-white/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
+                  <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/40 transition-colors flex items-center justify-center">
+                    <div className="w-16 h-16 bg-background/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
                       <Play className="w-6 h-6 text-primary ml-1" />
                     </div>
                   </div>
-                  <Badge className="absolute bottom-4 right-4 bg-black/70 text-white">{video.duration}</Badge>
+                  <Badge className="absolute bottom-4 right-4 bg-foreground/70 text-background">{video.duration}</Badge>
                 </div>
                 <CardContent className="p-4">
                   <h3 className="font-bold mb-2">{video.title}</h3>
@@ -402,7 +402,7 @@ export default function BlogPage() {
         <div className="container mx-auto px-4">
           <div className="text-center mb-12">
             <h2 className="text-3xl font-bold mb-4">Follow Our Journey @keyrate</h2>
-            <p className="text-xl text-gray-600">Behind-the-scenes content, tips, and client success stories</p>
+            <p className="text-xl text-muted-foreground">Behind-the-scenes content, tips, and client success stories</p>
           </div>
           <div className="grid md:grid-cols-4 gap-6">
             {[1, 2, 3, 4].map((item) => (

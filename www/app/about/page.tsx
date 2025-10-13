@@ -8,9 +8,10 @@ import { TestimonialBlock } from "@/components/testimonial-block"
 import { GlobeSection } from "@/components/globe-section"
 import { GlowingEffect } from "@/components/ui/glowing-effect"
 import { sanityFetch, urlFor } from "@/lib/sanity"
-import { chooseLocalizedString } from "@/lib/locale"
+import { chooseLocalizedString, normalizeLocaleParam, LOCALE_COOKIE, type AppLocale } from "@/lib/locale"
 import { renderPortableText } from "@/lib/portableText"
 import { IconProps } from "@/components/icons"
+import { cookies } from "next/headers"
 
 // Map icon names to icon components for What Makes Us Different section
 const featureIconMap: Record<string, React.ComponentType<IconProps>> = {
@@ -119,7 +120,7 @@ async function getAboutPageData() {
   }
 }
 
-async function getRandomTestimonial() {
+async function getRandomTestimonial(locale: AppLocale) {
   try {
     const results = await sanityFetch<SanityTestimonial[]>(
       `*[_type == "testimonial"] | order(_createdAt desc)[0...50]{
@@ -136,9 +137,6 @@ async function getRandomTestimonial() {
     // Pick a random testimonial
     const random = results[Math.floor(Math.random() * results.length)]
     
-    // Use global locale for now - could be enhanced to use user's locale
-    const locale = "global"
-    
     return {
       quote: chooseLocalizedString(random.quote, locale) || "",
       author: chooseLocalizedString(random.authorName, locale) || "",
@@ -150,10 +148,21 @@ async function getRandomTestimonial() {
   }
 }
 
-export default async function AboutPage() {
+export default async function AboutPage({
+  params
+}: {
+  params: Promise<{ loc?: string }>
+}) {
+  const resolvedParams = await params
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+  
   const aboutData = await getAboutPageData()
-  const testimonial = await getRandomTestimonial()
-  const locale = "global" // Could be enhanced to use user's locale
+  const testimonial = await getRandomTestimonial(locale)
   
   if (!aboutData) {
     return <div className="min-h-screen flex items-center justify-center">
