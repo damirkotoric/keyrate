@@ -7,6 +7,7 @@ import { RefreshCw, TrendingUp, DollarSign, FileText, ArrowRight, Home, Users, P
 import Header from "@/components/header"
 import Footer from "@/components/footer"
 import SolutionCard from "@/components/solution-card"
+import { Highlighter } from "@/components/ui/highlighter"
 import type { AppLocale } from "@/lib/locale"
 
 interface SolutionsPageClientProps {
@@ -142,8 +143,10 @@ export default function SolutionsPageClient({ locale, pageData }: SolutionsPageC
       <section className="pb-16">
         <div className="container mx-auto px-4">
           <div className="text-center mb-8 border-t border-border pt-8">
-            <p className="text-muted-foreground">
-              {filteredSolutions.length} solution{filteredSolutions.length !== 1 ? 's' : ''} available{locale !== 'global' ? ` in ${countryName}` : ' across all markets'}
+            <p className="text-lg text-muted-foreground">
+              <Highlighter isView={true} delayMs={300}>
+                {filteredSolutions.length} solution{filteredSolutions.length !== 1 ? 's' : ''} available{locale !== 'global' ? ` in ${countryName}` : ' across all markets'}
+              </Highlighter>
             </p>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">

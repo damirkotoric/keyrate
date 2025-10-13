@@ -15,7 +15,7 @@ export function TestimonialBlock({
   rating = 5 
 }: TestimonialBlockProps) {
   return (
-    <Card className="p-8 border shadow-lg">
+    <Card className="p-8 border">
       <CardContent className="p-0 text-center">
         <div className="flex items-center justify-center gap-1 mb-6">
           {[...Array(rating)].map((_, i) => (

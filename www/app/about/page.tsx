@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { StatsSection, defaultStats } from "@/components/stats-section"
 import { Card, CardContent } from "@/components/ui/card"
-import { CheckCircle, Users, Globe as GlobeIcon, TrendingUp, Shield, Eye, BookOpen } from "@/components/icons"
+import { CheckCircle } from "@/components/icons"
 import { TestimonialBlock } from "@/components/testimonial-block"
 import { GlobeSection } from "@/components/globe-section"
+import { WhatMakesUsDifferent } from "@/components/what-makes-us-different"
 import { sanityFetch } from "@/lib/sanity"
 import { chooseLocalizedString } from "@/lib/locale"
 
@@ -133,93 +134,7 @@ export default async function AboutPage() {
       </section>
 
       {/* What Makes Us Different */}
-      <section className="py-16">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-12 text-center">What Makes Us Different</h2>
-          
-          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <Card className="relative overflow-hidden">
-              <Users className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Client-First Model</h3>
-                <p className="text-sm text-muted-foreground">
-                  We work for you, not any one bank — so all recommendations are unbiased.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="relative overflow-hidden">
-              <TrendingUp className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Smarter Rates</h3>
-                <p className="text-sm text-muted-foreground">
-                  We negotiate hard behind the scenes and make multiple lenders compete for you.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="relative overflow-hidden">
-              <CheckCircle className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Faster Process</h3>
-                <p className="text-sm text-muted-foreground">
-                  Digital tools + expert brokers = faster approvals with less paperwork.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="relative overflow-hidden">
-              <Eye className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Complete Transparency</h3>
-                <p className="text-sm text-muted-foreground">
-                  No hidden surprises. Ever. Everything is explained upfront in plain language.
-                </p>
-              </CardContent>
-            </Card>
-
-            <Card className="relative overflow-hidden">
-              <Users className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Advocacy</h3>
-                <p className="text-sm text-muted-foreground">
-                  We act in your best interests, always.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="relative overflow-hidden">
-              <Shield className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Integrity</h3>
-                <p className="text-sm text-muted-foreground">
-                  What we promise is what we deliver.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="relative overflow-hidden">
-              <GlobeIcon className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Access for All</h3>
-                <p className="text-sm text-muted-foreground">
-                  First-timers, expats, non-residents, self-employed — we fight for the people the banks often ignore.
-                </p>
-              </CardContent>
-            </Card>
-            
-            <Card className="relative overflow-hidden">
-              <BookOpen className="absolute -right-2 -bottom-8 size-32 opacity-15" />
-              <CardContent className="relative space-y-2 pb-4">
-                <h3 className="text-lg font-bold">Education &gt; Sales</h3>
-                <p className="text-sm text-muted-foreground">
-                  Our job is to advise, not pressure.
-                </p>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </section>
+      <WhatMakesUsDifferent />
 
       {/* Metrics Section */}
       <StatsSection 
@@ -357,19 +272,21 @@ export default async function AboutPage() {
               </p>
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-4">
                 {[
-                  "TD Bank",
-                  "Scotia Bank",
-                  "Home Trust",
-                  "MCAP",
-                  "Tangerine",
-                  "CIBC Firstline",
-                  "Merix Financial",
-                  "Macquarie",
+                  { name: "TD Bank", logo: "/logo-td.svg" },
+                  { name: "Scotia Bank", logo: "/logo-scotiabank.svg" },
+                  { name: "Home Trust", logo: "/logo-home-trust.png" },
+                  { name: "MCAP", logo: "/logo-mcap.svg" },
+                  { name: "Tangerine", logo: "/logo-tangerine.svg" },
+                  { name: "CIBC Firstline", logo: "/logo-cibc.svg" },
+                  { name: "Merix Financial", logo: "/logo-merix.svg" },
+                  { name: "Macquarie", logo: "/logo-macquarie.svg" },
                 ].map((lender, index) => (
-                  <div key={index} className="bg-gray-50 rounded-lg p-4 text-center">
-                    <span className="font-medium text-gray-800">
-                      {lender}
-                    </span>
+                  <div key={index} className="flex p-4 text-center space-y-3 items-center justify-center">
+                    <img
+                      src={lender.logo}
+                      alt={`${lender.name} logo`}
+                      className="min-h-10 min-w-12 max-h-12 max-w-full object-contain"
+                    />
                   </div>
                 ))}
               </div>
@@ -382,9 +299,10 @@ export default async function AboutPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <div className="bg-white rounded-lg p-8">
-              <h3 className="text-3xl font-bold mb-6 text-center">Get Started Today</h3>
-              <form className="space-y-6">
+            <Card>
+              <CardContent className="p-8">
+                <h3 className="text-3xl font-bold mb-6 text-center">Get Started Today</h3>
+                <form className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
@@ -469,12 +387,13 @@ export default async function AboutPage() {
                 </div>
 
                 <div className="text-center">
-                  <Button type="submit" className="bg-primary hover:bg-primary/90 text-white px-8 py-3 text-lg">
-                    Talk to a Mortgage Advisor →
+                  <Button type="submit" size="xl">
+                    Talk to a Mortgage Advisor
                   </Button>
                 </div>
               </form>
-            </div>
+              </CardContent>
+            </Card>
           </div>
         </div>
       </section>
