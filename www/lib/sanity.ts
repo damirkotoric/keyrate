@@ -1,5 +1,6 @@
 // lib/sanity.server.ts (no "use client")
 import { createClient } from '@sanity/client'
+import imageUrlBuilder from '@sanity/image-url'
 
 const projectId =
   process.env.SANITY_API_PROJECT_ID ||
@@ -24,6 +25,13 @@ export const sanity = createClient({
   token: token || undefined,
   perspective: 'published',
 })
+
+// Image URL builder
+const builder = imageUrlBuilder(sanity)
+
+export function urlFor(source: any) {
+  return builder.image(source)
+}
 
 export async function sanityFetch<T>(query: string): Promise<T>
 export async function sanityFetch<T>(query: string, params: Record<string, any>): Promise<T>
