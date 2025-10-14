@@ -40,7 +40,7 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     : null
   
   return {
-    title: post.title.en,
+    title: `${post.title.en} | KeyRate Mortgage Broker`,
     description: post.subtitle?.en || post.title.en,
     openGraph: {
       title: post.title.en,

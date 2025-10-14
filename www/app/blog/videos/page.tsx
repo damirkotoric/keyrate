@@ -6,6 +6,12 @@ import { Badge } from '@/components/ui/badge'
 import { Play } from '@/components/icons'
 import { getAllVideos, getYouTubeEmbedUrl } from '@/lib/queries/videos'
 import { Breadcrumbs } from '@/components/breadcrumbs'
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Video Library | KeyRate Mortgage Broker',
+  description: 'Watch our collection of mortgage advice videos and educational content.',
+}
 
 export default async function VideosPage() {
   const videos = await getAllVideos()

@@ -42,7 +42,7 @@ export async function generateMetadata({ params }: GuidePageProps) {
     : null
   
   return {
-    title: guide.title.en,
+    title: `${guide.title.en} | KeyRate Mortgage Broker`,
     description: guide.subtitle?.en || guide.title.en,
     openGraph: {
       title: guide.title.en,

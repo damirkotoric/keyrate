@@ -32,7 +32,7 @@ export async function generateMetadata({ params }: VideoPageProps) {
   }
   
   return {
-    title: video.title.en,
+    title: `${video.title.en} | KeyRate Mortgage Broker`,
     description: video.title.en,
     openGraph: {
       title: video.title.en,

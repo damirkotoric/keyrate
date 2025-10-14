@@ -5,6 +5,12 @@ import { ArrowRight } from "@/components/icons"
 import { getAllGuides } from "@/lib/queries/guides"
 import { GuideCard } from "@/components/guide-card"
 import { GetInTouchSection } from "@/components/get-in-touch-section"
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Mortgage Guides & Resources | KeyRate Mortgage Broker',
+  description: 'Download free mortgage guides packed with expert advice, checklists and insider tips.',
+}
 
 export default async function GuidesPage() {
   const guides = await getAllGuides()

@@ -2,8 +2,50 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import { GetInTouchSection } from "@/components/get-in-touch-section"
 import { getContactPage } from "@/lib/queries/contact"
+import { chooseLocalizedString, normalizeLocaleParam, LOCALE_COOKIE, type AppLocale } from "@/lib/locale"
+import { cookies } from "next/headers"
+import type { Metadata } from 'next'
 
-export default async function ContactPage() {
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ loc?: string }>
+}): Promise<Metadata> {
+  const resolvedParams = await params
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+  
+  const contactPage = await getContactPage()
+
+  if (!contactPage) {
+    return {
+      title: 'Contact Us',
+    }
+  }
+
+  return {
+    title: `${chooseLocalizedString(contactPage.title, locale) || 'Contact Us'} | KeyRate Mortgage Broker`,
+    description: chooseLocalizedString(contactPage.subtitle, locale),
+  }
+}
+
+export default async function ContactPage({
+  params
+}: {
+  params: Promise<{ loc?: string }>
+}) {
+  const resolvedParams = await params
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+  
   const contactPage = await getContactPage()
 
   return (
@@ -14,11 +56,11 @@ export default async function ContactPage() {
       <section className="py-16 bg-background">
         <div className="container mx-auto px-4 text-center">
           <h1 className="text-4xl md:text-5xl font-bold mb-6">
-            {contactPage?.title?.en || "Get In Touch"}
+            {chooseLocalizedString(contactPage?.title, locale) || "Get In Touch"}
           </h1>
-          {contactPage?.subtitle?.en && (
+          {contactPage?.subtitle && (
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-              {contactPage.subtitle.en}
+              {chooseLocalizedString(contactPage.subtitle, locale)}
             </p>
           )}
         </div>

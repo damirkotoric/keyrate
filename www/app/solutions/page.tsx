@@ -2,8 +2,14 @@ import { cookies, headers } from "next/headers"
 import { LOCALE_COOKIE, normalizeLocaleParam, type AppLocale, chooseLocalizedString, getPreferredLocaleFromHeaders } from "@/lib/locale"
 import { sanityFetch } from "@/lib/sanity"
 import SolutionsPageClient from "@/app/solutions/solutions-client"
+import type { Metadata } from 'next'
 
 export const dynamic = "force-dynamic"
+
+export const metadata: Metadata = {
+  title: 'Mortgage Solutions | KeyRate Mortgage Broker',
+  description: 'Explore our comprehensive range of mortgage solutions tailored to your needs.',
+}
 
 export default async function SolutionsPage({ params }: { params?: Promise<{ loc?: string }> }) {
   // Get locale - either from URL param (for /ca/solutions) or from cookies (for /solutions)

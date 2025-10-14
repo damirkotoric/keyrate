@@ -129,11 +129,11 @@ export default function Footer() {
                     Guides & eBooks
                   </a>
                 </li>
-                <li>
+                {/* <li>
                   <a href={localize("/useful-links")} className="hover:text-primary-foreground transition-colors">
                     Useful Links
                   </a>
-                </li>
+                </li> */}
               </ul>
             </div>
 

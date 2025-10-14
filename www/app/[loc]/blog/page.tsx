@@ -2,5 +2,5 @@
 // The actual implementation is in /app/blog/page.tsx which handles both
 // locale-prefixed and non-prefixed routes automatically
 
-export { default } from "@/app/blog/page"
+export { default, metadata } from "@/app/blog/page"
 

@@ -13,6 +13,7 @@ import { getAllBlogPosts } from "@/lib/queries/blog"
 import { getFeaturedGuides } from "@/lib/queries/guides"
 import { getFeaturedVideos, getYouTubeEmbedUrl } from "@/lib/queries/videos"
 import { LOCALE_COOKIE, normalizeLocaleParam, type AppLocale } from "@/lib/locale"
+import type { Metadata } from 'next'
 
 // Map locale to blog region
 function localeToRegion(locale: AppLocale): string | null {
@@ -23,6 +24,11 @@ function localeToRegion(locale: AppLocale): string | null {
     'global': null, // null means show all regions
   }
   return mapping[locale] || null
+}
+
+export const metadata: Metadata = {
+  title: 'Blog | KeyRate Mortgage Broker',
+  description: 'Read the latest mortgage news, tips, and insights from KeyRate Mortgage experts.',
 }
 
 export default async function BlogPage({ params }: { params?: Promise<{ loc?: string }> }) {

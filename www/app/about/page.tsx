@@ -12,6 +12,7 @@ import { chooseLocalizedString, normalizeLocaleParam, LOCALE_COOKIE, type AppLoc
 import { renderPortableText } from "@/lib/portableText"
 import { IconProps } from "@/components/icons"
 import { cookies } from "next/headers"
+import type { Metadata } from 'next'
 
 // Map icon names to icon components for What Makes Us Different section
 const featureIconMap: Record<string, React.ComponentType<IconProps>> = {
@@ -148,6 +149,33 @@ async function getRandomTestimonial(locale: AppLocale) {
   }
 }
 
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ loc?: string }>
+}): Promise<Metadata> {
+  const resolvedParams = await params
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+  
+  const aboutData = await getAboutPageData()
+
+  if (!aboutData) {
+    return {
+      title: 'About Us | KeyRate Mortgage Broker',
+    }
+  }
+
+  return {
+    title: `${chooseLocalizedString(aboutData.hero.title, locale)} | KeyRate Mortgage Broker`,
+    description: chooseLocalizedString(aboutData.whoWeAre.title, locale),
+  }
+}
+
 export default async function AboutPage({
   params
 }: {
@@ -273,7 +301,7 @@ export default async function AboutPage({
                   <div className="overflow-hidden rounded-xl absolute inset-0 pointer-events-none">
                     <IconComponent className="absolute -right-2 -bottom-8 size-32 opacity-15" />
                   </div>
-                  <CardContent className="relative space-y-2 pb-4">
+                  <CardContent className="relative space-y-2 pb-12 pt-4">
                     <h3 className="text-lg font-bold">
                       {chooseLocalizedString(item.title, locale)}
                     </h3>
@@ -381,7 +409,7 @@ export default async function AboutPage({
                     <img
                       src={partner.logo ? urlFor(partner.logo).url() : ""}
                       alt={`${partner.name} logo`}
-                      className="min-h-10 min-w-12 max-h-12 max-w-full object-contain"
+                      className="min-h-10 min-w-12 max-h-12 max-w-40 object-contain"
                     />
                   </div>
                 ))}

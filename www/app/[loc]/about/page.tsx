@@ -2,5 +2,5 @@
 // The actual implementation is in /app/about/page.tsx which handles both
 // locale-prefixed and non-prefixed routes automatically
 
-export { default } from "@/app/about/page"
+export { default, generateMetadata } from "@/app/about/page"
 
