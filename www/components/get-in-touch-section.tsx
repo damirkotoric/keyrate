@@ -1,18 +1,46 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Phone, Mail, MapPin } from "@/components/icons"
 
-export function GetInTouchSection() {
+interface GetInTouchSectionProps {
+  hideHeader?: boolean
+}
+
+function getLocaleFromPathname(pathname: string): string {
+  const segments = pathname.split("/").filter(Boolean)
+  const firstSegment = segments[0]?.toLowerCase()
+  
+  if (firstSegment === "ca") return "canada"
+  if (firstSegment === "us" || firstSegment === "usa") return "usa"
+  if (firstSegment === "ae" || firstSegment === "uae") return "uae"
+  
+  return ""
+}
+
+export function GetInTouchSection({ hideHeader = false }: GetInTouchSectionProps) {
+  const pathname = usePathname()
+  const [location, setLocation] = useState("")
+
+  useEffect(() => {
+    const defaultLocation = getLocaleFromPathname(pathname)
+    setLocation(defaultLocation)
+  }, [pathname])
   return (
     <section className="py-16 bg-muted">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl font-bold mb-2">Get In Touch</h2>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            Ready to secure your mortgage? Contact our expert team today for personalized service across Canada and
-            the UAE.
-          </p>
-        </div>
+        {!hideHeader && (
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-2">Get In Touch</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Ready to secure your mortgage? Contact our expert team today for personalized service across Canada and
+              the UAE.
+            </p>
+          </div>
+        )}
 
         <div className="grid md:grid-cols-2 gap-12">
           {/* Contact Information */}
@@ -114,7 +142,11 @@ export function GetInTouchSection() {
               </div>
               <div>
                 <label className="block text-sm font-medium mb-2">Location</label>
-                <select className="w-full h-12 rounded-md border border-input bg-card px-3 text-foreground">
+                <select 
+                  className="w-full h-12 rounded-md border border-input bg-card px-3 text-foreground"
+                  value={location}
+                  onChange={(e) => setLocation(e.target.value)}
+                >
                   <option value="">Select your location</option>
                   <option value="canada">Canada</option>
                   <option value="uae">UAE</option>
