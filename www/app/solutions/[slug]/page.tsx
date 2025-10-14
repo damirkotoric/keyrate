@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react"
 import { useParams, usePathname } from "next/navigation"
 import { normalizeLocaleParam, type AppLocale } from "@/lib/locale"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
 import { PreApprovalForm } from "@/components/pre-approval-form"
 import { FAQList } from "@/components/faq-list"
 import { Card, CardContent } from "@/components/ui/card"
@@ -12,7 +12,7 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import * as PhosphorIcons from "phosphor-react"
-import { CaretRight } from "@/components/icons"
+import { Breadcrumbs } from "@/components/breadcrumbs"
 
 // Helper function to dynamically get icon component
 const getIconComponent = (iconName: string) => {
@@ -226,12 +226,12 @@ export default function SolutionPage() {
       <section className="py-16">
         <div className="container mx-auto px-4">
           {/* Breadcrumb */}
-          <div className="mb-6 flex items-center gap-2 text-muted-foreground justify-center">
-            <a href={loc ? `/${loc}/solutions` : "/solutions"} className="hover:text-foreground transition-colors">
-              Solutions
-            </a>
-            <CaretRight className="w-4 h-4" />
-          </div>
+          <Breadcrumbs 
+            items={[
+              { label: 'Solutions', href: loc ? `/${loc}/solutions` : '/solutions' }
+            ]}
+            className="justify-center"
+          />
           
           <div className="text-center">
             <h1 className="text-4xl md:text-5xl font-bold text-foreground mb-6">

@@ -201,15 +201,15 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
           <div className="h-16 flex items-center justify-between px-0 text-foreground">
             <div className="flex flex-1 lg:flex-none items-center space-x-2">
               <a className="flex-none" href={localize("/")}>
-                <img
+                {/* <img
                   src="/logo-favicon.svg"
                   alt="KeyRate Dubai Logo"
                   className="h-8 mt-1 w-auto block sm:hidden"
-                />
+                /> */}
                 <img
                   src="/logo-wordmark.svg"
                   alt="KeyRate Dubai Logo"
-                  className="h-8 mt-1 w-auto hidden sm:block"
+                  className="h-6 sm:h-8 mt-1 w-auto block"
                 />
               </a>
             </div>
@@ -282,5 +282,3 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
     </div>
   )
 }
-
-export { Header }

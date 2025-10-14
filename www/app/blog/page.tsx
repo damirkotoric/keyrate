@@ -1,27 +1,51 @@
-"use client"
-
-import { useState } from "react"
+import { cookies } from "next/headers"
+import Link from "next/link"
 import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select"
-import { Input } from "@/components/ui/input"
+import { Card, CardContent, CardCover } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Search, Play, Download, ArrowRight, Instagram } from "@/components/icons"
+import { Play, ArrowRight } from "@/components/icons"
 import Header from "@/components/header"
 import Footer from "@/components/footer"
+import BlogPageClient from "@/components/blog-page-client"
+import InstagramSection from "@/components/instagram-section"
+import { GuideCard } from "@/components/guide-card"
+import { getAllBlogPosts } from "@/lib/queries/blog"
+import { getFeaturedGuides } from "@/lib/queries/guides"
+import { getFeaturedVideos, getYouTubeEmbedUrl } from "@/lib/queries/videos"
+import { LOCALE_COOKIE, normalizeLocaleParam, type AppLocale } from "@/lib/locale"
 
-export default function BlogPage() {
-  const [selectedCategory, setSelectedCategory] = useState("All categories")
-  const [selectedRegion, setSelectedRegion] = useState("All regions")
+// Map locale to blog region
+function localeToRegion(locale: AppLocale): string | null {
+  const mapping: Record<AppLocale, string | null> = {
+    'ca': 'canada',
+    'ae': 'uae',
+    'us': 'usa',
+    'global': null, // null means show all regions
+  }
+  return mapping[locale] || null
+}
 
-  const categories = ["All categories", "News", "Videos", "Buying Tips", "Investing", "Rates", "Case Studies"]
-  const regions = ["All regions", "Global", "Canada", "UAE", "USA"]
+export default async function BlogPage({ params }: { params?: Promise<{ loc?: string }> }) {
+  // Get locale - either from URL param (for /ca/blog) or from cookies (for /blog)
+  const resolvedParams = params ? await params : undefined
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+
+  // Get all posts (we'll let the client handle filtering based on initial region)
+  const posts = await getAllBlogPosts()
+  
+  // Get featured guides
+  const guides = await getFeaturedGuides(4)
+  
+  // Get featured videos
+  const videos = await getFeaturedVideos(3)
+  
+  // Get the region filter to pass as initial state to client
+  const regionFilter = localeToRegion(locale)
 
   const featuredContent = [
     {
@@ -47,109 +71,7 @@ export default function BlogPage() {
     },
   ]
 
-  const latestPosts = [
-    {
-      category: "Rates",
-      region: "Canada",
-      title: "Bank of Canada Holds Rates Steady in January",
-      excerpt: "What this means for your mortgage renewal and new applications",
-      date: "Jan 15, 2025",
-      readTime: "3 min read",
-      thumbnail: "/placeholder.svg?height=120&width=160",
-    },
-    {
-      category: "Buying Tips",
-      region: "Global",
-      title: "Pre-Approval vs Pre-Qualification: Know the Difference",
-      excerpt: "Understanding these terms can save you time and strengthen your offer",
-      date: "Jan 12, 2025",
-      readTime: "5 min read",
-      thumbnail: "/placeholder.svg?height=120&width=160",
-    },
-    {
-      category: "Buying Tips",
-      region: "UAE",
-      title: "Dubai Property Market Update: Q1 2025",
-      excerpt: "Latest trends and opportunities in Dubai's real estate market",
-      date: "Jan 10, 2025",
-      readTime: "4 min read",
-      thumbnail: "/placeholder.svg?height=120&width=160",
-    },
-    {
-      category: "Investing",
-      region: "Global",
-      title: "Building Wealth Through Real Estate Investment",
-      excerpt: "Strategies for growing your property portfolio in 2025",
-      date: "Jan 8, 2025",
-      readTime: "6 min read",
-      thumbnail: "/placeholder.svg?height=120&width=160",
-    },
-    {
-      category: "Rates",
-      region: "Canada",
-      title: "New Mortgage Rules: What Changed in 2025",
-      excerpt: "Recent regulatory updates affecting Canadian homebuyers",
-      date: "Jan 5, 2025",
-      readTime: "4 min read",
-      thumbnail: "/placeholder.svg?height=120&width=160",
-    },
-    {
-      category: "Investing",
-      region: "USA",
-      title: "US Market Entry: What Canadian Investors Need to Know",
-      excerpt: "Cross-border investment opportunities and considerations",
-      date: "Jan 3, 2025",
-      readTime: "7 min read",
-      thumbnail: "/placeholder.svg?height=120&width=160",
-    },
-  ]
 
-  const guides = [
-    {
-      title: "First-Time Buyer Guide",
-      description: "Complete roadmap to homeownership",
-      image: "/placeholder.svg?height=150&width=200",
-    },
-    {
-      title: "Mortgage Renewal Tips",
-      description: "Maximize savings at renewal time",
-      image: "/placeholder.svg?height=150&width=200",
-    },
-    {
-      title: "Refinancing Mistakes to Avoid",
-      description: "Common pitfalls and how to avoid them",
-      image: "/placeholder.svg?height=150&width=200",
-    },
-    {
-      title: "Investment Property Financing",
-      description: "Build wealth through real estate",
-      image: "/placeholder.svg?height=150&width=200",
-    },
-  ]
-
-  const videos = [
-    {
-      title: "Mortgage Pre-Approval Process Explained",
-      duration: "8:32",
-      thumbnail: "/placeholder.svg?height=180&width=320",
-    },
-    {
-      title: "Fixed vs Variable Rates: Which is Better?",
-      duration: "6:15",
-      thumbnail: "/placeholder.svg?height=180&width=320",
-    },
-    {
-      title: "How to Improve Your Credit Score Fast",
-      duration: "5:47",
-      thumbnail: "/placeholder.svg?height=180&width=320",
-    },
-  ]
-
-  const filteredPosts = latestPosts.filter((post) => {
-    const categoryMatch = selectedCategory === "All categories" || post.category === selectedCategory
-    const regionMatch = selectedRegion === "All regions" || post.region === selectedRegion
-    return categoryMatch && regionMatch
-  })
 
   return (
     <div className="min-h-screen bg-background">
@@ -165,269 +87,86 @@ export default function BlogPage() {
         </div>
       </section>
 
-      {/* Featured Content */}
-      <section className="pb-16">
-        <div className="container mx-auto px-4">
-          <div className="grid md:grid-cols-3 gap-8">
-            {featuredContent.map((item, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video relative">
-                  <img src={item.image || "/placeholder.svg"} alt={item.title} className="w-full h-full object-cover" />
-                  <Badge className="absolute top-4 left-4">{item.tag}</Badge>
-                </div>
-                <CardContent className="p-6">
-                  <h3 className="text-xl font-bold mb-2">{item.title}</h3>
-                  <p className="text-muted-foreground mb-4">{item.hook}</p>
-                  <Button className="w-full">
-                    {item.cta}
-                    <ArrowRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Latest Posts */}
-      <section className="py-16 bg-card">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col lg:flex-row gap-12">
-            {/* Main Content */}
-            <div className="lg:w-2/3">
-              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8">
-                <h2 className="text-3xl font-bold mb-4 sm:mb-0">Latest Posts</h2>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <div>
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                      <SelectTrigger className="min-w-[140px]">
-                        <SelectValue placeholder="Categories" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {categories.map((category) => (
-                          <SelectItem key={category} value={category}>
-                            {category}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Select value={selectedRegion} onValueChange={setSelectedRegion}>
-                      <SelectTrigger className="min-w-[120px]">
-                        <SelectValue placeholder="Region" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {regions.map((region) => (
-                          <SelectItem key={region} value={region}>
-                            {region}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-              </div>
-
-              <div className="space-y-6">
-                {filteredPosts.map((post, index) => (
-                  <article
-                    key={index}
-                    className="py-6 border-b last:border-b-0 hover:bg-muted/50 transition-colors -mx-4 px-4 rounded-lg cursor-pointer"
-                  >
-                    <div className="flex gap-6 items-start">
-                      <div className="flex-1">
-                        <div className="flex justify-between items-start mb-3">
-                          <div className="flex gap-2">
-                            <Badge variant="secondary">
-                              {post.category}
-                            </Badge>
-                            <Badge variant="outline">
-                              {post.region}
-                            </Badge>
-                          </div>
-                          <div className="text-sm text-muted-foreground">
-                            {post.date} • {post.readTime}
-                          </div>
-                        </div>
-                        <h3 className="text-xl font-bold mb-2 hover:text-accent transition-colors">{post.title}</h3>
-                        <p className="text-muted-foreground">{post.excerpt}</p>
-                      </div>
-                      <div className="flex-shrink-0">
-                        <img
-                          src={post.thumbnail || "/placeholder.svg"}
-                          alt={post.title}
-                          className="w-40 h-30 object-cover rounded-lg"
-                        />
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-
-              {/* Show All Button */}
-              <div className="text-center mt-8">
-                <Button variant="outline" size="lg" className="px-8">
-                  Show All Posts
-                  <ArrowRight className="w-4 h-4 ml-2" />
-                </Button>
-              </div>
-            </div>
-
-            {/* Sidebar */}
-            <div className="lg:w-1/3 space-y-8">
-              {/* Search */}
-              <Card className="p-0">
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
-                  <Input placeholder="Search blog..." className="p-6 pl-10" />
-                </div>
-              </Card>
-
-              {/* Newsletter Signup */}
-              <Card className="p-6 bg-primary text-primary-foreground">
-                <h3 className="text-lg font-bold mb-0">Subscribe for Free Mortgage Strategies</h3>
-                <p className="text-primary-foreground/90 text-sm -mt-1 mb-4">
-                  Get insider tips, rate updates, and exclusive guides delivered to your inbox.
-                </p>
-                <div className="space-y-3">
-                  <Input placeholder="Your email address" />
-                  <Button variant="secondary" className="w-full">Subscribe Now</Button>
-                </div>
-              </Card>
-
-              <div>
-                <h3 className="text-lg font-bold mb-4">Categories</h3>
-                <div className="space-y-1">
-                  {categories.slice(1).map((category) => (
-                    <button
-                      key={category}
-                      onClick={() => setSelectedCategory(category)}
-                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-muted transition-colors text-foreground hover:text-accent"
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div>
-                <h3 className="text-lg font-bold mb-4">Regions</h3>
-                <div className="space-y-1">
-                  {regions.slice(1).map((region) => (
-                    <button
-                      key={region}
-                      onClick={() => setSelectedRegion(region)}
-                      className="block w-full text-left py-3 px-4 rounded-lg hover:bg-muted transition-colors text-foreground hover:text-accent"
-                    >
-                      {region}
-                    </button>
-                  ))}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+      <BlogPageClient posts={posts} initialRegion={regionFilter || 'all'} locale={locale} />
 
       {/* Guides & Free Downloads */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Guides & Free Downloads</h2>
-            <p className="text-xl text-muted-foreground">
-              Comprehensive resources to help you make informed mortgage decisions
+            <p className="text-xl text-muted-foreground mb-6">
+              Comprehensive resources to help you make informed mortgage decisions.
             </p>
+            <Button variant="outline" asChild>
+              <Link href="/guides">
+                View All Guides
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
           </div>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {guides.map((guide, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-[4/3] relative">
-                  <img
-                    src={guide.image || "/placeholder.svg"}
-                    alt={guide.title}
-                    className="w-full h-full object-cover"
-                  />
-                </div>
-                <CardContent className="p-4 flex flex-col h-full">
-                  <div className="flex-1">
-                    <h3 className="font-bold mb-2">{guide.title}</h3>
-                    <p className="text-sm text-muted-foreground mb-4">{guide.description}</p>
-                  </div>
-                  <Button size="sm" className="w-full">
-                    <Download className="w-4 h-4 mr-2" />
-                    Download Guide
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {guides.length > 0 ? (
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {guides.map((guide) => (
+                <GuideCard key={guide._id} guide={guide} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No guides available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* Learning Videos */}
       <section className="py-16">
         <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
+          <div className="text-center mb-8">
             <h2 className="text-3xl font-bold mb-4">Watch & Learn</h2>
-            <p className="text-xl text-muted-foreground">Educational videos to help you understand mortgages better</p>
+            <p className="text-xl text-muted-foreground mb-6">Educational videos to help you understand mortgages better.</p>
+            <Button variant="outline" asChild>
+              <Link href="/blog/videos">
+                View All Videos
+                <ArrowRight className="w-4 h-4 ml-2" />
+              </Link>
+            </Button>
           </div>
-          <div className="grid md:grid-cols-3 gap-8">
-            {videos.map((video, index) => (
-              <Card key={index} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-video relative group cursor-pointer">
-                  <img
-                    src={video.thumbnail || "/placeholder.svg"}
-                    alt={video.title}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-foreground/20 group-hover:bg-foreground/40 transition-colors flex items-center justify-center">
-                    <div className="w-16 h-16 bg-background/90 rounded-full flex items-center justify-center group-hover:scale-110 transition-transform">
-                      <Play className="w-6 h-6 text-primary ml-1" />
-                    </div>
-                  </div>
-                  <Badge className="absolute bottom-4 right-4 bg-foreground/70 text-background">{video.duration}</Badge>
-                </div>
-                <CardContent className="p-4">
-                  <h3 className="font-bold mb-2">{video.title}</h3>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
+          {videos.length > 0 ? (
+            <div className="grid md:grid-cols-3 gap-8">
+              {videos.map((video) => {
+                const embedUrl = getYouTubeEmbedUrl(video.youtubeUrl)
+                
+                return (
+                  <Card key={video._id} className="overflow-hidden transition-shadow">
+                    <CardCover>
+                      <div className="aspect-video relative">
+                        <iframe
+                          src={embedUrl || undefined}
+                          title={video.title.en}
+                          className="w-full h-full"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      </div>
+                    </CardCover>
+                    <CardContent className="p-4">
+                      <h3 className="font-bold">{video.title.en}</h3>
+                    </CardContent>
+                  </Card>
+                )
+              })}
+            </div>
+          ) : (
+            <div className="text-center py-12">
+              <p className="text-muted-foreground">No videos available yet. Check back soon!</p>
+            </div>
+          )}
         </div>
       </section>
 
       {/* From Instagram */}
-      <section className="py-16">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold mb-4">Follow Our Journey @keyrate</h2>
-            <p className="text-xl text-muted-foreground">Behind-the-scenes content, tips, and client success stories</p>
-          </div>
-          <div className="grid md:grid-cols-4 gap-6">
-            {[1, 2, 3, 4].map((item) => (
-              <Card key={item} className="overflow-hidden hover:shadow-lg transition-shadow">
-                <div className="aspect-square relative">
-                  <img
-                    src={`/placeholder.svg?height=300&width=300&query=instagram post ${item}`}
-                    alt={`Instagram post ${item}`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute top-4 right-4">
-                    <Instagram className="w-6 h-6 text-white drop-shadow-lg" />
-                  </div>
-                </div>
-              </Card>
-            ))}
-          </div>
-          <div className="text-center mt-8">
-            <Button variant="outline" size="lg">
-              <Instagram className="w-5 h-5 mr-2" />
-              See More on Instagram
-            </Button>
-          </div>
-        </div>
-      </section>
+      <InstagramSection />
 
       <Footer />
     </div>

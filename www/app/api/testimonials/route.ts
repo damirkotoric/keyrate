@@ -7,16 +7,16 @@ export async function GET() {
     // Query up to 50 testimonials from Sanity
     const results = await sanityFetch<any[]>(
       `*[_type == "testimonial"] | order(_createdAt asc)[0...50]{
-        "testimonial": quote,
-        "author": authorName,
-        "role": authorTitle
+        quote,
+        authorName,
+        authorTitle
       }`
     )
     const items = (results || [])
       .map((s: any) => ({
-        testimonial: s?.testimonial,
-        author: s?.author,
-        role: s?.role,
+        testimonial: s?.quote?.en || s?.quote,
+        author: s?.authorName?.en || s?.authorName,
+        role: s?.authorTitle?.en || s?.authorTitle,
       }))
       .filter((i: any) => typeof i.testimonial === 'string' && i.testimonial.trim().length > 0)
     return Response.json({ items, count: items.length })

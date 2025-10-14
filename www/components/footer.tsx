@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { Phone, Mail, Facebook, Twitter, Linkedin, Instagram } from "@/components/icons"
 import { GridPattern } from "@/components/ui/grid-pattern"
 
-export { Footer }
 export default function Footer() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
@@ -42,10 +41,6 @@ export default function Footer() {
             <p className="text-primary-foreground/80 mb-6">
               Canada, UAE and USA's most trusted mortgage broker. We work for you, not the bank.
             </p>
-            <div className="space-y-2 text-sm text-primary-foreground/70">
-              <p>Canada License: FSRA #13181</p>
-              <p>UAE Registration: #123</p>
-            </div>
           </div>
 
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
@@ -58,7 +53,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/solutions/first-time-buyers")} className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/first-time-home-buyer-mortgages")} className="hover:text-primary-foreground transition-colors">
                     First-Time Buyers
                   </a>
                 </li>
@@ -68,22 +63,22 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/solutions/refinancing")} className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/mortgage-refinancing")} className="hover:text-primary-foreground transition-colors">
                     Refinancing
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/solutions/investment-properties")} className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/investment-and-rental-mortgages")} className="hover:text-primary-foreground transition-colors">
                     Investment Properties
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/solutions/islamic-mortgages")} className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/islamic-finance-murabaha-ijara")} className="hover:text-primary-foreground transition-colors">
                     Islamic Mortgages
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/solutions/self-employed")} className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/solutions/self-employed-borrower-mortgages")} className="hover:text-primary-foreground transition-colors">
                     Self-Employed
                   </a>
                 </li>
@@ -91,41 +86,21 @@ export default function Footer() {
             </div>
 
             <div>
-              <h3 className="text-xl font-bold mb-6">Blog</h3>
+              <h3 className="text-xl font-bold mb-6">Company</h3>
               <ul className="space-y-3 text-primary-foreground/80">
                 <li>
+                  <a href={localize("/about")} className="hover:text-primary-foreground transition-colors">
+                    About Us
+                  </a>
+                </li>
+                <li>
                   <a href={localize("/blog")} className="hover:text-primary-foreground transition-colors">
-                    All Posts
+                    Blog
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/blog/news")} className="hover:text-primary-foreground transition-colors">
-                    News
-                  </a>
-                </li>
-                <li>
-                  <a href={localize("/blog/videos")} className="hover:text-primary-foreground transition-colors">
-                    Videos
-                  </a>
-                </li>
-                <li>
-                  <a href={localize("/blog/buying-tips")} className="hover:text-primary-foreground transition-colors">
-                    Buying Tips
-                  </a>
-                </li>
-                <li>
-                  <a href={localize("/blog/investing")} className="hover:text-primary-foreground transition-colors">
-                    Investing
-                  </a>
-                </li>
-                <li>
-                  <a href={localize("/blog/rates")} className="hover:text-primary-foreground transition-colors">
-                    Rates
-                  </a>
-                </li>
-                <li>
-                  <a href={localize("/blog/case-studies")} className="hover:text-primary-foreground transition-colors">
-                    Case Studies
+                  <a href={localize("/contact")} className="hover:text-primary-foreground transition-colors">
+                    Contact
                   </a>
                 </li>
               </ul>
@@ -150,7 +125,7 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
-                  <a href={localize("/guides-ebooks")} className="hover:text-primary-foreground transition-colors">
+                  <a href={localize("/guides")} className="hover:text-primary-foreground transition-colors">
                     Guides & eBooks
                   </a>
                 </li>
@@ -203,7 +178,7 @@ export default function Footer() {
 
         <div className="border-t border-primary-foreground/20 pt-8 text-center text-primary-foreground/60">
           <p className="text-sm">
-            © 2025 KeyRate Corp. All rights reserved. Licensed mortgage broker serving Canada, UAE and USA.
+            © 2025 KeyRate Corp. All rights reserved. Licensed mortgage broker serving Canada, UAE and USA. Canada License: FSRA #13181
           </p>
         </div>
       </div>

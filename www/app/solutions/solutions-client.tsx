@@ -8,6 +8,7 @@ import Header from "@/components/header"
 import Footer from "@/components/footer"
 import SolutionCard from "@/components/solution-card"
 import { Highlighter } from "@/components/ui/highlighter"
+import { GetInTouchSection } from "@/components/get-in-touch-section"
 import type { AppLocale } from "@/lib/locale"
 
 interface SolutionsPageClientProps {
@@ -204,20 +205,7 @@ export default function SolutionsPageClient({ locale, pageData }: SolutionsPageC
         </div>
       </section>
 
-      {/* Closing CTA */}
-      <section className="pt-16 pb-32 bg-muted">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Not sure where to start?</h2>
-          <p className="text-xl mb-8 max-w-3xl mx-auto opacity-90">
-            Talk to one of our licensed global mortgage advisors and receive personalised recommendations tailored to
-            your country, property goals, and financial profile.
-          </p>
-          <Button className="bg-background text-foreground hover:bg-background/90 text-lg px-8 py-3">
-            Book a call
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-        </div>
-      </section>
+      <GetInTouchSection />
 
       <Footer />
     </div>
