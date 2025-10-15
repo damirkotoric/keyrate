@@ -15,7 +15,8 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
   const [hideTopBar, setHideTopBar] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
-  const dropdownRef = useRef<HTMLDivElement | null>(null)
+  const desktopDropdownRef = useRef<HTMLDivElement | null>(null)
+  const mobileDropdownRef = useRef<HTMLDivElement | null>(null)
   const hiddenRef = useRef(false)
 
   useEffect(() => setMounted(true), [])
@@ -34,7 +35,7 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
     } catch { return href }
   }
 
-  useClickOutside(dropdownRef, () => {
+  useClickOutside([desktopDropdownRef, mobileDropdownRef], () => {
     if (isGlobalDropdownOpen) {
       setIsGlobalDropdownOpen(false)
     }
@@ -162,7 +163,7 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
                   <Mail className="w-4 h-4" />
                   <span>info@keyrate.com</span>
                 </a>
-                <div className="relative overflow-visible" ref={dropdownRef}>
+                <div className="relative overflow-visible" ref={desktopDropdownRef}>
                   <Button
                     onClick={() => setIsGlobalDropdownOpen(!isGlobalDropdownOpen)}
                     variant="ghost"
@@ -214,16 +215,37 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
               </a>
             </div>
             <div className="flex items-center gap-4">
-              <Button
-                onClick={() => setIsGlobalDropdownOpen(!isGlobalDropdownOpen)}
-                variant="ghost"
-                size="sm"
-                className="flex items-center gap-2 lg:hidden mr-4"
-              >
-                <FlagOrGlobe country={selectedCountry} />
-                <span>{selectedCountry}</span>
-                <ChevronDown className="w-4 h-4" />
-              </Button>
+              <div className="relative lg:hidden" ref={mobileDropdownRef}>
+                <Button
+                  onClick={() => setIsGlobalDropdownOpen(!isGlobalDropdownOpen)}
+                  variant="ghost"
+                  size="sm"
+                  className="flex items-center gap-2 mr-4"
+                >
+                  <FlagOrGlobe country={selectedCountry} />
+                  <span>{selectedCountry}</span>
+                  <ChevronDown className="w-4 h-4" />
+                </Button>
+                {isGlobalDropdownOpen && (
+                  <div className="absolute top-full right-0 mt-2 bg-card text-card-foreground rounded-lg shadow-lg p-2 min-w-[160px] z-[80]">
+                    {["Global", "Canada", "UAE", "USA"].map((country) => (
+                      <Button
+                        key={country}
+                        onClick={() => {
+                          setIsGlobalDropdownOpen(false)
+                          onSelectCountry(country)
+                        }}
+                        variant="ghost"
+                        size="sm"
+                        className="w-full justify-start my-1 flex items-center gap-2"
+                      >
+                        <FlagOrGlobe country={country} />
+                        <span>{country}</span>
+                      </Button>
+                    ))}
+                  </div>
+                )}
+              </div>
               <nav className="hidden lg:flex flex-1 items-center justify-between space-x-2 xl:space-x-8 mx-8 h-full">
                 <a href={localizeHref("/")} onClick={(e) => go(e, "/")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Home</a>
                 <a href={localizeHref("/solutions")} onClick={(e) => go(e, "/solutions")} className="block p-4 lg:p-5 xl:p-6 text-foreground hover:text-foreground/80 transition-colors">Solutions</a>
