@@ -30,6 +30,10 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     }
   }
   
+  // Use SEO title if available, otherwise fall back to post title
+  const seoTitle = post.seo?.title?.en || post.title.en
+  const seoDescription = post.seo?.description?.en || post.subtitle?.en || post.title.en
+  
   // Generate OG image URL with 1.91:1 aspect ratio (e.g., 1200x628 for optimal OG image)
   const ogImageUrl = post.coverPhoto?.asset?.url 
     ? `${post.coverPhoto.asset.url}?w=1200&h=628&fit=crop&crop=focalpoint${
@@ -40,8 +44,8 @@ export async function generateMetadata({ params }: BlogPostPageProps) {
     : null
   
   return {
-    title: `${post.title.en} | KeyRate Mortgage Broker`,
-    description: post.subtitle?.en || post.title.en,
+    title: `${seoTitle} | KeyRate Mortgage Broker`,
+    description: seoDescription,
     openGraph: {
       title: post.title.en,
       description: post.subtitle?.en || post.title.en,

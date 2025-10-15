@@ -35,6 +35,10 @@ export interface Guide {
   }
   publishedAt: string
   featured?: boolean
+  seo?: {
+    title?: any
+    description?: any
+  }
 }
 
 export async function getAllGuides(locale: string = 'en') {
@@ -62,7 +66,8 @@ export async function getAllGuides(locale: string = 'en') {
       }
     },
     publishedAt,
-    featured
+    featured,
+    seo
   }`
   
   return sanityFetch<Guide[]>(query)
@@ -93,7 +98,8 @@ export async function getGuideBySlug(slug: string, locale: string = 'en') {
       }
     },
     publishedAt,
-    featured
+    featured,
+    seo
   }`
   
   return sanityFetch<Guide>(query, { slug })

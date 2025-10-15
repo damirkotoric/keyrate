@@ -36,7 +36,7 @@ export default function BlogPageClient({ posts, initialRegion = 'all', locale = 
   const [selectedRegion, setSelectedRegion] = useState(getInitialRegion())
   const [searchQuery, setSearchQuery] = useState("")
 
-  const categories = ["All categories", "News", "Videos", "Buying Tips", "Investing", "Rates", "Case Studies"]
+  const categories = ["All categories", "News", "Buying Tips", "Investing", "Rates", "Case Studies"]
   const regions = ["All regions", "Global", "Canada", "UAE", "USA"]
 
   const filteredPosts = posts.filter((post) => {

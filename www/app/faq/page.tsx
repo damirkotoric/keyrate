@@ -25,13 +25,23 @@ export async function generateMetadata({
 
   if (!faqData) {
     return {
-      title: 'FAQ',
+      title: 'FAQ | KeyRate Mortgage Broker',
     }
   }
 
+  // Use SEO title if available, otherwise fall back to page title
+  const seoTitle = chooseLocalizedString(faqData.seo?.title, locale)
+  const pageTitle = chooseLocalizedString(faqData.title, locale)
+  const title = seoTitle || pageTitle
+  
+  // Use SEO description if available, otherwise fall back to subtitle
+  const seoDescription = chooseLocalizedString(faqData.seo?.description, locale)
+  const pageDescription = chooseLocalizedString(faqData.subtitle, locale)
+  const description = seoDescription || pageDescription || title
+
   return {
-    title: `${chooseLocalizedString(faqData.title, locale)} | KeyRate Mortgage Broker`,
-    description: chooseLocalizedString(faqData.subtitle, locale) || chooseLocalizedString(faqData.title, locale),
+    title: `${title} | KeyRate Mortgage Broker`,
+    description,
   }
 }
 

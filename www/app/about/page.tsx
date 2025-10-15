@@ -96,6 +96,10 @@ interface AboutPageData {
   getStarted: {
     title: any
   }
+  seo?: {
+    title?: any
+    description?: any
+  }
 }
 
 async function getAboutPageData() {
@@ -111,7 +115,8 @@ async function getAboutPageData() {
         growingPopularity,
         keyAdvantages,
         lenderPartners,
-        getStarted
+        getStarted,
+        seo
       }`
     )
     return result
@@ -170,9 +175,19 @@ export async function generateMetadata({
     }
   }
 
+  // Use SEO title if available, otherwise fall back to hero title
+  const seoTitle = chooseLocalizedString(aboutData.seo?.title, locale)
+  const pageTitle = chooseLocalizedString(aboutData.hero.title, locale)
+  const title = seoTitle || pageTitle
+  
+  // Use SEO description if available, otherwise fall back to who we are title
+  const seoDescription = chooseLocalizedString(aboutData.seo?.description, locale)
+  const pageDescription = chooseLocalizedString(aboutData.whoWeAre.title, locale)
+  const description = seoDescription || pageDescription
+
   return {
-    title: `${chooseLocalizedString(aboutData.hero.title, locale)} | KeyRate Mortgage Broker`,
-    description: chooseLocalizedString(aboutData.whoWeAre.title, locale),
+    title: `${title} | KeyRate Mortgage Broker`,
+    description,
   }
 }
 

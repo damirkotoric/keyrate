@@ -6,9 +6,51 @@ import type { Metadata } from 'next'
 
 export const dynamic = "force-dynamic"
 
-export const metadata: Metadata = {
-  title: 'Mortgage Solutions | KeyRate Mortgage Broker',
-  description: 'Explore our comprehensive range of mortgage solutions tailored to your needs.',
+export async function generateMetadata({
+  params
+}: {
+  params?: Promise<{ loc?: string }>
+}): Promise<Metadata> {
+  const resolvedParams = params ? await params : undefined
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+
+  try {
+    const pageData = await sanityFetch<any>(
+      `*[_type == "solutionsPage" && _id == "solutionsPage"][0]{
+        hero,
+        seo
+      }`
+    )
+
+    if (pageData) {
+      // Use SEO title if available, otherwise fall back to hero title
+      const seoTitle = chooseLocalizedString(pageData.seo?.title, locale)
+      const pageTitle = chooseLocalizedString(pageData.hero?.title, locale)
+      const title = seoTitle || pageTitle || 'Mortgage Solutions'
+      
+      // Use SEO description if available, otherwise fall back to hero subtitle
+      const seoDescription = chooseLocalizedString(pageData.seo?.description, locale)
+      const pageDescription = chooseLocalizedString(pageData.hero?.subtitle, locale)
+      const description = seoDescription || pageDescription
+
+      return {
+        title: `${title} | KeyRate Mortgage Broker`,
+        description,
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch solutions page metadata:', error)
+  }
+
+  return {
+    title: 'Mortgage Solutions | KeyRate Mortgage Broker',
+    description: 'Explore our comprehensive range of mortgage solutions tailored to your needs.',
+  }
 }
 
 export default async function SolutionsPage({ params }: { params?: Promise<{ loc?: string }> }) {

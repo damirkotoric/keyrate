@@ -32,6 +32,10 @@ export async function generateMetadata({ params }: GuidePageProps) {
     }
   }
   
+  // Use SEO title if available, otherwise fall back to guide title
+  const seoTitle = guide.seo?.title?.en || guide.title.en
+  const seoDescription = guide.seo?.description?.en || guide.subtitle?.en || guide.title.en
+  
   // Generate OG image URL with 1.91:1 aspect ratio (e.g., 1200x628 for optimal OG image)
   const ogImageUrl = guide.coverImage?.asset?.url 
     ? `${guide.coverImage.asset.url}?w=1200&h=628&fit=crop&crop=focalpoint${
@@ -42,8 +46,8 @@ export async function generateMetadata({ params }: GuidePageProps) {
     : null
   
   return {
-    title: `${guide.title.en} | KeyRate Mortgage Broker`,
-    description: guide.subtitle?.en || guide.title.en,
+    title: `${seoTitle} | KeyRate Mortgage Broker`,
+    description: seoDescription,
     openGraph: {
       title: guide.title.en,
       description: guide.subtitle?.en || guide.title.en,

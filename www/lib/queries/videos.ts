@@ -7,6 +7,10 @@ export interface Video {
   youtubeUrl: string
   publishedAt: string
   featured?: boolean
+  seo?: {
+    title?: any
+    description?: any
+  }
 }
 
 export async function getAllVideos(locale: string = 'en') {
@@ -16,7 +20,8 @@ export async function getAllVideos(locale: string = 'en') {
     slug,
     youtubeUrl,
     publishedAt,
-    featured
+    featured,
+    seo
   }`
   
   return sanityFetch<Video[]>(query)
@@ -29,7 +34,8 @@ export async function getVideoBySlug(slug: string, locale: string = 'en') {
     slug,
     youtubeUrl,
     publishedAt,
-    featured
+    featured,
+    seo
   }`
   
   return sanityFetch<Video>(query, { slug })

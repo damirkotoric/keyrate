@@ -29,6 +29,10 @@ export interface BlogPost {
   }
   publishedAt: string
   author?: string
+  seo?: {
+    title?: any
+    description?: any
+  }
 }
 
 export async function getAllBlogPosts(locale: string = 'en') {
@@ -50,7 +54,8 @@ export async function getAllBlogPosts(locale: string = 'en') {
       crop
     },
     publishedAt,
-    author
+    author,
+    seo
   }`
   
   return sanityFetch<BlogPost[]>(query)
@@ -75,7 +80,8 @@ export async function getBlogPostBySlug(slug: string, locale: string = 'en') {
       crop
     },
     publishedAt,
-    author
+    author,
+    seo
   }`
   
   return sanityFetch<BlogPost>(query, { slug })

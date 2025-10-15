@@ -22,15 +22,6 @@ export default async function VideosPage() {
       
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-6xl mx-auto">
-          {/* Breadcrumb */}
-          <div className="flex justify-center mb-6">
-            <Breadcrumbs 
-              items={[
-                { label: 'Blog', href: '/blog' }
-              ]}
-            />
-          </div>
-          
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4">Video Library</h1>

@@ -2,4 +2,4 @@
 // The actual implementation is in /app/solutions/page.tsx which handles both
 // locale-prefixed and non-prefixed routes automatically
 
-export { default, dynamic, metadata } from "@/app/solutions/page"
+export { default, dynamic, generateMetadata } from "@/app/solutions/page"

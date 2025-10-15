@@ -3,8 +3,56 @@ import { headers } from "next/headers"
 import HomePage from "@/components/home-page"
 import { cookies } from "next/headers"
 import { chooseLocalizedString, getPreferredLocaleFromHeaders, LOCALE_COOKIE, normalizeLocaleParam, type AppLocale } from "@/lib/locale"
+import type { Metadata } from 'next'
 
 export const dynamic = "force-dynamic"
+
+export async function generateMetadata({
+  params
+}: {
+  params?: Promise<{ loc?: string }>
+}): Promise<Metadata> {
+  const resolvedParams = params ? await params : undefined
+  const urlLocale = resolvedParams?.loc
+  
+  const cookieStore = await cookies()
+  const locale: AppLocale = urlLocale 
+    ? normalizeLocaleParam(urlLocale)
+    : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
+
+  try {
+    const homeData = await sanityFetch<any>(
+      `*[_type == "homePage" && _id == "homePage"][0]{
+        hero,
+        seo
+      }`
+    )
+
+    if (homeData) {
+      // Use SEO title if available, otherwise fall back to hero headline
+      const seoTitle = chooseLocalizedString(homeData.seo?.title, locale)
+      const pageTitle = chooseLocalizedString(homeData.hero?.headline, locale)
+      const title = seoTitle || pageTitle || 'KeyRate Mortgage Broker'
+      
+      // Use SEO description if available, otherwise fall back to hero subheadline
+      const seoDescription = chooseLocalizedString(homeData.seo?.description, locale)
+      const pageDescription = chooseLocalizedString(homeData.hero?.subheadline, locale)
+      const description = seoDescription || pageDescription
+
+      return {
+        title,
+        description,
+      }
+    }
+  } catch (error) {
+    console.error('Failed to fetch home page metadata:', error)
+  }
+
+  return {
+    title: 'KeyRate Mortgage Broker | Lowest Rates. No Lender Fees. No, Really.',
+    description: 'We work for you, not the bank. Get pre-approved in minutes with a globally trusted mortgage broker. Over $2 billion processed for 10,000+ happy clients.',
+  }
+}
 
 export default async function Page({ params }: { params?: Promise<{ loc?: string }> }) {
   // Fetch data from Sanity

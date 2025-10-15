@@ -31,9 +31,13 @@ export async function generateMetadata({ params }: VideoPageProps) {
     }
   }
   
+  // Use SEO title if available, otherwise fall back to video title
+  const seoTitle = video.seo?.title?.en || video.title.en
+  const seoDescription = video.seo?.description?.en || video.title.en
+  
   return {
-    title: `${video.title.en} | KeyRate Mortgage Broker`,
-    description: video.title.en,
+    title: `${seoTitle} | KeyRate Mortgage Broker`,
+    description: seoDescription,
     openGraph: {
       title: video.title.en,
       description: video.title.en,
@@ -89,7 +93,7 @@ export default async function VideoPage({ params }: VideoPageProps) {
           <Breadcrumbs 
             items={[
               { label: 'Blog', href: '/blog' },
-              { label: 'Videos', href: '/blog/videos' }
+              { label: 'Videos', href: '/videos' }
             ]}
           />
         

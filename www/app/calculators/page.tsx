@@ -1,8 +1,9 @@
 "use client"
 
 import { useState } from "react"
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import Header from "@/components/header"
+import Footer from "@/components/footer"
+import { GetInTouchSection } from "@/components/get-in-touch-section"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
@@ -186,19 +187,7 @@ export default function CalculatorsPage() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-16 text-white bg-black">
-        <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl font-bold mb-4">Need help understanding your results or what steps to take next?</h2>
-          <Button
-            className="bg-white text-primary hover:bg-gray-100 px-8 py-3 text-lg"
-            onClick={() => (window.location.href = "/about")}
-          >
-            Talk to one of our advisors
-            <ArrowRight className="w-5 h-5 ml-2" />
-          </Button>
-        </div>
-      </section>
+      <GetInTouchSection />
 
       <Footer />
     </div>

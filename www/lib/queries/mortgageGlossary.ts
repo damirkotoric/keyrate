@@ -10,6 +10,10 @@ export interface MortgageGlossaryPage {
   title: { en: string }
   subtitle?: { en: string }
   terms: GlossaryTerm[]
+  seo?: {
+    title?: any
+    description?: any
+  }
 }
 
 export async function getMortgageGlossary(locale: string = 'en') {
@@ -17,6 +21,7 @@ export async function getMortgageGlossary(locale: string = 'en') {
     _id,
     title,
     subtitle,
+    seo,
     terms[] {
       term,
       definition

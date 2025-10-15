@@ -125,6 +125,11 @@ export default function Footer() {
                   </a>
                 </li>
                 <li>
+                  <a href={localize("/videos")} className="hover:text-primary-foreground transition-colors">
+                    Videos
+                  </a>
+                </li>
+                <li>
                   <a href={localize("/guides")} className="hover:text-primary-foreground transition-colors">
                     Guides & eBooks
                   </a>

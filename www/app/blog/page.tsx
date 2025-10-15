@@ -132,7 +132,7 @@ export default async function BlogPage({ params }: { params?: Promise<{ loc?: st
             <h2 className="text-3xl font-bold mb-4">Watch & Learn</h2>
             <p className="text-xl text-muted-foreground mb-6">Educational videos to help you understand mortgages better.</p>
             <Button variant="outline" asChild>
-              <Link href="/blog/videos">
+              <Link href="/videos">
                 View All Videos
                 <ArrowRight className="w-4 h-4 ml-2" />
               </Link>

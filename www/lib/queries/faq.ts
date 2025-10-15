@@ -11,6 +11,10 @@ export interface FAQPage {
   subtitle?: { en: string }
   slug: { current: string }
   faqs: FAQ[]
+  seo?: {
+    title?: any
+    description?: any
+  }
 }
 
 export async function getFAQPage(locale: string = 'en') {
@@ -19,6 +23,7 @@ export async function getFAQPage(locale: string = 'en') {
     title,
     subtitle,
     slug,
+    seo,
     faqs[] {
       question,
       answer

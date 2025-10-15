@@ -27,9 +27,19 @@ export async function generateMetadata({
     }
   }
 
+  // Use SEO title if available, otherwise fall back to page title
+  const seoTitle = chooseLocalizedString(glossaryData.seo?.title, locale)
+  const pageTitle = chooseLocalizedString(glossaryData.title, locale)
+  const title = seoTitle || pageTitle
+  
+  // Use SEO description if available, otherwise fall back to subtitle
+  const seoDescription = chooseLocalizedString(glossaryData.seo?.description, locale)
+  const pageDescription = chooseLocalizedString(glossaryData.subtitle, locale)
+  const description = seoDescription || pageDescription || title
+
   return {
-    title: `${chooseLocalizedString(glossaryData.title, locale)} | KeyRate Mortgage Broker`,
-    description: chooseLocalizedString(glossaryData.subtitle, locale) || chooseLocalizedString(glossaryData.title, locale),
+    title: `${title} | KeyRate Mortgage Broker`,
+    description,
   }
 }
 
