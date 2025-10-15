@@ -69,7 +69,7 @@ interface StatsSectionProps {
 
 export function StatsSection({ 
   title = "Trusted by Thousands", 
-  subtitle = "Proven results, trusted by clients in Canada and the UAE.",
+  subtitle = "Proven results, trusted by clients in Canada, UAE and the USA.",
   stats,
   columns = 4
 }: StatsSectionProps) {

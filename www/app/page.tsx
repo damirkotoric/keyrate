@@ -20,6 +20,13 @@ export async function generateMetadata({
     ? normalizeLocaleParam(urlLocale)
     : (normalizeLocaleParam(cookieStore.get(LOCALE_COOKIE)?.value) || 'global')
 
+  console.log('=== METADATA DEBUG ===')
+  console.log('urlLocale:', urlLocale)
+  console.log('cookieLocale:', cookieStore.get(LOCALE_COOKIE)?.value)
+  console.log('Final locale:', locale)
+  console.log('Dataset:', process.env.NEXT_PUBLIC_SANITY_DATASET || process.env.SANITY_DATASET || 'production')
+  console.log('Project ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.SANITY_PROJECT_ID)
+
   try {
     const homeData = await sanityFetch<any>(
       `*[_type == "homePage" && _id == "homePage"][0]{
@@ -29,10 +36,17 @@ export async function generateMetadata({
     )
 
     if (homeData) {
+      console.log('Metadata - homeData.seo?.title:', homeData.seo?.title)
+      console.log('Metadata - homeData.hero?.headline:', homeData.hero?.headline)
+      
       // Use SEO title if available, otherwise fall back to hero headline
       const seoTitle = chooseLocalizedString(homeData.seo?.title, locale)
       const pageTitle = chooseLocalizedString(homeData.hero?.headline, locale)
       const title = seoTitle || pageTitle || 'KeyRate Mortgage Broker'
+      
+      console.log('Metadata - seoTitle:', seoTitle)
+      console.log('Metadata - pageTitle:', pageTitle)
+      console.log('Metadata - final title:', title)
       
       // Use SEO description if available, otherwise fall back to hero subheadline
       const seoDescription = chooseLocalizedString(homeData.seo?.description, locale)
@@ -75,6 +89,15 @@ export default async function Page({ params }: { params?: Promise<{ loc?: string
     appLocale = urlLocale 
       ? normalizeLocaleParam(urlLocale)
       : (cookieLocale || getPreferredLocaleFromHeaders(acceptLanguage))
+    
+    console.log('=== PAGE RENDER DEBUG ===')
+    console.log('urlLocale:', urlLocale)
+    console.log('cookieLocale:', cookieLocale)
+    console.log('acceptLanguage:', acceptLanguage)
+    console.log('Final appLocale:', appLocale)
+    console.log('Dataset:', process.env.NEXT_PUBLIC_SANITY_DATASET || process.env.SANITY_DATASET || 'production')
+    console.log('Project ID:', process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || process.env.SANITY_PROJECT_ID)
+    
     type HomeQuery = {
       hero?: {
         kicker?: string
@@ -119,11 +142,17 @@ export default async function Page({ params }: { params?: Promise<{ loc?: string
       return undefined
     }
 
+    console.log('Page - data.hero?.headline (raw):', (data as any)?.hero?.headline)
+    console.log('Page - data.hero?.kicker (raw):', (data as any)?.hero?.kicker)
+    
     const selected = {
       kicker: chooseLocalizedString((data as any)?.hero?.kicker, appLocale) || getLocalized((data as any)?.hero?.kicker),
       headline: chooseLocalizedString((data as any)?.hero?.headline, appLocale) || getLocalized((data as any)?.hero?.headline),
       subheadline: chooseLocalizedString((data as any)?.hero?.subheadline, appLocale) || getLocalized((data as any)?.hero?.subheadline),
     }
+
+    console.log('Page - selected.headline:', selected.headline)
+    console.log('Page - selected.kicker:', selected.kicker)
 
     // Solutions content (robust to different schema field names and localized objects)
     const solTitleObj: any = (data as any)?.solutions?.title ?? (data as any)?.solutions?.heading ?? (data as any)?.solutionsTitle
@@ -140,6 +169,9 @@ export default async function Page({ params }: { params?: Promise<{ loc?: string
       solutionsTitle: solutions.title,
       solutionsSubtitle: solutions.subtitle,
     }
+    
+    console.log('Page - final home.title:', home.title)
+    console.log('=========================')
   } catch (e) {
     console.error("Home page: Sanity fetch failed", e)
   }

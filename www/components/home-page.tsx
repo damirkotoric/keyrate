@@ -163,7 +163,7 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
       {/* Metrics Section */}
       <StatsSection 
         title="Trusted by Thousands"
-        subtitle="Proven results, trusted by clients in Canada and the UAE."
+        subtitle="Proven results, trusted by clients in Canada, UAE and the USA."
         stats={defaultStats}
         columns={4}
       />
