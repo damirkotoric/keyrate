@@ -8,9 +8,9 @@ import { getVideoBySlug, getAllVideos, getYouTubeEmbedUrl } from '@/lib/queries/
 import { Breadcrumbs } from '@/components/breadcrumbs'
 
 interface VideoPageProps {
-  params: {
+  params: Promise<{
     slug: string
-  }
+  }>
 }
 
 // Generate static paths for all videos
@@ -23,7 +23,8 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: VideoPageProps) {
-  const video = await getVideoBySlug(params.slug)
+  const { slug } = await params
+  const video = await getVideoBySlug(slug)
   
   if (!video) {
     return {
@@ -53,7 +54,8 @@ export async function generateMetadata({ params }: VideoPageProps) {
 }
 
 export default async function VideoPage({ params }: VideoPageProps) {
-  const video = await getVideoBySlug(params.slug)
+  const { slug } = await params
+  const video = await getVideoBySlug(slug)
   
   if (!video) {
     notFound()

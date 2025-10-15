@@ -3,7 +3,7 @@ import { useEffect, useState } from "react"
 import { Phone, Mail, Facebook, Twitter, Linkedin, Instagram } from "@/components/icons"
 import { GridPattern } from "@/components/ui/grid-pattern"
 
-export default function Footer() {
+function Footer() {
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
   const localize = (href: string) => {
@@ -190,3 +190,6 @@ export default function Footer() {
     </footer>
   )
 }
+
+export default Footer
+export { Footer }

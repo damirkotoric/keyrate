@@ -282,3 +282,5 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
     </div>
   )
 }
+
+export { Header }
