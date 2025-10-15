@@ -53,6 +53,13 @@ export default defineConfig({
                   .documentId('faqPage')
               ),
             S.listItem()
+              .title('Calculator Page')
+              .child(
+                S.document()
+                  .schemaType('calculatorPage')
+                  .documentId('calculatorPage')
+              ),
+            S.listItem()
               .title('Mortgage Glossary')
               .child(
                 S.document()
@@ -83,6 +90,7 @@ export default defineConfig({
             'aboutPage',
             'contactPage',
             'faqPage',
+            'calculatorPage',
             'mortgageGlossary',
           ].includes(schemaType)
       ),

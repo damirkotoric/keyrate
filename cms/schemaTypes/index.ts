@@ -9,6 +9,7 @@ import solutionsPage from './solutionsPage'
 import aboutPage from './aboutPage'
 import contactPage from './contactPage'
 import faqPage from './faqPage'
+import calculatorPage from './calculatorPage'
 import mortgageGlossary from './mortgageGlossary'
 import solution from './solution'
 import testimonial from './testimonial'
@@ -27,6 +28,7 @@ export const schemaTypes = [
   aboutPage,
   contactPage,
   faqPage,
+  calculatorPage,
   mortgageGlossary,
   solution,
   testimonial,
