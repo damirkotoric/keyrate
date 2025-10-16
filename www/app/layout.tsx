@@ -7,14 +7,14 @@ import { headers } from "next/headers"
 
 const poppins = Poppins({
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   variable: "--font-poppins",
   weight: ["400", "700"]
 })
 
 const inter = Inter({
   subsets: ["latin"],
-  display: "swap",
+  display: "optional",
   variable: "--font-inter",
 })
 

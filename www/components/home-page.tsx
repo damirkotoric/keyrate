@@ -123,7 +123,7 @@ export default function HomePage({ home, locale = 'global' }: { home: HomeHero, 
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-4 leading-tight text-pretty">
                   {titleSegments.map((sentence, index) => {
-                  const delays = [400, 800, 1600] // ms
+                  const delays = [1000, 1400, 2000] // ms
                   const delayMs = delays[index] ?? 0
                   return (
                     <span key={index} className="block">

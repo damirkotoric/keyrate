@@ -139,78 +139,106 @@ export function Highlighter({
       multiline,
     }
 
-    syncBox()
-    const annotation = annotate(bg, annotationConfig)
-    annotationRef.current = annotation
-
-    let timer: number | null = null
-    const show = () => {
-      annotationRef.current?.show()
-      hasShownRef.current = true
-      try {
-        let resolvedFinal = finalTextColor
-        const finalVarMatch = finalTextColor.match(/var\((--[^)]+)\)/)
-        if (finalVarMatch && typeof window !== "undefined") {
-          const cssValue = getComputedStyle(document.documentElement).getPropertyValue(finalVarMatch[1]).trim()
-          if (cssValue) resolvedFinal = cssValue
-        }
-        text.style.transition = text.style.transition
-          ? `${text.style.transition}, color 400ms ease-in-out`
-          : "color 400ms ease-in-out"
-        requestAnimationFrame(() => { text.style.color = resolvedFinal })
-      } catch {}
-    }
-    if (delayMs > 0) timer = window.setTimeout(show, delayMs)
-    else show()
-
-    let raf = 0
+    let showTimer: number | null = null
     let settle: number | null = null
-    const update = () => {
-      if (raf) return
-      raf = window.requestAnimationFrame(() => {
-        try {
+    let cleanup: (() => void) | null = null
+
+    // Initialize immediately - all instances wait for fonts together
+    const initAnnotation = async () => {
+      try {
+        await document.fonts.ready
+      } catch {
+        // Fonts API not supported or failed, continue anyway
+      }
+
+      // Double RAF to ensure layout is fully settled
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => {
           syncBox()
-          const a: any = annotationRef.current
-          if (a && typeof a.position === "function") a.position()
-        } finally {
-          raf = 0
-        }
+          const annotation = annotate(bg, annotationConfig)
+          annotationRef.current = annotation
+
+          // Set up update handlers immediately
+          let raf = 0
+          const update = () => {
+            if (raf) return
+            raf = window.requestAnimationFrame(() => {
+              try {
+                syncBox()
+                const a: any = annotationRef.current
+                if (a && typeof a.position === "function") a.position()
+              } finally {
+                raf = 0
+              }
+            })
+            if (settle) window.clearTimeout(settle)
+            settle = window.setTimeout(() => {
+              try {
+                syncBox()
+                const a: any = annotationRef.current
+                if (a && typeof a.position === "function") a.position()
+              } catch {}
+            }, 250)
+          }
+
+          const onLayoutEvt = () => update()
+          window.addEventListener("resize", onLayoutEvt)
+          window.addEventListener("scroll", onLayoutEvt, { passive: true })
+          window.addEventListener("keyrate:layout-change", onLayoutEvt as any)
+
+          const ro = new ResizeObserver(() => update())
+          try {
+            ro.observe(text)
+            ro.observe(wrapper)
+          } catch {}
+
+          const mo = new MutationObserver(() => update())
+          try {
+            mo.observe(wrapper, { attributes: true, childList: true, subtree: true })
+          } catch {}
+
+          cleanup = () => {
+            if (showTimer) window.clearTimeout(showTimer)
+            if (settle) window.clearTimeout(settle)
+            try { annotationRef.current?.remove() } catch {}
+            window.removeEventListener("resize", onLayoutEvt)
+            window.removeEventListener("scroll", onLayoutEvt)
+            window.removeEventListener("keyrate:layout-change", onLayoutEvt as any)
+            try { ro.disconnect() } catch {}
+            try { mo.disconnect() } catch {}
+          }
+
+          // Delay ONLY the show animation, not the initialization
+          const show = () => {
+            annotationRef.current?.show()
+            hasShownRef.current = true
+            try {
+              let resolvedFinal = finalTextColor
+              const finalVarMatch = finalTextColor.match(/var\((--[^)]+)\)/)
+              if (finalVarMatch && typeof window !== "undefined") {
+                const cssValue = getComputedStyle(document.documentElement).getPropertyValue(finalVarMatch[1]).trim()
+                if (cssValue) resolvedFinal = cssValue
+              }
+              text.style.transition = text.style.transition
+                ? `${text.style.transition}, color 400ms ease-in-out`
+                : "color 400ms ease-in-out"
+              requestAnimationFrame(() => { text.style.color = resolvedFinal })
+            } catch {}
+          }
+
+          if (delayMs > 0) showTimer = window.setTimeout(show, delayMs)
+          else show()
+        })
       })
-      if (settle) window.clearTimeout(settle)
-      settle = window.setTimeout(() => {
-        try {
-          syncBox()
-          const a: any = annotationRef.current
-          if (a && typeof a.position === "function") a.position()
-        } catch {}
-      }, 250)
     }
 
-    const onLayoutEvt = () => update()
-    window.addEventListener("resize", onLayoutEvt)
-    window.addEventListener("scroll", onLayoutEvt, { passive: true })
-    window.addEventListener("keyrate:layout-change", onLayoutEvt as any)
-
-    const ro = new ResizeObserver(() => update())
-    try {
-      ro.observe(text)
-      ro.observe(wrapper)
-    } catch {}
-
-    const mo = new MutationObserver(() => update())
-    try {
-      mo.observe(wrapper, { attributes: true, childList: true, subtree: true })
-    } catch {}
+    initAnnotation()
 
     return () => {
-      if (timer) window.clearTimeout(timer)
+      if (cleanup) cleanup()
+      if (showTimer) window.clearTimeout(showTimer)
       if (settle) window.clearTimeout(settle)
       try { annotationRef.current?.remove() } catch {}
-      window.removeEventListener("resize", onLayoutEvt)
-      window.removeEventListener("scroll", onLayoutEvt)
-      window.removeEventListener("keyrate:layout-change", onLayoutEvt as any)
-      try { ro.disconnect() } catch {}
-      try { mo.disconnect() } catch {}
     }
   }, [
     shouldShow,
