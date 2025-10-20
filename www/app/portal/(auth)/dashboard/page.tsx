@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Users, FileText, CheckCircle, Clock } from 'lucide-react'
+import { RecentApplications } from '@/components/portal/recent-applications'
 
 export default async function DashboardPage() {
   const supabase = await createClient()
@@ -72,28 +73,7 @@ export default async function DashboardPage() {
       </div>
 
       {/* Recent Activity */}
-      <Card>
-        <CardHeader>
-          <CardTitle>Recent Applications</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {recentApplications?.map((app: any) => (
-              <div key={app.id} className="flex items-center justify-between">
-                <div>
-                  <p className="font-medium">{app.clients?.full_name}</p>
-                  <p className="text-sm text-muted-foreground">
-                    {new Date(app.created_at).toLocaleDateString()}
-                  </p>
-                </div>
-                <span className="px-2 py-1 rounded-full text-xs bg-muted">
-                  {app.status}
-                </span>
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
+      <RecentApplications applications={recentApplications || []} />
     </div>
   )
 }

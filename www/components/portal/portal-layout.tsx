@@ -50,7 +50,7 @@ export function PortalLayout({ children, user }: { children: React.ReactNode, us
                 href={item.href}
                 className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive 
-                    ? 'bg-primary text-primary-foreground' 
+                    ? 'bg-foreground text-background' 
                     : 'hover:bg-muted text-muted-foreground'
                 }`}
               >
