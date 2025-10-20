@@ -5,46 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { SheetWrapper, ViewField, SheetFormFooter } from './sheet-wrapper'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Button } from '@/components/ui/button'
-import { Check, X, Sparkles } from 'lucide-react'
-
-interface PasswordRequirement {
-  label: string
-  met: boolean
-}
-
-function validatePassword(password: string): PasswordRequirement[] {
-  return [
-    { label: 'At least 8 characters', met: password.length >= 8 },
-    { label: 'Contains uppercase letter', met: /[A-Z]/.test(password) },
-    { label: 'Contains lowercase letter', met: /[a-z]/.test(password) },
-    { label: 'Contains number', met: /[0-9]/.test(password) },
-    { label: 'Contains special character (!@#$%^&*)', met: /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password) }
-  ]
-}
-
-function generateStrongPassword(): string {
-  const uppercase = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-  const lowercase = 'abcdefghijklmnopqrstuvwxyz'
-  const numbers = '0123456789'
-  const special = '!@#$%^&*'
-  
-  // Ensure at least one of each required character type
-  let password = ''
-  password += uppercase[Math.floor(Math.random() * uppercase.length)]
-  password += lowercase[Math.floor(Math.random() * lowercase.length)]
-  password += numbers[Math.floor(Math.random() * numbers.length)]
-  password += special[Math.floor(Math.random() * special.length)]
-  
-  // Fill the rest randomly (total 16 characters)
-  const allChars = uppercase + lowercase + numbers + special
-  for (let i = password.length; i < 16; i++) {
-    password += allChars[Math.floor(Math.random() * allChars.length)]
-  }
-  
-  // Shuffle the password
-  return password.split('').sort(() => Math.random() - 0.5).join('')
-}
+import { PasswordInput, isPasswordValid } from '@/components/ui/password-input'
 
 export function BrokerSheet({ brokerId, open, onClose }: {
   brokerId?: string | null
@@ -57,23 +18,7 @@ export function BrokerSheet({ brokerId, open, onClose }: {
   const [initialFormData, setInitialFormData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [showPassword, setShowPassword] = useState(false)
   const supabase = createClient()
-
-  const passwordRequirements = useMemo(() => {
-    if (!formData.password) return []
-    return validatePassword(formData.password)
-  }, [formData.password])
-
-  const isPasswordValid = useMemo(() => {
-    return passwordRequirements.length > 0 && passwordRequirements.every(req => req.met)
-  }, [passwordRequirements])
-
-  function handleGeneratePassword() {
-    const newPassword = generateStrongPassword()
-    setFormData({...formData, password: newPassword})
-    setShowPassword(true)
-  }
 
   const hasChanges = useMemo(() => {
     return JSON.stringify(formData) !== JSON.stringify(initialFormData)
@@ -115,7 +60,7 @@ export function BrokerSheet({ brokerId, open, onClose }: {
 
   async function handleSave() {
     // Validate password for new brokers
-    if (!brokerId && !isPasswordValid) {
+    if (!brokerId && !isPasswordValid(formData.password || '')) {
       setError('Please ensure password meets all requirements')
       return
     }
@@ -208,56 +153,15 @@ export function BrokerSheet({ brokerId, open, onClose }: {
           )}
 
           {!brokerId && (
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <label className="block text-sm font-medium" htmlFor="broker-password">Password *</label>
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={handleGeneratePassword}
-                  className="h-7 text-xs"
-                >
-                  <Sparkles className="w-3 h-3 mr-1" />
-                  Generate
-                </Button>
-              </div>
-              <div className="relative">
-                <Input
-                  id="broker-password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password || ''}
-                  onChange={(e) => setFormData({...formData, password: e.target.value})}
-                  required
-                  className={formData.password && !isPasswordValid ? 'border-destructive' : ''}
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground text-xs"
-                >
-                  {showPassword ? 'Hide' : 'Show'}
-                </button>
-              </div>
-              
-              {/* Password Requirements */}
-              {formData.password && (
-                <div className="space-y-1.5 pt-1">
-                  {passwordRequirements.map((req, idx) => (
-                    <div key={idx} className="flex items-center gap-2 text-xs">
-                      {req.met ? (
-                        <Check className="w-3.5 h-3.5 text-green-600" />
-                      ) : (
-                        <X className="w-3.5 h-3.5 text-muted-foreground" />
-                      )}
-                      <span className={req.met ? 'text-green-600' : 'text-muted-foreground'}>
-                        {req.label}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
+            <PasswordInput
+              id="broker-password"
+              label="Password"
+              value={formData.password || ''}
+              onChange={(value) => setFormData({...formData, password: value})}
+              required
+              showGenerator
+              showRequirements
+            />
           )}
 
           <div>

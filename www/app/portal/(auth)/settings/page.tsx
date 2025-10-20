@@ -6,6 +6,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { PasswordInput, isPasswordValid } from '@/components/ui/password-input'
 
 export default function SettingsPage() {
   const [currentPassword, setCurrentPassword] = useState('')
@@ -28,8 +29,8 @@ export default function SettingsPage() {
       return
     }
 
-    if (newPassword.length < 6) {
-      setError('Password must be at least 6 characters')
+    if (!isPasswordValid(newPassword)) {
+      setError('Password must meet all requirements')
       setLoading(false)
       return
     }
@@ -79,31 +80,23 @@ export default function SettingsPage() {
               </div>
             )}
 
-            <div>
-              <Label className="pb-2" htmlFor="new-password">New Password</Label>
-              <Input
-                id="new-password"
-                type="password"
-                value={newPassword}
-                onChange={(e) => setNewPassword(e.target.value)}
-                required
-                minLength={6}
-                placeholder="Enter new password"
-              />
-            </div>
+            <PasswordInput
+              id="new-password"
+              label="New Password"
+              value={newPassword}
+              onChange={setNewPassword}
+              required
+              showRequirements
+            />
 
-            <div>
-              <Label className="pb-2" htmlFor="confirm-password">Confirm New Password</Label>
-              <Input
-                id="confirm-password"
-                type="password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-                minLength={6}
-                placeholder="Confirm new password"
-              />
-            </div>
+            <PasswordInput
+              id="confirm-password"
+              label="Confirm New Password"
+              value={confirmPassword}
+              onChange={setConfirmPassword}
+              required
+              showRequirements={false}
+            />
 
             <Button type="submit" disabled={loading} className="w-full">
               {loading ? 'Updating...' : 'Update Password'}
