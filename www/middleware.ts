@@ -1,14 +1,54 @@
 import type { NextRequest } from 'next/server'
 import { NextResponse } from 'next/server'
 import { LOCALE_COOKIE, normalizeLocaleParam } from './lib/locale'
+import { createServerClient } from '@supabase/ssr'
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const url = req.nextUrl
   
   // Skip middleware for API routes entirely
   if (url.pathname.startsWith('/api/')) {
     console.log('[MIDDLEWARE] Skipping API route:', url.pathname)
     return NextResponse.next()
+  }
+
+  // Protect /portal routes with Supabase auth
+  if (url.pathname.startsWith('/portal')) {
+    // Allow login page without auth check
+    if (url.pathname.startsWith('/portal/login')) {
+      return NextResponse.next()
+    }
+
+    let response = NextResponse.next({ request: req })
+
+    const supabase = createServerClient(
+      process.env.NEXT_PUBLIC_SUPABASE_URL!,
+      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+      {
+        cookies: {
+          getAll() {
+            return req.cookies.getAll()
+          },
+          setAll(cookiesToSet) {
+            cookiesToSet.forEach(({ name, value }) => 
+              req.cookies.set(name, value)
+            )
+            response = NextResponse.next({ request: req })
+            cookiesToSet.forEach(({ name, value, options }) =>
+              response.cookies.set(name, value, options)
+            )
+          },
+        }
+      }
+    )
+
+    const { data: { user } } = await supabase.auth.getUser()
+
+    if (!user) {
+      return NextResponse.redirect(new URL('/portal/login', req.url))
+    }
+
+    return response
   }
   
   // 1) Handle query param → redirect to path for canonical URLs
