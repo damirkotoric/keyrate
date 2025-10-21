@@ -42,10 +42,29 @@ export async function middleware(req: NextRequest) {
       }
     )
 
-    const { data: { user } } = await supabase.auth.getUser()
+    const { data: { user }, error } = await supabase.auth.getUser()
 
-    if (!user) {
+    if (!user || error) {
       return NextResponse.redirect(new URL('/portal/login', req.url))
+    }
+
+    // Check if user is banned
+    if (user.banned_until) {
+      const bannedUntil = new Date(user.banned_until)
+      if (bannedUntil > new Date()) {
+        // User is banned - clear ALL Supabase cookies and redirect to login
+        const redirectResponse = NextResponse.redirect(new URL('/portal/login', req.url))
+        
+        // Delete all Supabase auth cookies
+        const allCookies = req.cookies.getAll()
+        allCookies.forEach(cookie => {
+          if (cookie.name.startsWith('sb-') || cookie.name.includes('auth')) {
+            redirectResponse.cookies.delete(cookie.name)
+          }
+        })
+        
+        return redirectResponse
+      }
     }
 
     return response

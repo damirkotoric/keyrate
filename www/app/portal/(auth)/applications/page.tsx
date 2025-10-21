@@ -28,7 +28,7 @@ const formatStatus = (status: string) => {
     rejected: 'Rejected',
     funded: 'Funded',
   }
-  return statusMap[status] || status
+  return statusMap[status?.toLowerCase()] || status
 }
 
 export default function ApplicationsPage() {

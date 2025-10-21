@@ -10,6 +10,14 @@ export default async function AuthLayout({ children }: { children: React.ReactNo
     redirect('/portal/login')
   }
 
+  // Check if user is banned
+  if (user.banned_until) {
+    const bannedUntil = new Date(user.banned_until)
+    if (bannedUntil > new Date()) {
+      redirect('/portal/login')
+    }
+  }
+
   return <PortalLayout user={user}>{children}</PortalLayout>
 }
 
