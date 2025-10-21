@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, Search } from 'lucide-react'
-import { BrokerSheet } from '@/components/portal/broker-sheet'
+import { BrokerSheet } from '@features/portal/components/sheets/broker-sheet'
 import { useRouter } from 'next/navigation'
 
 export default function BrokersPage() {

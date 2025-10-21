@@ -1,6 +1,6 @@
 import { sanityFetch } from "@/lib/sanity"
 import { headers } from "next/headers"
-import HomePage from "@/components/home-page"
+import HomePage from "@features/marketing/components/home/home-page"
 import { cookies } from "next/headers"
 import { chooseLocalizedString, getPreferredLocaleFromHeaders, LOCALE_COOKIE, normalizeLocaleParam, type AppLocale } from "@/lib/locale"
 import type { Metadata } from 'next'

@@ -5,7 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, Search } from 'lucide-react'
-import { ClientSheet } from '@/components/portal/client-sheet'
+import { ClientSheet } from '@features/portal/components/sheets/client-sheet'
 
 export default function ClientsPage() {
   const [clients, setClients] = useState<any[]>([])

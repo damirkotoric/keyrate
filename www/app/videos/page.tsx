@@ -1,11 +1,11 @@
 import Link from 'next/link'
-import Header from '@/components/header'
-import Footer from '@/components/footer'
+import Header from '@features/marketing/components/layout/header'
+import Footer from '@features/marketing/components/layout/footer'
 import { Card, CardContent, CardCover } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Play } from '@/components/icons'
 import { getAllVideos, getYouTubeEmbedUrl } from '@/lib/queries/videos'
-import { Breadcrumbs } from '@/components/breadcrumbs'
+import { Breadcrumbs } from '@features/marketing/components/layout/breadcrumbs'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

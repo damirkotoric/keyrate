@@ -3,16 +3,16 @@
 import { useEffect, useState } from "react"
 import { useParams, usePathname } from "next/navigation"
 import { normalizeLocaleParam, type AppLocale } from "@/lib/locale"
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { PreApprovalForm } from "@/components/pre-approval-form"
-import { FAQList } from "@/components/faq-list"
+import Header from "@features/marketing/components/layout/header"
+import Footer from "@features/marketing/components/layout/footer"
+import { PreApprovalForm } from "@features/forms/components/pre-approval-form"
+import { FAQList } from "@features/faq/components/faq-list"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import * as PhosphorIcons from "phosphor-react"
-import { Breadcrumbs } from "@/components/breadcrumbs"
+import { Breadcrumbs } from "@features/marketing/components/layout/breadcrumbs"
 
 // Helper function to dynamically get icon component
 const getIconComponent = (iconName: string) => {

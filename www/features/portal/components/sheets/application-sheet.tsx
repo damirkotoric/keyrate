@@ -240,6 +240,39 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
             // View Mode
             <>
               <ViewField label="Client" value={application.clients?.full_name} />
+              
+              {/* Status - Always Editable */}
+              <div>
+                <label className="block text-sm font-medium pb-2" htmlFor="app-status-view">Status</label>
+                <Select 
+                  value={formData.status} 
+                  onValueChange={async (v) => {
+                    setFormData({...formData, status: v})
+                    // Auto-save status change
+                    try {
+                      await supabase.from('applications').update({ status: v }).eq('id', applicationId)
+                      setApplication({...application, status: v})
+                      setInitialFormData({...initialFormData, status: v})
+                    } catch (error: any) {
+                      console.error('Error updating status:', error)
+                      alert('Failed to update status: ' + error.message)
+                    }
+                  }}
+                >
+                  <SelectTrigger id="app-status-view">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="submitted">Submitted</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="funded">Funded</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
               <ViewField label="Property Value" value={formatCurrency(application.property_value)} />
               <ViewField label="Loan Amount" value={formatCurrency(application.loan_amount)} />
               <ViewField label="Down Payment" value={formatCurrency(application.down_payment)} />
@@ -253,7 +286,6 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
                   application.region === 'US' ? '🇺🇸 USA' : '-'
                 } 
               />
-              <ViewField label="Status" value={<span className="capitalize">{application.status}</span>} />
               {application.lenders && <ViewField label="Lender" value={application.lenders.name} />}
               {application.rate && <ViewField label="Rate" value={`${application.rate}%`} />}
               {application.notes && (
@@ -323,6 +355,23 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
                     {clients.map(c => (
                       <SelectItem key={c.id} value={c.id}>{c.full_name}</SelectItem>
                     ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium pb-2" htmlFor="app-status">Status</label>
+                <Select value={formData.status} onValueChange={(v) => setFormData({...formData, status: v})}>
+                  <SelectTrigger id="app-status">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="new">New</SelectItem>
+                    <SelectItem value="in_progress">In Progress</SelectItem>
+                    <SelectItem value="submitted">Submitted</SelectItem>
+                    <SelectItem value="approved">Approved</SelectItem>
+                    <SelectItem value="rejected">Rejected</SelectItem>
+                    <SelectItem value="funded">Funded</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -434,23 +483,6 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
                     <SelectItem value="3yr">3 Years</SelectItem>
                     <SelectItem value="5yr">5 Years</SelectItem>
                     <SelectItem value="10yr">10 Years</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium pb-2" htmlFor="app-status">Status</label>
-                <Select value={formData.status} onValueChange={(v) => setFormData({...formData, status: v})}>
-                  <SelectTrigger id="app-status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new">New</SelectItem>
-                    <SelectItem value="in_progress">In Progress</SelectItem>
-                    <SelectItem value="submitted">Submitted</SelectItem>
-                    <SelectItem value="approved">Approved</SelectItem>
-                    <SelectItem value="rejected">Rejected</SelectItem>
-                    <SelectItem value="funded">Funded</SelectItem>
                   </SelectContent>
                 </Select>
               </div>

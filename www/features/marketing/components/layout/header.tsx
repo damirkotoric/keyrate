@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Phone, Mail, Globe, ChevronDown, List, X } from "@/components/icons"
 import { useClickOutside } from "@/hooks/use-click-outside"
+import { createClient } from "@/lib/supabase/client"
 
 interface HeaderProps {
   position?: "sticky" | "fixed"
@@ -15,11 +16,22 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
   const [hideTopBar, setHideTopBar] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
   const [mounted, setMounted] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
   const desktopDropdownRef = useRef<HTMLDivElement | null>(null)
   const mobileDropdownRef = useRef<HTMLDivElement | null>(null)
   const hiddenRef = useRef(false)
 
   useEffect(() => setMounted(true), [])
+  
+  // Check authentication status
+  useEffect(() => {
+    const checkAuth = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+      setIsAuthenticated(!!user)
+    }
+    checkAuth()
+  }, [])
   
   const localize = (href: string) => {
     try {
@@ -256,7 +268,7 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
             </div>
             <div className="flex items-center gap-4">
               <div className="hidden lg:flex items-center gap-4">
-                <Button variant="outline">Broker Portal</Button>
+                <Button variant="outline" onClick={() => (window.location.href = isAuthenticated ? "/portal/dashboard" : "/portal/login")}>Broker Portal</Button>
                 <Button onClick={() => (window.location.href = localizeHref("/solutions/mortgage-preapproval"))}>Get Pre-Approved</Button>
               </div>
               <Button
@@ -294,7 +306,7 @@ export default function Header({ position = "sticky" }: HeaderProps = {}) {
                 <a href={localizeHref("/contact")} onClick={(e) => { e.preventDefault(); setMobileOpen(false); go(e, "/contact") }} className="py-4">Contact</a>
               </nav>
               <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <Button variant="outline" onClick={() => { setMobileOpen(false); window.location.href = localizeHref("/broker") }}>Broker Portal</Button>
+                <Button variant="outline" onClick={() => { setMobileOpen(false); window.location.href = isAuthenticated ? "/portal/dashboard" : "/portal/login" }}>Broker Portal</Button>
                 <Button onClick={() => { setMobileOpen(false); window.location.href = localizeHref("/solutions/mortgage-preapproval") }}>Get Pre-Approved</Button>
               </div>
             </div>

@@ -1,10 +1,10 @@
 import { notFound } from 'next/navigation'
-import Header from '@/components/header'
-import Footer from '@/components/footer'
+import Header from '@features/marketing/components/layout/header'
+import Footer from '@features/marketing/components/layout/footer'
 import { Badge } from '@/components/ui/badge'
-import { getBlogPostBySlug, getAllBlogPosts, formatCategory, formatRegion, calculateReadTime, getImagePosition } from '@/lib/queries/blog'
+import { getBlogPostBySlug, getAllBlogPosts, formatCategory, formatRegion, calculateReadTime, getImagePosition } from '@features/blog/lib/queries'
 import { renderPortableText } from '@/lib/portableText'
-import { Breadcrumbs } from '@/components/breadcrumbs'
+import { Breadcrumbs } from '@features/marketing/components/layout/breadcrumbs'
 
 interface BlogPostPageProps {
   params: Promise<{

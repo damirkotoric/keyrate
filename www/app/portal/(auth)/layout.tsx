@@ -1,6 +1,6 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
-import { PortalLayout } from '@/components/portal/portal-layout'
+import { PortalLayout } from '@features/portal/components/layout/portal-layout'
 
 export default async function AuthLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()

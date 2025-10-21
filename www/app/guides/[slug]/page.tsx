@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
-import Header from '@/components/header'
-import Footer from '@/components/footer'
+import Header from '@features/marketing/components/layout/header'
+import Footer from '@features/marketing/components/layout/footer'
 import { Badge } from '@/components/ui/badge'
-import { getGuideBySlug, getAllGuides } from '@/lib/queries/guides'
-import { Breadcrumbs } from '@/components/breadcrumbs'
-import { GuideDownloadForm } from '@/components/guide-download-form'
-import { GetInTouchSection } from '@/components/get-in-touch-section'
+import { getGuideBySlug, getAllGuides } from '@features/guides/lib/queries'
+import { Breadcrumbs } from '@features/marketing/components/layout/breadcrumbs'
+import { GuideDownloadForm } from '@features/guides/components/guide-download-form'
+import { GetInTouchSection } from '@features/marketing/components/sections/get-in-touch-section'
 
 interface GuidePageProps {
   params: Promise<{

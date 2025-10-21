@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { ApplicationSheet } from './application-sheet'
+import { ApplicationSheet } from '../sheets/application-sheet'
 
 interface RecentApplication {
   id: string

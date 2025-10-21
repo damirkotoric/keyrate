@@ -1,11 +1,11 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
-import Header from '@/components/header'
-import Footer from '@/components/footer'
+import Header from '@features/marketing/components/layout/header'
+import Footer from '@features/marketing/components/layout/footer'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { getVideoBySlug, getAllVideos, getYouTubeEmbedUrl } from '@/lib/queries/videos'
-import { Breadcrumbs } from '@/components/breadcrumbs'
+import { Breadcrumbs } from '@features/marketing/components/layout/breadcrumbs'
 
 interface VideoPageProps {
   params: Promise<{

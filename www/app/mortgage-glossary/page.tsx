@@ -1,7 +1,7 @@
-import Header from "@/components/header"
-import Footer from "@/components/footer"
-import { getMortgageGlossary } from "@/lib/queries/mortgageGlossary"
-import { MortgageGlossaryClient } from "@/components/mortgage-glossary-client"
+import Header from "@features/marketing/components/layout/header"
+import Footer from "@features/marketing/components/layout/footer"
+import { getMortgageGlossary } from "@features/mortgage-glossary/lib/queries"
+import { MortgageGlossaryClient } from "@features/mortgage-glossary/components/mortgage-glossary-client"
 import { chooseLocalizedString, normalizeLocaleParam, LOCALE_COOKIE, type AppLocale } from "@/lib/locale"
 import { cookies } from "next/headers"
 import type { Metadata } from 'next'

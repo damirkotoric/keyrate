@@ -1,10 +1,10 @@
-import Header from "@/components/header"
-import Footer from "@/components/footer"
+import Header from "@features/marketing/components/layout/header"
+import Footer from "@features/marketing/components/layout/footer"
 import { Button } from "@/components/ui/button"
 import { ArrowRight } from "@/components/icons"
-import { getAllGuides } from "@/lib/queries/guides"
-import { GuideCard } from "@/components/guide-card"
-import { GetInTouchSection } from "@/components/get-in-touch-section"
+import { getAllGuides } from "@features/guides/lib/queries"
+import { GuideCard } from "@features/guides/components/guide-card"
+import { GetInTouchSection } from "@features/marketing/components/sections/get-in-touch-section"
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {

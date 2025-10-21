@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { cn } from "@/lib/utils"
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert"
-import TestimonialCard from "@/components/testimonial-card"
+import TestimonialCard from "@features/testimonials/components/testimonial-card"
 import { Marquee } from "@/components/ui/marquee"
 
 type Testimonial = {

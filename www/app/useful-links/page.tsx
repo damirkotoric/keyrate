@@ -1,5 +1,5 @@
-import { Header } from "@/components/header"
-import { Footer } from "@/components/footer"
+import { Header } from "@features/marketing/components/layout/header"
+import { Footer } from "@features/marketing/components/layout/footer"
 import { ExternalLink, Shield, Building, FileText, TrendingUp, Award } from "@/components/icons"
 
 export default function UsefulLinksPage() {

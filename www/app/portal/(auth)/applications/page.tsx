@@ -5,18 +5,30 @@ import { createClient } from '@/lib/supabase/client'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Plus, Search } from 'lucide-react'
-import { ApplicationSheet } from '@/components/portal/application-sheet'
+import { ApplicationSheet } from '@features/portal/components/sheets/application-sheet'
 
 const CURRENCY_MAP: Record<string, { prefix: string }> = {
-  CA: { prefix: 'CAD $' },
+  CA: { prefix: 'CAD' },
   AE: { prefix: 'AED' },
-  US: { prefix: 'USD $' },
+  US: { prefix: 'USD' },
 }
 
 const formatCurrency = (value: number, region: string) => {
   if (!value) return '-'
   const currencyInfo = CURRENCY_MAP[region] || CURRENCY_MAP['CA']
-  return `${currencyInfo.prefix}${value.toLocaleString()}`
+  return `${currencyInfo.prefix} ${value.toLocaleString()}`
+}
+
+const formatStatus = (status: string) => {
+  const statusMap: Record<string, string> = {
+    new: 'New',
+    in_progress: 'In Progress',
+    submitted: 'Submitted',
+    approved: 'Approved',
+    rejected: 'Rejected',
+    funded: 'Funded',
+  }
+  return statusMap[status] || status
 }
 
 export default function ApplicationsPage() {
@@ -105,10 +117,10 @@ export default function ApplicationsPage() {
                 >
                   <td className="p-4">{app.clients?.full_name}</td>
                   <td className="p-4">{app.property_address || '-'}</td>
-                  <td className="p-4">{formatCurrency(app.loan_amount, app.region)}</td>
+                  <td className="p-4 whitespace-nowrap">{formatCurrency(app.loan_amount, app.region)}</td>
                   <td className="p-4">
-                    <span className="px-2 py-1 rounded-full text-xs bg-muted">
-                      {app.status}
+                    <span className="px-2 py-1 rounded-full text-xs bg-muted whitespace-nowrap">
+                      {formatStatus(app.status)}
                     </span>
                   </td>
                   <td className="p-4">
@@ -117,7 +129,7 @@ export default function ApplicationsPage() {
                     {app.region === 'US' && '🇺🇸 USA'}
                     {!app.region && '-'}
                   </td>
-                  <td className="p-4">
+                  <td className="p-4 whitespace-nowrap">
                     {new Date(app.created_at).toLocaleDateString('en-GB', { 
                       day: 'numeric', 
                       month: 'short', 

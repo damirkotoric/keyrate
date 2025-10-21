@@ -13,8 +13,8 @@ import {
 } from "@/components/ui/select"
 import { Input } from "@/components/ui/input"
 import { Search } from "@/components/icons"
-import { formatCategory, formatRegion, type BlogPost } from "@/lib/queries/blog"
-import { BlogPostCard } from "@/components/blog-post-card"
+import { formatCategory, formatRegion, type BlogPost } from "@features/blog/lib/queries"
+import { BlogPostCard } from "@features/blog/components/blog-post-card"
 
 interface BlogPageClientProps {
   posts: BlogPost[]
