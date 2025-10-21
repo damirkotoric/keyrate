@@ -183,7 +183,8 @@ export function BrokerSheet({ brokerId, open, onClose }: {
   }
 
   const title = brokerId ? (isEditing ? 'Edit Broker' : 'Broker Details') : 'New Broker'
-  const isUserBanned = broker?.banned_until && new Date(broker.banned_until) > new Date()
+  const bannedUntil = broker?.banned_until
+  const isUserBanned = bannedUntil && new Date(bannedUntil as string) > new Date()
   const isSelfView = currentUserId === brokerId
 
   return (

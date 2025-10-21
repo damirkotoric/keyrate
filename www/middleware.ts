@@ -49,9 +49,10 @@ export async function middleware(req: NextRequest) {
     }
 
     // Check if user is banned
-    if (user.banned_until) {
-      const bannedUntil = new Date(user.banned_until)
-      if (bannedUntil > new Date()) {
+    const bannedUntil = (user as any).banned_until
+    if (bannedUntil) {
+      const banDate = new Date(bannedUntil)
+      if (banDate > new Date()) {
         // User is banned - clear ALL Supabase cookies and redirect to login
         const redirectResponse = NextResponse.redirect(new URL('/portal/login', req.url))
         
