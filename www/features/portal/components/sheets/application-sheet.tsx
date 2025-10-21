@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { Upload, File, X } from 'lucide-react'
+import { detectRegionFromAddress } from '@features/portal/lib/region-utils'
 
 const CURRENCY_MAP: Record<string, { symbol: string; code: string; prefix: string }> = {
   CA: { symbol: '$', code: 'CAD', prefix: 'CAD $' },
@@ -34,6 +35,11 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
   const hasChanges = useMemo(() => {
     return JSON.stringify(formData) !== JSON.stringify(initialFormData)
   }, [formData, initialFormData])
+
+  // Detect region from property address in real-time
+  const detectedRegion = useMemo(() => {
+    return detectRegionFromAddress(formData.property_address)
+  }, [formData.property_address])
 
   // Get currency info based on selected region
   const selectedRegion = isEditing ? formData.region : application?.region
@@ -190,15 +196,22 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
   async function handleSave() {
     setLoading(true)
     try {
+      // Detect region from property address if not already set
+      const region = formData.region || detectRegionFromAddress(formData.property_address)
+      const dataToSave = {
+        ...formData,
+        region
+      }
+
       if (applicationId) {
         // Update
-        const { error } = await supabase.from('applications').update(formData).eq('id', applicationId)
+        const { error } = await supabase.from('applications').update(dataToSave).eq('id', applicationId)
         if (error) throw error
       } else {
         // Create
         const { data: { user } } = await supabase.auth.getUser()
         const { error } = await supabase.from('applications').insert({
-          ...formData,
+          ...dataToSave,
           broker_id: user?.id
         })
         if (error) throw error
@@ -425,6 +438,11 @@ export function ApplicationSheet({ applicationId, open, onClose }: {
                   onChange={(e) => setFormData({...formData, property_address: e.target.value})}
                   placeholder="Enter property address"
                 />
+                {detectedRegion && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Detected region: <span className="font-medium">{detectedRegion === 'CA' ? 'Canada' : detectedRegion === 'AE' ? 'UAE' : 'United States'}</span>
+                  </p>
+                )}
               </div>
 
               <div>

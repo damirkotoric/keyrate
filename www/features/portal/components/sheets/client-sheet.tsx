@@ -5,6 +5,7 @@ import { createClient } from '@/lib/supabase/client'
 import { SheetWrapper, ViewField, SheetFormFooter } from './sheet-wrapper'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { detectRegionFromAddress } from '@features/portal/lib/region-utils'
 
 export function ClientSheet({ clientId, open, onClose }: {
   clientId?: string | null
@@ -17,6 +18,11 @@ export function ClientSheet({ clientId, open, onClose }: {
   const [initialFormData, setInitialFormData] = useState<any>({})
   const [loading, setLoading] = useState(false)
   const supabase = createClient()
+
+  // Detect region from address in real-time
+  const detectedRegion = useMemo(() => {
+    return detectRegionFromAddress(formData.address)
+  }, [formData.address])
 
   const hasChanges = useMemo(() => {
     return JSON.stringify(formData) !== JSON.stringify(initialFormData)
@@ -57,14 +63,21 @@ export function ClientSheet({ clientId, open, onClose }: {
   async function handleSave() {
     setLoading(true)
     try {
+      // Detect region from address if not already set
+      const region = formData.region || detectRegionFromAddress(formData.address)
+      const dataToSave = {
+        ...formData,
+        region
+      }
+
       if (clientId) {
         // Update
-        await supabase.from('clients').update(formData).eq('id', clientId)
+        await supabase.from('clients').update(dataToSave).eq('id', clientId)
       } else {
         // Create
         const { data: { user } } = await supabase.auth.getUser()
         await supabase.from('clients').insert({
-          ...formData,
+          ...dataToSave,
           broker_id: user?.id
         })
       }
@@ -154,6 +167,11 @@ export function ClientSheet({ clientId, open, onClose }: {
               rows={3}
               placeholder="Enter full address"
             />
+            {detectedRegion && (
+              <p className="text-xs text-muted-foreground mt-1">
+                Detected region: <span className="font-medium">{detectedRegion === 'CA' ? 'Canada' : detectedRegion === 'AE' ? 'UAE' : 'United States'}</span>
+              </p>
+            )}
           </div>
 
           <div>

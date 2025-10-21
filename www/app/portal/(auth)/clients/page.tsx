@@ -87,7 +87,12 @@ export default function ClientsPage() {
                   <td className="p-4">{client.full_name}</td>
                   <td className="p-4">{client.email || '-'}</td>
                   <td className="p-4">{client.phone || '-'}</td>
-                  <td className="p-4">{client.region}</td>
+                  <td className="p-4">
+                    {client.region === 'CA' && '🇨🇦 Canada'}
+                    {client.region === 'AE' && '🇦🇪 UAE'}
+                    {client.region === 'US' && '🇺🇸 USA'}
+                    {!client.region && '-'}
+                  </td>
                   <td className="p-4">
                     <span className="px-2 py-1 rounded-full text-xs bg-muted capitalize">
                       {client.status}
